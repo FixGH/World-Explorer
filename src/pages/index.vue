@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <h1 class="text-h4 my-4">Personnages Rick & Morty</h1>
+    <h1 class="text-h4 my-4">Liste des pays</h1>
 
-    <!-- Chargement (skeleton) -->
+    <!-- Chargement -->
     <v-row v-if="loading">
       <v-col v-for="n in 8" :key="n" cols="12" sm="6" md="4" lg="3">
         <v-skeleton-loader type="image, heading, text" />
@@ -14,35 +14,43 @@
       {{ error }}
     </v-alert>
 
-    <!-- Liste des personnages -->
+    <!-- Liste des pays -->
     <v-row v-else>
       <v-col
-        v-for="character in characters"
-        :key="character.id"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
+          v-for="country in countries"
+          :key="country.cca3"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
       >
-        <v-card :to="`/character/${character.id}`" class="h-100" hover>
+        <v-card class="h-100" hover>
           <v-img
-            :src="character.image"
-            :alt="character.name"
-            height="200"
-            cover
+              :src="country.flags?.png"
+              :alt="country.name?.common"
+              height="200"
+              cover
           />
-          <v-card-title>{{ character.name }}</v-card-title>
+
+          <v-card-title>
+            {{ country.name?.common }}
+          </v-card-title>
+
           <v-card-text>
-            <v-chip
-              :color="statusColor(character.status)"
-              size="small"
-              class="mr-2"
-            >
-              {{ character.status }}
-            </v-chip>
-            <v-chip size="small" variant="outlined">
-              {{ character.species }}
-            </v-chip>
+            <div>
+              <strong>Capitale :</strong>
+              {{ country.capital?.[0] || 'Non renseignée' }}
+            </div>
+
+            <div>
+              <strong>Région :</strong>
+              {{ country.region || 'Non renseignée' }}
+            </div>
+
+            <div>
+              <strong>Population :</strong>
+              {{ country.population?.toLocaleString() || 'Non renseignée' }}
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -54,31 +62,27 @@
 import { ref, onMounted } from 'vue'
 
 // État réactif
-const characters = ref([])
+const countries = ref([])
 const loading = ref(true)
 const error = ref(null)
-
-/**
- * Retourne la couleur du chip selon le statut du personnage.
- */
-function statusColor(status) {
-  const colors = { Alive: 'green', Dead: 'red', unknown: 'grey' }
-  return colors[status] || 'grey'
-}
 
 // Chargement des données au montage du composant
 onMounted(async () => {
   try {
-    const response = await fetch('https://rickandmortyapi.com/api/character')
+    const response = await fetch(
+        'https://restcountries.com/v3.1/all?fields=name,flags,capital,region,population,cca3'
+    )
 
     if (!response.ok) {
       throw new Error(`Erreur HTTP ${response.status}`)
     }
 
     const data = await response.json()
-    characters.value = data.results
+
+    // RestCountries renvoie directement un tableau
+    countries.value = data
   } catch (err) {
-    error.value = `Impossible de charger les personnages : ${err.message}`
+    error.value = `Impossible de charger les pays : ${err.message}`
   } finally {
     loading.value = false
   }

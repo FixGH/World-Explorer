@@ -19,8 +19,8 @@
 
       <v-app-bar-title>
         <RouterLink to="/" class="text-decoration-none d-flex align-center" style="color: inherit">
-          <img src="/favicon.png" alt="Rick & Morty" width="28" height="28" class="mr-2">
-          Rick & Morty Explorer
+          <img src="/favicon-terre.png" alt="Rick & Morty" width="45" height="45" class="mr-2">
+          Global Explorer
         </RouterLink>
       </v-app-bar-title>
     </v-app-bar>
@@ -48,7 +48,7 @@ const drawer = ref(false)
 const currentYear = new Date().getFullYear()
 
 const navItems = [
-  { title: 'Personnages', to: '/', icon: 'mdi-account-group' },
+  { title: 'Accueil', to: '/', icon: 'mdi-account-group' },
   { title: 'À propos', to: '/about', icon: 'mdi-information' },
 ]
 </script>
