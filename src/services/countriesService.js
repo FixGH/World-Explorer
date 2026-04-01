@@ -1,5 +1,23 @@
 const BASE_URL = 'https://restcountries.com/v3.1'
-const FIELDS = 'name,flags,capital,region,population,cca3'
+const LIST_FIELDS = 'name,flags,capital,region,population,cca3'
+const DETAIL_FIELDS = [
+  'name',
+  'flags',
+  'capital',
+  'region',
+  'subregion',
+  'population',
+  'area',
+  'continents',
+  'languages',
+  'currencies',
+  'timezones',
+  'independent',
+  'cca2',
+  'cca3',
+  'borders',
+  'maps',
+].join(',')
 
 async function fetchJson(url) {
   const response = await fetch(url)
@@ -12,7 +30,7 @@ async function fetchJson(url) {
 }
 
 export async function getAllCountries() {
-  const countries = await fetchJson(`${BASE_URL}/all?fields=${FIELDS}`)
+  const countries = await fetchJson(`${BASE_URL}/all?fields=${LIST_FIELDS}`)
 
   return [...countries].sort((a, b) => {
     const left = a?.name?.common || ''
@@ -22,7 +40,7 @@ export async function getAllCountries() {
 }
 
 export async function getCountryByCode(code) {
-  const data = await fetchJson(`${BASE_URL}/alpha/${encodeURIComponent(code)}?fields=${FIELDS}`)
+  const data = await fetchJson(`${BASE_URL}/alpha/${encodeURIComponent(code)}?fields=${DETAIL_FIELDS}`)
 
   if (Array.isArray(data)) {
     return data[0] ?? null

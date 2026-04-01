@@ -130,6 +130,11 @@ export const useCountriesStore = defineStore('countries', () => {
     compareRightCode.value = ''
   }
 
+  function getCountryNameByCode(code) {
+    const normalizedCode = String(code || '').trim().toUpperCase()
+    return countriesByCode.value.get(normalizedCode)?.name?.common || normalizedCode
+  }
+
   async function fetchCountries() {
     loading.value = true
     error.value = null
@@ -197,6 +202,7 @@ export const useCountriesStore = defineStore('countries', () => {
     setCompareLeftCode,
     setCompareRightCode,
     resetCompare,
+    getCountryNameByCode,
     fetchCountries,
     fetchCountryByCode,
   }
