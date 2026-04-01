@@ -66,11 +66,27 @@ export const useCountriesStore = defineStore('countries', () => {
   }
 
   async function fetchCountryByCode(code) {
+    const normalizedCode = String(code || '').trim().toUpperCase()
+
+    if (!normalizedCode) {
+      selectedCountry.value = null
+      selectedCountryError.value = 'Missing country code.'
+      return
+    }
+
     selectedCountryLoading.value = true
     selectedCountryError.value = null
     selectedCountry.value = null
+
     try {
-      selectedCountry.value = await getCountryByCode(code)
+      const country = await getCountryByCode(normalizedCode)
+
+      if (!country) {
+        selectedCountryError.value = `Country not found for code: ${normalizedCode}`
+        return
+      }
+
+      selectedCountry.value = country
     } catch (err) {
       selectedCountryError.value = `Unable to load country details: ${err.message}`
     } finally {

@@ -22,6 +22,11 @@ export async function getAllCountries() {
 }
 
 export async function getCountryByCode(code) {
-  const countries = await fetchJson(`${BASE_URL}/alpha/${code}?fields=${FIELDS}`)
-  return countries?.[0] ?? null
+  const data = await fetchJson(`${BASE_URL}/alpha/${encodeURIComponent(code)}?fields=${FIELDS}`)
+
+  if (Array.isArray(data)) {
+    return data[0] ?? null
+  }
+
+  return data ?? null
 }

@@ -11,7 +11,7 @@
       v-else-if="store.selectedCountryError"
       :message="store.selectedCountryError"
       retryable
-      @retry="store.fetchCountryByCode(countryCode)"
+      @retry="loadCountry"
     />
 
     <v-row v-else-if="country">
@@ -32,6 +32,11 @@
         </div>
 
         <v-list lines="two" class="mt-4">
+          <v-list-item
+            prepend-icon="mdi-card-account-details"
+            title="Official name"
+            :subtitle="country.name?.official || 'Unknown'"
+          />
           <v-list-item prepend-icon="mdi-city" title="Capital" :subtitle="country.capital?.[0] || 'Unknown'" />
           <v-list-item prepend-icon="mdi-earth" title="Region" :subtitle="country.region || 'Unknown'" />
           <v-list-item prepend-icon="mdi-account-group" title="Population" :subtitle="formattedPopulation" />
@@ -39,6 +44,10 @@
         </v-list>
       </v-col>
     </v-row>
+
+    <v-alert v-else type="info" variant="tonal">
+      No country data available.
+    </v-alert>
   </v-container>
 </template>
 
