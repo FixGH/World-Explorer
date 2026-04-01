@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <!-- Menu de navigation latéral -->
     <v-navigation-drawer v-model="drawer" temporary>
       <v-list nav>
         <v-list-item
@@ -13,14 +12,12 @@
       </v-list>
     </v-navigation-drawer>
 
-    <!-- Barre de navigation -->
     <v-app-bar color="primary">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
-
       <v-app-bar-title>
-        <RouterLink to="/" class="text-decoration-none d-flex align-center" style="color: inherit">
-          <img src="/favicon-terre.png" alt="Rick & Morty" width="45" height="45" class="mr-2">
-          Global Explorer
+        <RouterLink to="/" class="text-decoration-none d-flex align-center text-white">
+          <v-icon icon="mdi-earth" class="mr-2" />
+          World Explorer
         </RouterLink>
       </v-app-bar-title>
     </v-app-bar>
@@ -31,10 +28,9 @@
 
     <v-footer class="text-center">
       <v-col>
-        Démo C141 — ESIG {{ currentYear }} —
-        API
-        <a href="https://rickandmortyapi.com" target="_blank" rel="noopener noreferrer" class="text-primary">
-          rickandmortyapi.com
+        World Explorer {{ currentYear }} -
+        <a href="https://restcountries.com" target="_blank" rel="noopener noreferrer" class="text-primary">
+          restcountries.com
         </a>
       </v-col>
     </v-footer>
@@ -48,7 +44,8 @@ const drawer = ref(false)
 const currentYear = new Date().getFullYear()
 
 const navItems = [
-  { title: 'Accueil', to: '/', icon: 'mdi-account-group' },
-  { title: 'À propos', to: '/about', icon: 'mdi-information' },
+  { title: 'Countries', to: '/', icon: 'mdi-earth' },
+  { title: 'Favorites', to: '/favorites', icon: 'mdi-heart' },
+  { title: 'About', to: '/about', icon: 'mdi-information' },
 ]
 </script>
