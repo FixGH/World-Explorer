@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 class="text-h4 my-4">Country Explorer</h1>
+    <h1 class="text-h4 my-4">Explorateur de pays</h1>
 
     <LoadingState v-if="store.loading" />
 
@@ -11,9 +11,24 @@
       @retry="store.fetchCountries"
     />
 
-    <v-row v-else>
+    <template v-else>
+      <CountryFilters
+        :search-query="store.searchQuery"
+        :selected-region="store.selectedRegion"
+        :sort-option="store.sortOption"
+        @update:search-query="store.setSearchQuery"
+        @update:selected-region="store.setSelectedRegion"
+        @update:sort-option="store.setSortOption"
+        @reset="store.resetFilters"
+      />
+
+      <v-alert v-if="!store.filteredCountries.length" type="info" variant="tonal" class="mb-4">
+        Aucun pays ne correspond a votre recherche.
+      </v-alert>
+
+      <v-row v-else>
       <v-col
-        v-for="country in store.countries"
+        v-for="country in store.filteredCountries"
         :key="country.cca3"
         cols="12"
         sm="6"
@@ -26,7 +41,8 @@
           @toggle-favorite="store.toggleFavorite"
         />
       </v-col>
-    </v-row>
+      </v-row>
+    </template>
   </v-container>
 </template>
 
@@ -34,6 +50,7 @@
 import { onMounted } from 'vue'
 import { useCountriesStore } from '@/stores/countries'
 import CountryCard from '@/components/CountryCard.vue'
+import CountryFilters from '@/components/CountryFilters.vue'
 import LoadingState from '@/components/LoadingState.vue'
 import ErrorState from '@/components/ErrorState.vue'
 

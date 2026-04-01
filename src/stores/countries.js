@@ -17,6 +17,9 @@ export const useCountriesStore = defineStore('countries', () => {
   const countries = ref([])
   const loading = ref(false)
   const error = ref(null)
+  const searchQuery = ref('')
+  const selectedRegion = ref('all')
+  const sortOption = ref('name-asc')
   const selectedCountry = ref(null)
   const selectedCountryLoading = ref(false)
   const selectedCountryError = ref(null)
@@ -36,6 +39,37 @@ export const useCountriesStore = defineStore('countries', () => {
       .filter(Boolean)
   })
 
+  const filteredCountries = computed(() => {
+    const normalizedQuery = searchQuery.value.trim().toLowerCase()
+
+    const filtered = countries.value.filter((country) => {
+      const name = country?.name?.common?.toLowerCase() || ''
+      const region = country?.region || ''
+
+      const matchesSearch = !normalizedQuery || name.includes(normalizedQuery)
+      const matchesRegion = selectedRegion.value === 'all' || region === selectedRegion.value
+
+      return matchesSearch && matchesRegion
+    })
+
+    const sorted = [...filtered]
+    sorted.sort((left, right) => {
+      switch (sortOption.value) {
+        case 'name-desc':
+          return (right?.name?.common || '').localeCompare(left?.name?.common || '')
+        case 'population-asc':
+          return (left?.population || 0) - (right?.population || 0)
+        case 'population-desc':
+          return (right?.population || 0) - (left?.population || 0)
+        case 'name-asc':
+        default:
+          return (left?.name?.common || '').localeCompare(right?.name?.common || '')
+      }
+    })
+
+    return sorted
+  })
+
   function persistFavorites() {
     localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteCodes.value))
   }
@@ -51,6 +85,24 @@ export const useCountriesStore = defineStore('countries', () => {
       favoriteCodes.value = [...favoriteCodes.value, code]
     }
     persistFavorites()
+  }
+
+  function setSearchQuery(value) {
+    searchQuery.value = String(value || '')
+  }
+
+  function setSelectedRegion(value) {
+    selectedRegion.value = value || 'all'
+  }
+
+  function setSortOption(value) {
+    sortOption.value = value || 'name-asc'
+  }
+
+  function resetFilters() {
+    searchQuery.value = ''
+    selectedRegion.value = 'all'
+    sortOption.value = 'name-asc'
   }
 
   async function fetchCountries() {
@@ -96,8 +148,12 @@ export const useCountriesStore = defineStore('countries', () => {
 
   return {
     countries,
+    filteredCountries,
     loading,
     error,
+    searchQuery,
+    selectedRegion,
+    sortOption,
     selectedCountry,
     selectedCountryLoading,
     selectedCountryError,
@@ -105,6 +161,10 @@ export const useCountriesStore = defineStore('countries', () => {
     favoriteCountries,
     isFavorite,
     toggleFavorite,
+    setSearchQuery,
+    setSelectedRegion,
+    setSortOption,
+    resetFilters,
     fetchCountries,
     fetchCountryByCode,
   }
