@@ -57,14 +57,43 @@
       variant="tonal"
       class="mb-4"
     >
-      Sélectionnez deux pays pour afficher la comparaison.
+      Sélectionnez deux pays (Pays A et Pays B) pour afficher la comparaison.
     </v-alert>
 
-    <CountryCompareTable
-      v-else
-      :left="store.compareLeftCountry"
-      :right="store.compareRightCountry"
-    />
+    <template v-else>
+      <v-row class="mb-4">
+        <v-col cols="12" md="6">
+          <v-card>
+            <v-card-title class="d-flex align-center justify-space-between">
+              <span>{{ store.compareLeftCountry.name?.common }}</span>
+              <v-btn
+                variant="text"
+                prepend-icon="mdi-open-in-new"
+                :to="{ name: 'country-details', params: { code: store.compareLeftCountry.cca3 } }"
+              >
+                Détails
+              </v-btn>
+            </v-card-title>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-card>
+            <v-card-title class="d-flex align-center justify-space-between">
+              <span>{{ store.compareRightCountry.name?.common }}</span>
+              <v-btn
+                variant="text"
+                prepend-icon="mdi-open-in-new"
+                :to="{ name: 'country-details', params: { code: store.compareRightCountry.cca3 } }"
+              >
+                Détails
+              </v-btn>
+            </v-card-title>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <CountryCompareTable :left="store.compareLeftCountry" :right="store.compareRightCountry" />
+    </template>
   </v-container>
 </template>
 

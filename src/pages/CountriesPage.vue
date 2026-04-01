@@ -1,6 +1,11 @@
 <template>
   <v-container>
-    <h1 class="text-h4 my-4">Explorateur de pays</h1>
+    <div class="d-flex align-center justify-space-between my-4">
+      <h1 class="text-h4">Explorateur de pays</h1>
+      <v-btn color="secondary" variant="tonal" prepend-icon="mdi-compare" to="/compare">
+        Comparer
+      </v-btn>
+    </div>
 
     <LoadingState v-if="store.loading" />
 

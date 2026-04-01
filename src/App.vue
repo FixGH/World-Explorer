@@ -44,8 +44,9 @@ const drawer = ref(false)
 const currentYear = new Date().getFullYear()
 
 const navItems = [
-  { title: 'Countries', to: '/', icon: 'mdi-earth' },
-  { title: 'Favorites', to: '/favorites', icon: 'mdi-heart' },
-  { title: 'About', to: '/about', icon: 'mdi-information' },
+  { title: 'Pays', to: '/', icon: 'mdi-earth' },
+  { title: 'Comparer', to: '/compare', icon: 'mdi-compare' },
+  { title: 'Favoris', to: '/favorites', icon: 'mdi-heart' },
+  { title: 'À propos', to: '/about', icon: 'mdi-information' },
 ]
 </script>

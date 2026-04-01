@@ -70,8 +70,34 @@
           </tr>
           <tr>
             <td><strong>Population</strong></td>
-            <td>{{ leftPopulation }}</td>
-            <td>{{ rightPopulation }}</td>
+            <td :class="leftPopulationClass">
+              <div class="d-flex align-center justify-space-between">
+                <span>{{ leftPopulation }}</span>
+                <v-chip
+                  v-if="populationWinner === 'left'"
+                  size="small"
+                  color="success"
+                  variant="tonal"
+                  prepend-icon="mdi-arrow-up"
+                >
+                  Plus élevé
+                </v-chip>
+              </div>
+            </td>
+            <td :class="rightPopulationClass">
+              <div class="d-flex align-center justify-space-between">
+                <span>{{ rightPopulation }}</span>
+                <v-chip
+                  v-if="populationWinner === 'right'"
+                  size="small"
+                  color="success"
+                  variant="tonal"
+                  prepend-icon="mdi-arrow-up"
+                >
+                  Plus élevé
+                </v-chip>
+              </div>
+            </td>
           </tr>
           <tr>
             <td><strong>Code CCA3</strong></td>
@@ -106,4 +132,24 @@ const rightFlagSrc = computed(() => props.right?.flags?.svg || props.right?.flag
 
 const leftPopulation = computed(() => (props.left?.population ? props.left.population.toLocaleString() : '-'))
 const rightPopulation = computed(() => (props.right?.population ? props.right.population.toLocaleString() : '-'))
+
+const populationWinner = computed(() => {
+  const left = props.left?.population
+  const right = props.right?.population
+
+  if (!Number.isFinite(left) || !Number.isFinite(right) || left === right) {
+    return null
+  }
+
+  return left > right ? 'left' : 'right'
+})
+
+const leftPopulationClass = computed(() => (populationWinner.value === 'left' ? 'bg-success' : ''))
+const rightPopulationClass = computed(() => (populationWinner.value === 'right' ? 'bg-success' : ''))
 </script>
+
+<style scoped>
+.bg-success {
+  background: rgba(var(--v-theme-success), 0.12);
+}
+</style>
