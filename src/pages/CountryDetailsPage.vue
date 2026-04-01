@@ -16,7 +16,13 @@
 
     <v-row v-else-if="country">
       <v-col cols="12" md="4">
-        <v-img :src="country.flags?.png" :alt="country.name?.common" rounded="lg" />
+        <v-img :src="flagSrc" :alt="country.name?.common" rounded="lg" cover>
+          <template #error>
+            <v-sheet height="240" class="d-flex align-center justify-center" rounded="lg">
+              <v-icon icon="mdi-flag-outline" size="64" />
+            </v-sheet>
+          </template>
+        </v-img>
       </v-col>
       <v-col cols="12" md="8">
         <div class="d-flex align-center justify-space-between">
@@ -34,19 +40,19 @@
         <v-list lines="two" class="mt-4">
           <v-list-item
             prepend-icon="mdi-card-account-details"
-            title="Official name"
+            title="Nom officiel"
             :subtitle="country.name?.official || 'Unknown'"
           />
-          <v-list-item prepend-icon="mdi-city" title="Capital" :subtitle="country.capital?.[0] || 'Unknown'" />
-          <v-list-item prepend-icon="mdi-earth" title="Region" :subtitle="country.region || 'Unknown'" />
+          <v-list-item prepend-icon="mdi-city" title="Capitale" :subtitle="country.capital?.[0] || 'Unknown'" />
+          <v-list-item prepend-icon="mdi-earth" title="Région" :subtitle="country.region || 'Unknown'" />
           <v-list-item prepend-icon="mdi-account-group" title="Population" :subtitle="formattedPopulation" />
-          <v-list-item prepend-icon="mdi-identifier" title="Code" :subtitle="country.cca3" />
+          <v-list-item prepend-icon="mdi-identifier" title="Code CCA3" :subtitle="country.cca3" />
         </v-list>
       </v-col>
     </v-row>
 
     <v-alert v-else type="info" variant="tonal">
-      No country data available.
+      Aucun pays à afficher.
     </v-alert>
   </v-container>
 </template>
@@ -63,6 +69,7 @@ const store = useCountriesStore()
 
 const countryCode = computed(() => String(route.params.code || ''))
 const country = computed(() => store.selectedCountry)
+const flagSrc = computed(() => country.value?.flags?.svg || country.value?.flags?.png || '')
 const formattedPopulation = computed(() => {
   const value = country.value?.population
   return value ? value.toLocaleString() : 'Unknown'

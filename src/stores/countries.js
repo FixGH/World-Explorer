@@ -20,6 +20,8 @@ export const useCountriesStore = defineStore('countries', () => {
   const searchQuery = ref('')
   const selectedRegion = ref('all')
   const sortOption = ref('name-asc')
+  const compareLeftCode = ref('')
+  const compareRightCode = ref('')
   const selectedCountry = ref(null)
   const selectedCountryLoading = ref(false)
   const selectedCountryError = ref(null)
@@ -70,6 +72,16 @@ export const useCountriesStore = defineStore('countries', () => {
     return sorted
   })
 
+  const compareLeftCountry = computed(() => {
+    const code = String(compareLeftCode.value || '').trim().toUpperCase()
+    return code ? countriesByCode.value.get(code) ?? null : null
+  })
+
+  const compareRightCountry = computed(() => {
+    const code = String(compareRightCode.value || '').trim().toUpperCase()
+    return code ? countriesByCode.value.get(code) ?? null : null
+  })
+
   function persistFavorites() {
     localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteCodes.value))
   }
@@ -103,6 +115,19 @@ export const useCountriesStore = defineStore('countries', () => {
     searchQuery.value = ''
     selectedRegion.value = 'all'
     sortOption.value = 'name-asc'
+  }
+
+  function setCompareLeftCode(code) {
+    compareLeftCode.value = String(code || '').trim().toUpperCase()
+  }
+
+  function setCompareRightCode(code) {
+    compareRightCode.value = String(code || '').trim().toUpperCase()
+  }
+
+  function resetCompare() {
+    compareLeftCode.value = ''
+    compareRightCode.value = ''
   }
 
   async function fetchCountries() {
@@ -154,6 +179,10 @@ export const useCountriesStore = defineStore('countries', () => {
     searchQuery,
     selectedRegion,
     sortOption,
+    compareLeftCode,
+    compareRightCode,
+    compareLeftCountry,
+    compareRightCountry,
     selectedCountry,
     selectedCountryLoading,
     selectedCountryError,
@@ -165,6 +194,9 @@ export const useCountriesStore = defineStore('countries', () => {
     setSelectedRegion,
     setSortOption,
     resetFilters,
+    setCompareLeftCode,
+    setCompareRightCode,
+    resetCompare,
     fetchCountries,
     fetchCountryByCode,
   }

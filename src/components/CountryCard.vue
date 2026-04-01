@@ -1,6 +1,12 @@
 <template>
   <v-card class="h-100 d-flex flex-column" hover>
-    <v-img :src="country.flags?.png" :alt="country.name?.common" height="180" cover />
+    <v-img :src="flagSrc" :alt="country.name?.common" height="180" cover>
+      <template #error>
+        <v-sheet height="180" class="d-flex align-center justify-center">
+          <v-icon icon="mdi-flag-outline" size="48" />
+        </v-sheet>
+      </template>
+    </v-img>
 
     <v-card-title>{{ country.name?.common }}</v-card-title>
 
@@ -39,6 +45,8 @@ const props = defineProps({
 })
 
 defineEmits(['toggle-favorite'])
+
+const flagSrc = computed(() => props.country?.flags?.svg || props.country?.flags?.png || '')
 
 const formattedPopulation = computed(() => {
   const value = props.country?.population
