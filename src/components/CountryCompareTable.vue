@@ -130,8 +130,8 @@ const rightTitle = computed(() => props.right?.name?.common || 'Pays B')
 const leftFlagSrc = computed(() => props.left?.flags?.svg || props.left?.flags?.png || '')
 const rightFlagSrc = computed(() => props.right?.flags?.svg || props.right?.flags?.png || '')
 
-const leftPopulation = computed(() => (props.left?.population ? props.left.population.toLocaleString() : '-'))
-const rightPopulation = computed(() => (props.right?.population ? props.right.population.toLocaleString() : '-'))
+const leftPopulation = computed(() => (props.left?.population ? props.left.population.toLocaleString('fr-FR') : '-'))
+const rightPopulation = computed(() => (props.right?.population ? props.right.population.toLocaleString('fr-FR') : '-'))
 
 const populationWinner = computed(() => {
   const left = props.left?.population

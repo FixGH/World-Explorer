@@ -2,7 +2,7 @@
   <v-container>
     <v-btn variant="text" :to="{ name: 'countries' }" class="mb-4">
       <v-icon icon="mdi-arrow-left" class="mr-1" />
-      Retour a la liste
+      Retour à la liste
     </v-btn>
 
     <LoadingState v-if="store.selectedCountryLoading" :item-count="1" />
@@ -95,7 +95,7 @@
 
           <v-col cols="12" md="6">
             <v-card class="h-100">
-              <v-card-title>Geographie</v-card-title>
+              <v-card-title>Géographie</v-card-title>
               <v-divider />
               <v-list lines="two">
                 <v-list-item prepend-icon="mdi-city" title="Capitale" :subtitle="country.capital?.[0] || fallback" />

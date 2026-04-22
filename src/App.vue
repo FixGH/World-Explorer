@@ -20,19 +20,25 @@
           World Explorer
         </RouterLink>
       </v-app-bar-title>
+      <div class="d-none d-md-flex ga-2 mr-4">
+        <v-btn variant="text" :to="{ name: 'countries' }">Explorer</v-btn>
+        <v-btn variant="text" :to="{ name: 'compare' }">Comparer</v-btn>
+      </div>
     </v-app-bar>
 
     <v-main>
       <RouterView />
     </v-main>
 
-    <v-footer class="text-center">
-      <v-col>
-        World Explorer {{ currentYear }} -
-        <a href="https://restcountries.com" target="_blank" rel="noopener noreferrer" class="text-primary">
-          restcountries.com
-        </a>
-      </v-col>
+    <v-footer class="border-t-sm">
+      <v-container class="py-3">
+        <div class="d-flex flex-wrap align-center justify-space-between ga-2 text-medium-emphasis">
+          <span>World Explorer {{ currentYear }} - Explorez, comparez et sauvegardez vos pays favoris.</span>
+          <a href="https://restcountries.com" target="_blank" rel="noopener noreferrer" class="text-primary">
+            Donnees: restcountries.com
+          </a>
+        </div>
+      </v-container>
     </v-footer>
   </v-app>
 </template>

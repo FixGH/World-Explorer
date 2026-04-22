@@ -2,8 +2,14 @@
   <v-container class="py-6">
     <HomeHero />
 
+    <div class="d-flex align-center justify-space-between mb-3">
+      <h2 class="text-h5">Vue d'ensemble mondiale</h2>
+    </div>
     <GlobalStatsCards :stats="stats" />
 
+    <div class="d-flex align-center justify-space-between mb-3">
+      <h2 class="text-h5">Ce que vous pouvez faire</h2>
+    </div>
     <FeatureHighlights />
   </v-container>
 </template>
@@ -24,7 +30,7 @@ const stats = computed(() => [
     icon: 'mdi-flag',
   },
   {
-    label: 'Regions representees',
+    label: 'Régions représentées',
     value: store.totalRegions.toLocaleString('fr-FR'),
     icon: 'mdi-earth',
   },

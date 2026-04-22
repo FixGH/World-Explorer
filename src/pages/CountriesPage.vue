@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="py-6">
     <div class="d-flex align-center justify-space-between my-4">
       <h1 class="text-h4">Explorateur de pays</h1>
       <v-btn color="secondary" variant="tonal" prepend-icon="mdi-compare" to="/compare">
@@ -28,24 +28,24 @@
       />
 
       <v-alert v-if="!store.filteredCountries.length" type="info" variant="tonal" class="mb-4">
-        Aucun pays ne correspond a votre recherche.
+        Aucun pays ne correspond à votre recherche.
       </v-alert>
 
       <v-row v-else>
-      <v-col
-        v-for="country in store.filteredCountries"
-        :key="country.cca3"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
-        <CountryCard
-          :country="country"
-          :is-favorite="store.isFavorite(country.cca3)"
-          @toggle-favorite="store.toggleFavorite"
-        />
-      </v-col>
+        <v-col
+          v-for="country in store.filteredCountries"
+          :key="country.cca3"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+        >
+          <CountryCard
+            :country="country"
+            :is-favorite="store.isFavorite(country.cca3)"
+            @toggle-favorite="store.toggleFavorite"
+          />
+        </v-col>
       </v-row>
     </template>
   </v-container>

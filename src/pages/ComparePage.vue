@@ -1,7 +1,12 @@
 <template>
-  <v-container>
+  <v-container class="py-6">
     <div class="d-flex align-center justify-space-between my-4">
-      <h1 class="text-h4">Comparer des pays</h1>
+      <div>
+        <h1 class="text-h4">Comparer des pays</h1>
+        <p class="text-medium-emphasis mt-1">
+          Sélectionnez deux pays pour visualiser leurs données côte à côte.
+        </p>
+      </div>
       <v-btn variant="text" color="secondary" @click="store.resetCompare">Réinitialiser</v-btn>
     </div>
 
@@ -57,7 +62,7 @@
       variant="tonal"
       class="mb-4"
     >
-      Sélectionnez deux pays (Pays A et Pays B) pour afficher la comparaison.
+      Sélectionnez deux pays (Pays A et Pays B) pour afficher la comparaison détaillée.
     </v-alert>
 
     <template v-else>

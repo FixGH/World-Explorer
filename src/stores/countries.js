@@ -148,7 +148,7 @@ export const useCountriesStore = defineStore('countries', () => {
     try {
       countries.value = await getAllCountries()
     } catch (err) {
-      error.value = `Unable to load countries: ${err.message}`
+      error.value = `Impossible de charger les pays : ${err.message}`
     } finally {
       loading.value = false
     }
@@ -159,7 +159,7 @@ export const useCountriesStore = defineStore('countries', () => {
 
     if (!normalizedCode) {
       selectedCountry.value = null
-      selectedCountryError.value = 'Missing country code.'
+      selectedCountryError.value = 'Code pays manquant.'
       return
     }
 
@@ -171,13 +171,13 @@ export const useCountriesStore = defineStore('countries', () => {
       const country = await getCountryByCode(normalizedCode)
 
       if (!country) {
-        selectedCountryError.value = `Country not found for code: ${normalizedCode}`
+        selectedCountryError.value = `Aucun pays trouvé pour le code : ${normalizedCode}`
         return
       }
 
       selectedCountry.value = country
     } catch (err) {
-      selectedCountryError.value = `Unable to load country details: ${err.message}`
+      selectedCountryError.value = `Impossible de charger les détails du pays : ${err.message}`
     } finally {
       selectedCountryLoading.value = false
     }

@@ -6,6 +6,7 @@
           <v-text-field
             :model-value="searchQuery"
             label="Recherche par nom"
+            placeholder="Ex: France, Japon, Brésil..."
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
             density="comfortable"
@@ -40,7 +41,7 @@
         </v-col>
 
         <v-col cols="12" md="1" class="d-flex align-center justify-end">
-          <v-btn variant="text" color="secondary" @click="$emit('reset')">Reset</v-btn>
+          <v-btn variant="text" color="secondary" @click="$emit('reset')">Réinitialiser</v-btn>
         </v-col>
       </v-row>
     </v-card-text>
@@ -78,6 +79,6 @@ const sortItems = [
   { title: 'Nom (A -> Z)', value: 'name-asc' },
   { title: 'Nom (Z -> A)', value: 'name-desc' },
   { title: 'Population (croissante)', value: 'population-asc' },
-  { title: 'Population (decroissante)', value: 'population-desc' },
+  { title: 'Population (décroissante)', value: 'population-desc' },
 ]
 </script>

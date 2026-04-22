@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Fonctionnalites principales</v-card-title>
+    <v-card-title>Fonctionnalités principales</v-card-title>
     <v-divider />
     <v-list>
       <v-list-item
@@ -24,17 +24,17 @@ const features = [
   {
     icon: 'mdi-compare',
     title: 'Comparer deux pays',
-    description: 'Affichez les donnees cote a cote pour une lecture rapide.',
+    description: 'Affichez les données côte à côte pour une lecture rapide.',
   },
   {
     icon: 'mdi-heart',
     title: 'Ajouter aux favoris',
-    description: 'Constituez une selection personnelle pour y revenir facilement.',
+    description: 'Constituez une sélection personnelle pour y revenir facilement.',
   },
   {
     icon: 'mdi-map-marker',
-    title: 'Consulter les details et la localisation',
-    description: 'Accedez aux informations detaillees et aux cartes externes.',
+    title: 'Consulter les détails et la localisation',
+    description: 'Accédez aux informations détaillées et aux cartes externes.',
   },
 ]
 </script>
