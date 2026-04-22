@@ -82,6 +82,13 @@ export const useCountriesStore = defineStore('countries', () => {
     return code ? countriesByCode.value.get(code) ?? null : null
   })
 
+  const totalCountries = computed(() => countries.value.length)
+  const totalRegions = computed(() => new Set(countries.value.map((country) => country?.region).filter(Boolean)).size)
+  const totalPopulation = computed(() => {
+    return countries.value.reduce((sum, country) => sum + (country?.population || 0), 0)
+  })
+  const favoritesCount = computed(() => favoriteCodes.value.length)
+
   function persistFavorites() {
     localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteCodes.value))
   }
@@ -188,6 +195,10 @@ export const useCountriesStore = defineStore('countries', () => {
     compareRightCode,
     compareLeftCountry,
     compareRightCountry,
+    totalCountries,
+    totalRegions,
+    totalPopulation,
+    favoritesCount,
     selectedCountry,
     selectedCountryLoading,
     selectedCountryError,

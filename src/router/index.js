@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import HomePage from '@/pages/HomePage.vue'
 import CountriesPage from '@/pages/CountriesPage.vue'
 import CountryDetailsPage from '@/pages/CountryDetailsPage.vue'
 import FavoritesPage from '@/pages/FavoritesPage.vue'
@@ -10,6 +11,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'home',
+      component: HomePage,
+    },
+    {
+      path: '/countries',
       name: 'countries',
       component: CountriesPage,
     },

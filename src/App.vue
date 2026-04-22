@@ -15,7 +15,7 @@
     <v-app-bar color="primary">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-app-bar-title>
-        <RouterLink to="/" class="text-decoration-none d-flex align-center text-white">
+        <RouterLink :to="{ name: 'home' }" class="text-decoration-none d-flex align-center text-white">
           <v-icon icon="mdi-earth" class="mr-2" />
           World Explorer
         </RouterLink>
@@ -44,7 +44,8 @@ const drawer = ref(false)
 const currentYear = new Date().getFullYear()
 
 const navItems = [
-  { title: 'Pays', to: '/', icon: 'mdi-earth' },
+  { title: 'Accueil', to: '/', icon: 'mdi-home' },
+  { title: 'Pays', to: '/countries', icon: 'mdi-earth' },
   { title: 'Comparer', to: '/compare', icon: 'mdi-compare' },
   { title: 'Favoris', to: '/favorites', icon: 'mdi-heart' },
   { title: 'À propos', to: '/about', icon: 'mdi-information' },
