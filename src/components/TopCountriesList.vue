@@ -8,6 +8,9 @@
         :key="country.cca3"
         :title="`${index + 1}. ${country.name?.common || 'Non disponible'}`"
         :subtitle="formatValue(valueAccessor(country))"
+        :to="{ name: 'country-details', params: { code: country.cca3 } }"
+        rounded="lg"
+        class="mb-1"
       >
         <template #append>
           <v-progress-linear
@@ -58,3 +61,13 @@ function progressValue(value) {
   return (Number(value) / maxValue) * 100
 }
 </script>
+
+<style scoped>
+.v-list-item {
+  transition: background-color 0.2s ease;
+}
+
+.v-list-item:hover {
+  background: rgba(var(--v-theme-primary), 0.08);
+}
+</style>

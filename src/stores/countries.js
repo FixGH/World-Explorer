@@ -109,6 +109,25 @@ export const useCountriesStore = defineStore('countries', () => {
       .sort((a, b) => (b.borders?.length || 0) - (a.borders?.length || 0))
       .slice(0, 10)
   })
+  const regionDistribution = computed(() => {
+    const orderedRegions = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania', 'Antarctic']
+    const distribution = new Map(orderedRegions.map((region) => [region, 0]))
+
+    for (const country of countries.value) {
+      const region = country?.region
+      if (distribution.has(region)) {
+        distribution.set(region, (distribution.get(region) || 0) + 1)
+      }
+    }
+
+    return orderedRegions.map((region) => ({
+      region,
+      count: distribution.get(region) || 0,
+    }))
+  })
+  const mostPopulatedCountry = computed(() => topPopulatedCountries.value[0] || null)
+  const largestCountry = computed(() => topLargestCountries.value[0] || null)
+  const mostBorderedCountry = computed(() => topBorderCountries.value[0] || null)
 
   function persistFavorites() {
     localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteCodes.value))
@@ -224,6 +243,10 @@ export const useCountriesStore = defineStore('countries', () => {
     topPopulatedCountries,
     topLargestCountries,
     topBorderCountries,
+    regionDistribution,
+    mostPopulatedCountry,
+    largestCountry,
+    mostBorderedCountry,
     selectedCountry,
     selectedCountryLoading,
     selectedCountryError,
