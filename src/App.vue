@@ -23,6 +23,7 @@
       <div class="d-none d-md-flex ga-2 mr-4">
         <v-btn variant="text" :to="{ name: 'countries' }">Explorer</v-btn>
         <v-btn variant="text" :to="{ name: 'compare' }">Comparer</v-btn>
+        <v-btn variant="text" :to="{ name: 'statistics' }">Statistiques</v-btn>
       </div>
     </v-app-bar>
 
@@ -53,6 +54,7 @@ const navItems = [
   { title: 'Accueil', to: '/', icon: 'mdi-home' },
   { title: 'Pays', to: '/countries', icon: 'mdi-earth' },
   { title: 'Comparer', to: '/compare', icon: 'mdi-compare' },
+  { title: 'Statistiques', to: '/statistics', icon: 'mdi-chart-bar' },
   { title: 'Favoris', to: '/favorites', icon: 'mdi-heart' },
   { title: 'À propos', to: '/about', icon: 'mdi-information' },
 ]

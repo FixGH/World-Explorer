@@ -87,7 +87,28 @@ export const useCountriesStore = defineStore('countries', () => {
   const totalPopulation = computed(() => {
     return countries.value.reduce((sum, country) => sum + (country?.population || 0), 0)
   })
+  const totalArea = computed(() => {
+    return countries.value.reduce((sum, country) => sum + (country?.area || 0), 0)
+  })
   const favoritesCount = computed(() => favoriteCodes.value.length)
+  const topPopulatedCountries = computed(() => {
+    return [...countries.value]
+      .filter((country) => Number.isFinite(country?.population))
+      .sort((a, b) => (b.population || 0) - (a.population || 0))
+      .slice(0, 10)
+  })
+  const topLargestCountries = computed(() => {
+    return [...countries.value]
+      .filter((country) => Number.isFinite(country?.area))
+      .sort((a, b) => (b.area || 0) - (a.area || 0))
+      .slice(0, 10)
+  })
+  const topBorderCountries = computed(() => {
+    return [...countries.value]
+      .filter((country) => Array.isArray(country?.borders))
+      .sort((a, b) => (b.borders?.length || 0) - (a.borders?.length || 0))
+      .slice(0, 10)
+  })
 
   function persistFavorites() {
     localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteCodes.value))
@@ -198,7 +219,11 @@ export const useCountriesStore = defineStore('countries', () => {
     totalCountries,
     totalRegions,
     totalPopulation,
+    totalArea,
     favoritesCount,
+    topPopulatedCountries,
+    topLargestCountries,
+    topBorderCountries,
     selectedCountry,
     selectedCountryLoading,
     selectedCountryError,

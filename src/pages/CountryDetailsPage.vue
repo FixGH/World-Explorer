@@ -150,6 +150,20 @@
             </div>
           </v-card-text>
         </v-card>
+
+        <v-card class="mt-4">
+          <v-card-title>Localisation du pays</v-card-title>
+          <v-card-text>
+            <CountryMap
+              v-if="hasCoordinates"
+              :latlng="coordinates"
+              :country-name="country.name?.common || 'Pays'"
+            />
+            <v-alert v-else type="info" variant="tonal">
+              Coordonnées géographiques non disponibles pour ce pays.
+            </v-alert>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
 
@@ -165,6 +179,7 @@ import { useRoute } from 'vue-router'
 import { useCountriesStore } from '@/stores/countries'
 import LoadingState from '@/components/LoadingState.vue'
 import ErrorState from '@/components/ErrorState.vue'
+import CountryMap from '@/components/CountryMap.vue'
 
 const route = useRoute()
 const store = useCountriesStore()
@@ -204,6 +219,13 @@ const independentLabel = computed(() => {
   return fallback
 })
 const borders = computed(() => country.value?.borders || [])
+const coordinates = computed(() => country.value?.latlng || [])
+const hasCoordinates = computed(() => {
+  return Array.isArray(coordinates.value)
+    && coordinates.value.length >= 2
+    && Number.isFinite(coordinates.value[0])
+    && Number.isFinite(coordinates.value[1])
+})
 
 function loadCountry() {
   if (countryCode.value) {

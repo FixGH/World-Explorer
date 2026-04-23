@@ -1,5 +1,5 @@
 const BASE_URL = 'https://restcountries.com/v3.1'
-const LIST_FIELDS = 'name,flags,capital,region,population,cca3'
+const LIST_FIELDS = 'name,flags,capital,region,population,area,borders,cca3'
 const DETAIL_FIELDS = [
   'name',
   'flags',
@@ -17,6 +17,7 @@ const DETAIL_FIELDS = [
   'cca3',
   'borders',
   'maps',
+  'latlng',
 ].join(',')
 
 async function fetchJson(url) {
