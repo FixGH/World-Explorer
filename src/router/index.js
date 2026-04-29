@@ -6,6 +6,7 @@ import FavoritesPage from '@/pages/FavoritesPage.vue'
 import AboutPage from '@/pages/AboutPage.vue'
 import ComparePage from '@/pages/ComparePage.vue'
 import StatisticsPage from '@/pages/StatisticsPage.vue'
+import NotFoundPage from '@/pages/NotFoundPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,11 @@ const router = createRouter({
       path: '/about',
       name: 'about',
       component: AboutPage,
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFoundPage,
     },
   ],
 })
