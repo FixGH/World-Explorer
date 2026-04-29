@@ -2,6 +2,8 @@
   <v-container class="py-6">
     <HomeHero />
 
+    <RecentlyViewedCountries :items="store.recentlyViewedCountries" />
+
     <v-divider class="my-6" />
 
     <div class="d-flex align-center justify-space-between mb-3">
@@ -22,6 +24,7 @@ import { useCountriesStore } from '@/stores/countries'
 import HomeHero from '@/components/HomeHero.vue'
 import GlobalStatsCards from '@/components/GlobalStatsCards.vue'
 import FeatureHighlights from '@/components/FeatureHighlights.vue'
+import RecentlyViewedCountries from '@/components/RecentlyViewedCountries.vue'
 
 const store = useCountriesStore()
 

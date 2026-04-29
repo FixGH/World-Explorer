@@ -239,6 +239,11 @@ function borderCountryLabel(code) {
 
 onMounted(loadCountry)
 watch(countryCode, loadCountry)
+watch(country, (newCountry) => {
+  if (newCountry?.cca3) {
+    store.markRecentlyViewed(newCountry)
+  }
+})
 
 onMounted(() => {
   if (!store.countries.length && !store.loading) {

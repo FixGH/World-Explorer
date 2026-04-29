@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { getAllCountries, getCountryByCode } from '@/services/countriesService'
 
 const FAVORITES_STORAGE_KEY = 'world-explorer-favorites'
+const RECENTLY_VIEWED_STORAGE_KEY = 'world-explorer-recently-viewed'
 
 function loadFavoriteCodes() {
   try {
@@ -26,6 +27,52 @@ export const useCountriesStore = defineStore('countries', () => {
   const selectedCountryLoading = ref(false)
   const selectedCountryError = ref(null)
   const favoriteCodes = ref(loadFavoriteCodes())
+  const recentlyViewed = ref(loadRecentlyViewedCountries())
+
+  function loadRecentlyViewedCountries() {
+    try {
+      const raw = localStorage.getItem(RECENTLY_VIEWED_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : []
+
+      if (!Array.isArray(parsed)) return []
+
+      return parsed
+        .filter((item) => item && typeof item === 'object' && typeof item.code === 'string')
+        .map((item) => ({
+          code: String(item.code || '').trim().toUpperCase(),
+          name: typeof item.name === 'string' ? item.name : String(item.code || '').trim().toUpperCase(),
+          flagSrc: typeof item.flagSrc === 'string' ? item.flagSrc : '',
+        }))
+        .filter((item) => item.code)
+    } catch {
+      return []
+    }
+  }
+
+  function persistRecentlyViewedCountries() {
+    localStorage.setItem(
+      RECENTLY_VIEWED_STORAGE_KEY,
+      JSON.stringify(recentlyViewed.value)
+    )
+  }
+
+  function markRecentlyViewed(country) {
+    if (!country?.cca3) return
+
+    const code = String(country.cca3).trim().toUpperCase()
+    if (!code) return
+
+    const name = country?.name?.common || country?.name?.official || code
+    const flagSrc = country?.flags?.svg || country?.flags?.png || ''
+
+    const next = [
+      { code, name, flagSrc },
+      ...recentlyViewed.value.filter((item) => item.code !== code),
+    ].slice(0, 5)
+
+    recentlyViewed.value = next
+    persistRecentlyViewedCountries()
+  }
 
   const countriesByCode = computed(() => {
     const map = new Map()
@@ -252,6 +299,7 @@ export const useCountriesStore = defineStore('countries', () => {
     selectedCountryError,
     favoriteCodes,
     favoriteCountries,
+    recentlyViewedCountries: recentlyViewed,
     isFavorite,
     toggleFavorite,
     setSearchQuery,
@@ -264,5 +312,6 @@ export const useCountriesStore = defineStore('countries', () => {
     getCountryNameByCode,
     fetchCountries,
     fetchCountryByCode,
+    markRecentlyViewed,
   }
 })
