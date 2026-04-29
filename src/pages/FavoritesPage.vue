@@ -1,14 +1,14 @@
 <template>
   <v-container class="py-6">
     <div class="my-4">
-      <h1 class="text-h4">Pays favoris</h1>
+      <h1 class="text-h4 font-weight-bold">Pays favoris</h1>
       <p class="text-medium-emphasis mt-1">
         Retrouvez rapidement les pays que vous avez sélectionnés.
       </p>
     </div>
 
-    <v-alert v-if="!store.favoriteCountries.length" type="info" variant="tonal">
-      Vous n'avez pas encore de pays favoris. Ajoutez-en depuis l'explorateur ou la fiche detail.
+    <v-alert v-if="!store.favoriteCountries.length" type="info" variant="tonal" rounded="lg">
+      Vous n'avez pas encore de pays favoris. Ajoutez-en depuis l'explorateur ou la fiche détail.
     </v-alert>
 
     <v-row v-else>

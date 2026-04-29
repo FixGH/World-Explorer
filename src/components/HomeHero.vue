@@ -1,7 +1,7 @@
 <template>
-  <v-card class="mb-6" color="primary" variant="tonal">
+  <v-card class="home-hero mb-6" color="primary" variant="tonal" rounded="lg">
     <v-card-text class="py-10">
-      <div class="text-overline mb-2">World Explorer</div>
+      <div class="text-overline mb-2">Explorer mondial</div>
       <h1 class="text-h3 font-weight-bold mb-3">Explorez le monde simplement</h1>
       <p class="text-body-1 mb-6">
         Une application moderne pour découvrir les pays, comparer leurs données et garder vos favoris.
@@ -17,3 +17,14 @@
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped>
+.home-hero {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--v-theme-primary), 0.25) 0%,
+    rgba(var(--v-theme-secondary), 0.12) 45%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+}
+</style>

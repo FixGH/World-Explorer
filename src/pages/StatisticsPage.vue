@@ -1,7 +1,7 @@
 <template>
   <v-container class="py-6">
     <div class="my-4">
-      <h1 class="text-h4">Statistiques</h1>
+      <h1 class="text-h4 font-weight-bold">Statistiques</h1>
       <p class="text-medium-emphasis mt-1">
         Analyse globale des pays et classements clés.
       </p>
@@ -20,7 +20,7 @@
 
       <v-row class="mb-4">
         <v-col cols="12" md="6">
-          <v-card class="h-100">
+          <v-card class="h-100" rounded="lg">
             <v-card-title>Répartition par région</v-card-title>
             <v-divider />
             <v-list>
@@ -46,7 +46,7 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-card class="h-100">
+          <v-card class="h-100" rounded="lg">
             <v-card-title>Records mondiaux</v-card-title>
             <v-divider />
             <v-list>

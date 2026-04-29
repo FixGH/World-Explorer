@@ -1,6 +1,6 @@
 <template>
-  <v-card class="h-100 d-flex flex-column" hover>
-    <v-img :src="flagSrc" :alt="country.name?.common" height="180" cover>
+  <v-card class="country-card h-100 d-flex flex-column" hover rounded="lg">
+    <v-img :src="flagSrc" :alt="country.name?.common" height="180" cover rounded="lg">
       <template #error>
         <v-sheet height="180" class="d-flex align-center justify-center">
           <v-icon icon="mdi-flag-outline" size="48" />
@@ -8,12 +8,14 @@
       </template>
     </v-img>
 
-    <v-card-title>{{ country.name?.common }}</v-card-title>
+    <v-card-title class="text-wrap font-weight-medium text-body-1">
+      {{ country.name?.common }}
+    </v-card-title>
 
     <v-card-text class="flex-grow-1">
-      <div><strong>Capitale :</strong> {{ country.capital?.[0] || 'Non disponible' }}</div>
-      <div><strong>Région :</strong> {{ country.region || 'Non disponible' }}</div>
-      <div><strong>Population :</strong> {{ formattedPopulation }}</div>
+      <div class="text-medium-emphasis"><strong>Capitale :</strong> {{ country.capital?.[0] || 'Non disponible' }}</div>
+      <div class="text-medium-emphasis"><strong>Région :</strong> {{ country.region || 'Non disponible' }}</div>
+      <div class="text-medium-emphasis"><strong>Population :</strong> {{ formattedPopulation }}</div>
     </v-card-text>
 
     <v-card-actions>
@@ -21,11 +23,17 @@
         color="primary"
         variant="text"
         :to="{ name: 'country-details', params: { code: country.cca3 } }"
+        rounded="lg"
       >
         Détails
       </v-btn>
       <v-spacer />
-      <v-btn :icon="favoriteIcon" variant="text" @click="$emit('toggle-favorite', country.cca3)" />
+      <v-btn
+        :icon="favoriteIcon"
+        variant="text"
+        rounded="lg"
+        @click="$emit('toggle-favorite', country.cca3)"
+      />
     </v-card-actions>
   </v-card>
 </template>
@@ -55,3 +63,14 @@ const formattedPopulation = computed(() => {
 
 const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart-outline'))
 </script>
+
+<style scoped>
+.country-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.country-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.45);
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card rounded="lg" class="feature-card">
     <v-card-title>Fonctionnalités principales</v-card-title>
     <v-divider />
     <v-list>
@@ -38,3 +38,9 @@ const features = [
   },
 ]
 </script>
+
+<style scoped>
+.feature-card {
+  border-radius: 16px;
+}
+</style>

@@ -1,8 +1,14 @@
 <template>
   <v-container class="py-6">
     <div class="d-flex align-center justify-space-between my-4">
-      <h1 class="text-h4">Explorateur de pays</h1>
-      <v-btn color="secondary" variant="tonal" prepend-icon="mdi-compare" to="/compare">
+      <h1 class="text-h4 font-weight-bold">Explorateur de pays</h1>
+      <v-btn
+        color="secondary"
+        variant="tonal"
+        rounded="lg"
+        prepend-icon="mdi-compare"
+        to="/compare"
+      >
         Comparer
       </v-btn>
     </div>
@@ -27,7 +33,13 @@
         @reset="store.resetFilters"
       />
 
-      <v-alert v-if="!store.filteredCountries.length" type="info" variant="tonal" class="mb-4">
+      <v-alert
+        v-if="!store.filteredCountries.length"
+        type="info"
+        variant="tonal"
+        rounded="lg"
+        class="mb-4"
+      >
         Aucun pays ne correspond à votre recherche.
       </v-alert>
 

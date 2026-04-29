@@ -16,7 +16,7 @@
 
     <v-row v-else-if="country">
       <v-col cols="12" lg="4">
-        <v-card class="mb-4">
+        <v-card class="mb-4" rounded="lg">
           <v-img :src="flagSrc" :alt="country.name?.common" height="240" rounded="lg" cover>
             <template #error>
               <v-sheet height="240" class="d-flex align-center justify-center" rounded="lg">
@@ -38,7 +38,7 @@
           </v-card-text>
         </v-card>
 
-        <v-card>
+        <v-card rounded="lg">
           <v-card-title>Cartes</v-card-title>
           <v-card-text class="d-flex flex-wrap ga-2">
             <v-btn
@@ -81,7 +81,7 @@
 
         <v-row>
           <v-col cols="12" md="6">
-            <v-card class="h-100">
+            <v-card class="h-100" rounded="lg">
               <v-card-title>Identité</v-card-title>
               <v-divider />
               <v-list lines="two">
@@ -94,7 +94,7 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card class="h-100">
+            <v-card class="h-100" rounded="lg">
               <v-card-title>Géographie</v-card-title>
               <v-divider />
               <v-list lines="two">
@@ -107,7 +107,7 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card class="h-100">
+            <v-card class="h-100" rounded="lg">
               <v-card-title>Statistiques</v-card-title>
               <v-divider />
               <v-list lines="two">
@@ -119,7 +119,7 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card class="h-100">
+            <v-card class="h-100" rounded="lg">
               <v-card-title>Culture et temps</v-card-title>
               <v-divider />
               <v-list lines="two">
@@ -131,7 +131,7 @@
           </v-col>
         </v-row>
 
-        <v-card class="mt-4">
+        <v-card class="mt-4" rounded="lg">
           <v-card-title>Pays frontaliers</v-card-title>
           <v-card-text>
             <div v-if="!borders.length" class="text-medium-emphasis">
@@ -151,7 +151,7 @@
           </v-card-text>
         </v-card>
 
-        <v-card class="mt-4">
+        <v-card class="mt-4" rounded="lg">
           <v-card-title>Localisation du pays</v-card-title>
           <v-card-text>
             <CountryMap

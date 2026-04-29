@@ -3,12 +3,12 @@
     <HomeHero />
 
     <div class="d-flex align-center justify-space-between mb-3">
-      <h2 class="text-h5">Vue d'ensemble mondiale</h2>
+      <h2 class="text-h5 font-weight-bold">Vue d'ensemble mondiale</h2>
     </div>
     <GlobalStatsCards :stats="stats" />
 
     <div class="d-flex align-center justify-space-between mb-3">
-      <h2 class="text-h5">Ce que vous pouvez faire</h2>
+      <h2 class="text-h5 font-weight-bold">Ce que vous pouvez faire</h2>
     </div>
     <FeatureHighlights />
   </v-container>

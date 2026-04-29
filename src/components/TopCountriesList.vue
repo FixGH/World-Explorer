@@ -10,7 +10,7 @@
         :subtitle="formatValue(valueAccessor(country))"
         :to="{ name: 'country-details', params: { code: country.cca3 } }"
         rounded="lg"
-        class="mb-1"
+        class="rank-item mb-1"
       >
         <template #append>
           <v-progress-linear
@@ -65,6 +65,10 @@ function progressValue(value) {
 <style scoped>
 .v-list-item {
   transition: background-color 0.2s ease;
+}
+
+.rank-item {
+  cursor: pointer;
 }
 
 .v-list-item:hover {
