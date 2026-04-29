@@ -82,6 +82,23 @@ export const useCountriesStore = defineStore('countries', () => {
     return map
   })
 
+  const countrySearchItems = computed(() => {
+    return countries.value
+      .map((country) => {
+        const code = country?.cca3
+        const name = country?.name?.common || country?.name?.official || code
+        const flagSrc = country?.flags?.svg || country?.flags?.png || ''
+
+        if (!code) return null
+        return {
+          code: String(code).trim().toUpperCase(),
+          name: typeof name === 'string' && name ? name : String(code).trim().toUpperCase(),
+          flagSrc,
+        }
+      })
+      .filter(Boolean)
+  })
+
   const favoriteCountries = computed(() => {
     return favoriteCodes.value
       .map((code) => countriesByCode.value.get(code))
@@ -306,6 +323,7 @@ export const useCountriesStore = defineStore('countries', () => {
     favoriteCodes,
     favoriteCountries,
     recentlyViewedCountries: recentlyViewed,
+    countrySearchItems,
     isFavorite,
     toggleFavorite,
     setSearchQuery,

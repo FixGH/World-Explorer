@@ -23,7 +23,9 @@
           World Explorer
         </RouterLink>
       </v-app-bar-title>
+      <v-spacer />
       <div class="d-none d-md-flex ga-2 mr-4">
+        <GlobalSearch class="mx-2" />
         <v-btn
           variant="text"
           class="appbar-btn"
@@ -47,6 +49,14 @@
           :class="{ 'appbar-btn--active': isNavActive('/statistics') }"
         >
           Statistiques
+        </v-btn>
+        <v-btn
+          variant="text"
+          class="appbar-btn"
+          :to="{ name: 'favorites' }"
+          :class="{ 'appbar-btn--active': isNavActive('/favorites') }"
+        >
+          Favoris
         </v-btn>
       </div>
     </v-app-bar>
@@ -75,6 +85,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
+import GlobalSearch from '@/components/GlobalSearch.vue'
 
 const route = useRoute()
 const drawer = ref(false)
