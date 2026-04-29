@@ -1,16 +1,18 @@
 <template>
   <v-container class="py-6">
-    <div class="d-flex align-center justify-space-between my-4">
-      <div>
-        <h1 class="text-h4 font-weight-bold">Comparer des pays</h1>
-        <p class="text-medium-emphasis mt-1">
-          Sélectionnez deux pays pour visualiser leurs données côte à côte.
-        </p>
-      </div>
-      <v-btn variant="text" color="secondary" rounded="lg" @click="store.resetCompare">
-        Réinitialiser
-      </v-btn>
-    </div>
+    <v-card variant="tonal" rounded="lg" class="mb-4">
+      <v-card-text class="d-flex align-center justify-space-between py-4">
+        <div>
+          <h1 class="text-h4 font-weight-bold">Comparer des pays</h1>
+          <p class="text-medium-emphasis mt-1">
+            Sélectionnez deux pays pour visualiser leurs données côte à côte.
+          </p>
+        </div>
+        <v-btn variant="text" color="secondary" rounded="lg" @click="store.resetCompare">
+          Réinitialiser
+        </v-btn>
+      </v-card-text>
+    </v-card>
 
     <v-card variant="tonal" class="mb-4" rounded="lg">
       <v-card-text>

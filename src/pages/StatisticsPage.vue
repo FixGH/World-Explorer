@@ -1,11 +1,13 @@
 <template>
   <v-container class="py-6">
-    <div class="my-4">
-      <h1 class="text-h4 font-weight-bold">Statistiques</h1>
-      <p class="text-medium-emphasis mt-1">
-        Analyse globale des pays et classements clés.
-      </p>
-    </div>
+    <v-card variant="tonal" rounded="lg" class="mb-4">
+      <v-card-text class="py-4">
+        <h1 class="text-h4 font-weight-bold">Statistiques</h1>
+        <p class="text-medium-emphasis mt-1">
+          Analyse globale des pays et classements clés.
+        </p>
+      </v-card-text>
+    </v-card>
 
     <v-alert v-if="store.loading" type="info" variant="tonal" class="mb-4">
       Chargement des statistiques...

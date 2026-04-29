@@ -2,6 +2,8 @@
   <v-container class="py-6">
     <HomeHero />
 
+    <v-divider class="my-6" />
+
     <div class="d-flex align-center justify-space-between mb-3">
       <h2 class="text-h5 font-weight-bold">Vue d'ensemble mondiale</h2>
     </div>

@@ -1,17 +1,19 @@
 <template>
   <v-container class="py-6">
-    <div class="d-flex align-center justify-space-between my-4">
-      <h1 class="text-h4 font-weight-bold">Explorateur de pays</h1>
-      <v-btn
-        color="secondary"
-        variant="tonal"
-        rounded="lg"
-        prepend-icon="mdi-compare"
-        to="/compare"
-      >
-        Comparer
-      </v-btn>
-    </div>
+    <v-card variant="tonal" rounded="lg" class="mb-4">
+      <v-card-text class="d-flex align-center justify-space-between py-3">
+        <h1 class="text-h4 font-weight-bold">Explorateur de pays</h1>
+        <v-btn
+          color="secondary"
+          variant="tonal"
+          rounded="lg"
+          prepend-icon="mdi-compare"
+          to="/compare"
+        >
+          Comparer
+        </v-btn>
+      </v-card-text>
+    </v-card>
 
     <LoadingState v-if="store.loading" />
 

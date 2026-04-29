@@ -67,8 +67,8 @@
         </v-card>
       </v-col>
       <v-col cols="12" lg="8">
-        <div class="d-flex align-center justify-space-between mb-4">
-          <h1 class="text-h4">Informations du pays</h1>
+        <div class="d-flex align-center justify-space-between mb-4 details-header">
+          <h1 class="text-h4 font-weight-bold">Informations du pays</h1>
           <v-btn
             :prepend-icon="store.isFavorite(country.cca3) ? 'mdi-heart' : 'mdi-heart-outline'"
             variant="tonal"
@@ -246,3 +246,11 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.details-header {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(var(--v-theme-primary), 0.06);
+}
+</style>

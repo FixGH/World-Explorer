@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" temporary>
+    <v-navigation-drawer v-model="drawer" temporary class="d-md-none">
       <v-list nav>
         <v-list-item
           v-for="item in navItems"
@@ -16,7 +16,7 @@
     </v-navigation-drawer>
 
     <v-app-bar color="primary">
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
+      <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer" />
       <v-app-bar-title>
         <RouterLink :to="{ name: 'home' }" class="text-decoration-none d-flex align-center text-white">
           <v-icon icon="mdi-earth" class="mr-2" />
@@ -53,7 +53,9 @@
 
     <v-main>
       <div class="app-content">
-        <RouterView />
+        <v-fade-transition mode="out-in">
+          <RouterView :key="route.fullPath" />
+        </v-fade-transition>
       </div>
     </v-main>
 
