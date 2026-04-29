@@ -138,6 +138,10 @@ export const useCountriesStore = defineStore('countries', () => {
     return countries.value.reduce((sum, country) => sum + (country?.area || 0), 0)
   })
   const favoritesCount = computed(() => favoriteCodes.value.length)
+  const favoriteRegionsCount = computed(() => new Set(favoriteCountries.value.map((c) => c?.region).filter(Boolean)).size)
+  const favoriteTotalPopulation = computed(() => {
+    return favoriteCountries.value.reduce((sum, c) => sum + (c?.population || 0), 0)
+  })
   const topPopulatedCountries = computed(() => {
     return [...countries.value]
       .filter((country) => Number.isFinite(country?.population))
@@ -287,6 +291,8 @@ export const useCountriesStore = defineStore('countries', () => {
     totalPopulation,
     totalArea,
     favoritesCount,
+    favoriteRegionsCount,
+    favoriteTotalPopulation,
     topPopulatedCountries,
     topLargestCountries,
     topBorderCountries,
