@@ -34,6 +34,7 @@
                   </v-sheet>
                 </template>
               </v-img>
+              <span v-else class="text-medium-emphasis">Non disponible</span>
             </td>
             <td>
               <v-img
@@ -50,28 +51,44 @@
                   </v-sheet>
                 </template>
               </v-img>
+              <span v-else class="text-medium-emphasis">Non disponible</span>
             </td>
           </tr>
 
           <tr>
             <td><strong>Nom commun</strong></td>
-            <td>{{ left?.name?.common || '-' }}</td>
-            <td>{{ right?.name?.common || '-' }}</td>
-          </tr>
-          <tr>
-            <td><strong>Nom officiel</strong></td>
-            <td>{{ left?.name?.official || '-' }}</td>
-            <td>{{ right?.name?.official || '-' }}</td>
+            <td>{{ left?.name?.common || fallback }}</td>
+            <td>{{ right?.name?.common || fallback }}</td>
           </tr>
           <tr>
             <td><strong>Capitale</strong></td>
-            <td>{{ left?.capital?.[0] || '-' }}</td>
-            <td>{{ right?.capital?.[0] || '-' }}</td>
+            <td>{{ left?.capital?.[0] || fallback }}</td>
+            <td>{{ right?.capital?.[0] || fallback }}</td>
           </tr>
           <tr>
             <td><strong>Région</strong></td>
             <td>{{ leftRegionLabel }}</td>
             <td>{{ rightRegionLabel }}</td>
+          </tr>
+          <tr>
+            <td><strong>Sous-région</strong></td>
+            <td>{{ left?.subregion || fallback }}</td>
+            <td>{{ right?.subregion || fallback }}</td>
+          </tr>
+          <tr>
+            <td><strong>Continents</strong></td>
+            <td>{{ leftContinents }}</td>
+            <td>{{ rightContinents }}</td>
+          </tr>
+          <tr>
+            <td><strong>Langues</strong></td>
+            <td>{{ leftLanguages }}</td>
+            <td>{{ rightLanguages }}</td>
+          </tr>
+          <tr>
+            <td><strong>Monnaies</strong></td>
+            <td>{{ leftCurrencies }}</td>
+            <td>{{ rightCurrencies }}</td>
           </tr>
           <tr class="metric-row">
             <td><strong>Population</strong></td>
@@ -112,6 +129,25 @@
             </td>
           </tr>
           <tr class="metric-row">
+            <td><strong>Densité de population</strong></td>
+            <td :class="cellClass('density', 'left')">
+              <div class="metric-cell">
+                <span>{{ leftDensity }}</span>
+                <v-chip v-if="winnerFor('density') === 'left'" size="x-small" color="info" variant="tonal" prepend-icon="mdi-speedometer">
+                  Plus dense
+                </v-chip>
+              </div>
+            </td>
+            <td :class="cellClass('density', 'right')">
+              <div class="metric-cell">
+                <span>{{ rightDensity }}</span>
+                <v-chip v-if="winnerFor('density') === 'right'" size="x-small" color="info" variant="tonal" prepend-icon="mdi-speedometer">
+                  Plus dense
+                </v-chip>
+              </div>
+            </td>
+          </tr>
+          <tr class="metric-row">
             <td><strong>Frontières terrestres</strong></td>
             <td :class="cellClass('borders', 'left')">
               <div class="metric-cell">
@@ -135,11 +171,6 @@
             <td>{{ independentLabel(left?.independent) }}</td>
             <td>{{ independentLabel(right?.independent) }}</td>
           </tr>
-          <tr>
-            <td><strong>Code CCA3</strong></td>
-            <td>{{ left?.cca3 || '-' }}</td>
-            <td>{{ right?.cca3 || '-' }}</td>
-          </tr>
         </tbody>
       </v-table>
     </v-card-text>
@@ -162,6 +193,7 @@ const props = defineProps({
 
 const leftTitle = computed(() => props.left?.name?.common || 'Pays A')
 const rightTitle = computed(() => props.right?.name?.common || 'Pays B')
+const fallback = 'Non disponible'
 
 const leftFlagSrc = computed(() => props.left?.flags?.svg || props.left?.flags?.png || '')
 const rightFlagSrc = computed(() => props.right?.flags?.svg || props.right?.flags?.png || '')
@@ -174,14 +206,28 @@ const regionMap = {
   Antarctic: 'Antarctique',
 }
 
-const leftPopulation = computed(() => (props.left?.population ? props.left.population.toLocaleString('fr-FR') : '-'))
-const rightPopulation = computed(() => (props.right?.population ? props.right.population.toLocaleString('fr-FR') : '-'))
-const leftArea = computed(() => (Number.isFinite(props.left?.area) ? `${props.left.area.toLocaleString('fr-FR')} km²` : '-'))
-const rightArea = computed(() => (Number.isFinite(props.right?.area) ? `${props.right.area.toLocaleString('fr-FR')} km²` : '-'))
+const leftPopulation = computed(() => (props.left?.population ? `${props.left.population.toLocaleString('fr-FR')} habitants` : fallback))
+const rightPopulation = computed(() => (props.right?.population ? `${props.right.population.toLocaleString('fr-FR')} habitants` : fallback))
+const leftArea = computed(() => (Number.isFinite(props.left?.area) ? `${props.left.area.toLocaleString('fr-FR')} km²` : fallback))
+const rightArea = computed(() => (Number.isFinite(props.right?.area) ? `${props.right.area.toLocaleString('fr-FR')} km²` : fallback))
 const leftBorders = computed(() => `${Number(props.left?.borders?.length || 0).toLocaleString('fr-FR')} frontière(s)`)
 const rightBorders = computed(() => `${Number(props.right?.borders?.length || 0).toLocaleString('fr-FR')} frontière(s)`)
-const leftRegionLabel = computed(() => regionMap[props.left?.region] || props.left?.region || '-')
-const rightRegionLabel = computed(() => regionMap[props.right?.region] || props.right?.region || '-')
+const leftRegionLabel = computed(() => regionMap[props.left?.region] || props.left?.region || fallback)
+const rightRegionLabel = computed(() => regionMap[props.right?.region] || props.right?.region || fallback)
+const leftDensity = computed(() => formatDensity(props.left))
+const rightDensity = computed(() => formatDensity(props.right))
+const leftContinents = computed(() => joinValues(props.left?.continents))
+const rightContinents = computed(() => joinValues(props.right?.continents))
+const leftLanguages = computed(() => {
+  const languages = props.left?.languages
+  return languages ? joinValues(Object.values(languages)) : fallback
+})
+const rightLanguages = computed(() => {
+  const languages = props.right?.languages
+  return languages ? joinValues(Object.values(languages)) : fallback
+})
+const leftCurrencies = computed(() => formatCurrencies(props.left?.currencies))
+const rightCurrencies = computed(() => formatCurrencies(props.right?.currencies))
 
 function getMetricValue(metric, side) {
   const item = side === 'left' ? props.left : props.right
@@ -189,6 +235,7 @@ function getMetricValue(metric, side) {
   if (metric === 'population') return Number(item.population)
   if (metric === 'area') return Number(item.area)
   if (metric === 'borders') return Number(item.borders?.length || 0)
+  if (metric === 'density') return getDensityValue(item)
   return null
 }
 
@@ -206,7 +253,37 @@ function cellClass(metric, side) {
 function independentLabel(value) {
   if (value === true) return 'Pays indépendant'
   if (value === false) return 'Territoire non indépendant'
-  return 'Statut non précisé'
+  return fallback
+}
+
+function getDensityValue(item) {
+  const population = Number(item?.population)
+  const area = Number(item?.area)
+  if (!Number.isFinite(population) || !Number.isFinite(area) || area <= 0) return null
+  return population / area
+}
+
+function formatDensity(item) {
+  const density = getDensityValue(item)
+  if (!Number.isFinite(density)) return fallback
+  return `${density.toLocaleString('fr-FR', { maximumFractionDigits: 2 })} hab./km²`
+}
+
+function joinValues(values) {
+  if (!Array.isArray(values) || values.length === 0) return fallback
+  return values.join(', ')
+}
+
+function formatCurrencies(currencies) {
+  if (!currencies || typeof currencies !== 'object') return fallback
+  const entries = Object.values(currencies)
+    .map((currency) => {
+      const name = currency?.name || ''
+      const symbol = currency?.symbol ? ` (${currency.symbol})` : ''
+      return `${name}${symbol}`.trim()
+    })
+    .filter(Boolean)
+  return entries.length ? entries.join(', ') : fallback
 }
 </script>
 
