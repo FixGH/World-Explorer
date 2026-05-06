@@ -1,4 +1,4 @@
-const BASE_URL = 'https://restcountries.com/v3.1'
+const BASE_URL = (import.meta.env.VITE_REST_COUNTRIES_API_URL || 'https://restcountries.com/v3.1').replace(/\/+$/, '')
 const LIST_FIELDS = 'name,flags,capital,region,population,area,borders,cca3'
 const DETAIL_FIELDS = [
   'name',
