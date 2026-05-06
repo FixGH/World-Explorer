@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="tonal" class="mb-4">
+  <v-card variant="tonal" class="mb-5 filters-card" rounded="lg">
     <v-card-text>
       <v-row>
         <v-col cols="12" md="5">
@@ -41,7 +41,7 @@
         </v-col>
 
         <v-col cols="12" md="1" class="d-flex align-center justify-end">
-          <v-btn variant="text" color="secondary" @click="$emit('reset')">Réinitialiser</v-btn>
+          <v-btn variant="tonal" color="secondary" class="reset-btn" @click="$emit('reset')">Réinitialiser</v-btn>
         </v-col>
       </v-row>
     </v-card-text>
@@ -82,3 +82,20 @@ const sortItems = [
   { title: 'Population (décroissante)', value: 'population-desc' },
 ]
 </script>
+
+<style scoped>
+.filters-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+}
+
+.reset-btn {
+  min-width: 122px;
+}
+
+@media (max-width: 960px) {
+  .reset-btn {
+    width: 100%;
+  }
+}
+</style>

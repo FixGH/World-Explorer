@@ -1,8 +1,12 @@
 :root {
   --we-radius-lg: 18px;
   --we-radius-md: 14px;
-  --we-elevation-soft: 0 16px 40px rgba(0, 0, 0, 0.24);
-  --we-elevation-hover: 0 22px 56px rgba(0, 0, 0, 0.32);
+  --we-elevation-soft: 0 14px 34px rgba(0, 0, 0, 0.24);
+  --we-elevation-hover: 0 20px 54px rgba(0, 0, 0, 0.32);
+  --we-panel-bg: rgba(14, 29, 34, 0.58);
+  --we-panel-border: rgba(144, 240, 232, 0.12);
+  --we-text-strong: rgba(234, 252, 252, 0.95);
+  --we-text-soft: rgba(194, 225, 225, 0.8);
 }
 
 html,
@@ -13,30 +17,130 @@ body,
 
 body {
   background:
-    radial-gradient(circle at 12% 10%, rgba(24, 255, 242, 0.11) 0%, rgba(24, 255, 242, 0) 35%),
-    radial-gradient(circle at 88% 88%, rgba(62, 196, 255, 0.08) 0%, rgba(62, 196, 255, 0) 38%),
-    #0b1418;
+    radial-gradient(circle at 8% 8%, rgba(23, 215, 209, 0.16) 0%, rgba(23, 215, 209, 0) 34%),
+    radial-gradient(circle at 88% 12%, rgba(54, 168, 255, 0.14) 0%, rgba(54, 168, 255, 0) 36%),
+    radial-gradient(circle at 85% 85%, rgba(124, 243, 232, 0.08) 0%, rgba(124, 243, 232, 0) 42%),
+    #0a1319;
+  color: var(--we-text-strong);
+  text-rendering: optimizeLegibility;
 }
 
 .v-container {
-  max-width: 1240px;
+  max-width: 1280px;
 }
 
 .v-card {
   border-radius: var(--we-radius-lg);
+  border: 1px solid var(--we-panel-border);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.012));
+  box-shadow: var(--we-elevation-soft);
+  transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+}
+
+.v-card:hover {
+  border-color: rgba(124, 243, 232, 0.22);
+  box-shadow: var(--we-elevation-hover);
 }
 
 .v-main {
   padding-top: 10px;
 }
 
+h1,
+h2,
+h3 {
+  letter-spacing: 0.2px;
+  color: var(--we-text-strong);
+}
+
+.text-h4,
+.text-h5,
+.text-h6 {
+  line-height: 1.2;
+}
+
+.v-card-title {
+  color: var(--we-text-strong);
+  letter-spacing: 0.15px;
+}
+
+.text-medium-emphasis {
+  color: var(--we-text-soft) !important;
+}
+
+.v-btn {
+  border-radius: 12px;
+  text-transform: none;
+  letter-spacing: 0.15px;
+  font-weight: 600;
+  transition: transform 0.18s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.v-btn:hover {
+  transform: translateY(-1px);
+}
+
+.v-btn--variant-tonal {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.v-btn--variant-outlined {
+  border-width: 1px !important;
+  border-color: rgba(124, 243, 232, 0.32) !important;
+}
+
+.v-btn--variant-outlined:hover {
+  border-color: rgba(124, 243, 232, 0.55) !important;
+}
+
+.v-chip {
+  letter-spacing: 0.1px;
+}
+
+.v-alert {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.v-skeleton-loader {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+}
+
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 0.28s ease, transform 0.28s ease;
+  transition: opacity 0.24s ease, transform 0.24s ease;
 }
 
 .page-enter-from,
 .page-leave-to {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(6px);
+}
+
+/* Scrollbars premium */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 243, 232, 0.42) rgba(255, 255, 255, 0.05);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background: linear-gradient(180deg, rgba(23, 215, 209, 0.7), rgba(54, 168, 255, 0.7));
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(23, 215, 209, 0.9), rgba(54, 168, 255, 0.9));
 }
