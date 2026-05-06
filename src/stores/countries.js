@@ -4,14 +4,69 @@ import { getAllCountries, getCountryByCode } from '@/services/countriesService'
 
 const FAVORITES_STORAGE_KEY = 'world-explorer-favorites'
 const RECENTLY_VIEWED_STORAGE_KEY = 'world-explorer-recently-viewed'
+const MAX_RECENTLY_VIEWED = 5
+
+function normalizeCountryCode(value) {
+  return String(value || '').trim().toUpperCase()
+}
+
+function isLocalStorageAvailable() {
+  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
+}
+
+function readStorageJson(key, fallback) {
+  if (!isLocalStorageAvailable()) return fallback
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? JSON.parse(raw) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function writeStorageJson(key, value) {
+  if (!isLocalStorageAvailable()) return
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    // Echec silencieux : on garde l'etat en memoire.
+  }
+}
 
 function loadFavoriteCodes() {
-  try {
-    const raw = localStorage.getItem(FAVORITES_STORAGE_KEY)
-    return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
+  const parsed = readStorageJson(FAVORITES_STORAGE_KEY, [])
+  if (!Array.isArray(parsed)) return []
+
+  return [...new Set(parsed.map((code) => normalizeCountryCode(code)).filter(Boolean))]
+}
+
+function loadRecentlyViewedCountries() {
+  const parsed = readStorageJson(RECENTLY_VIEWED_STORAGE_KEY, [])
+  if (!Array.isArray(parsed)) return []
+
+  const sanitized = parsed
+    .filter((item) => item && typeof item === 'object')
+    .map((item) => {
+      const code = normalizeCountryCode(item.code)
+      if (!code) return null
+
+      return {
+        code,
+        name: typeof item.name === 'string' && item.name.trim() ? item.name : code,
+        flagSrc: typeof item.flagSrc === 'string' ? item.flagSrc : '',
+      }
+    })
+    .filter(Boolean)
+
+  const uniqueByCode = []
+  for (const item of sanitized) {
+    if (!uniqueByCode.some((entry) => entry.code === item.code)) {
+      uniqueByCode.push(item)
+    }
+    if (uniqueByCode.length >= MAX_RECENTLY_VIEWED) break
   }
+
+  return uniqueByCode
 }
 
 export const useCountriesStore = defineStore('countries', () => {
@@ -29,37 +84,12 @@ export const useCountriesStore = defineStore('countries', () => {
   const favoriteCodes = ref(loadFavoriteCodes())
   const recentlyViewed = ref(loadRecentlyViewedCountries())
 
-  function loadRecentlyViewedCountries() {
-    try {
-      const raw = localStorage.getItem(RECENTLY_VIEWED_STORAGE_KEY)
-      const parsed = raw ? JSON.parse(raw) : []
-
-      if (!Array.isArray(parsed)) return []
-
-      return parsed
-        .filter((item) => item && typeof item === 'object' && typeof item.code === 'string')
-        .map((item) => ({
-          code: String(item.code || '').trim().toUpperCase(),
-          name: typeof item.name === 'string' ? item.name : String(item.code || '').trim().toUpperCase(),
-          flagSrc: typeof item.flagSrc === 'string' ? item.flagSrc : '',
-        }))
-        .filter((item) => item.code)
-    } catch {
-      return []
-    }
-  }
-
   function persistRecentlyViewedCountries() {
-    localStorage.setItem(
-      RECENTLY_VIEWED_STORAGE_KEY,
-      JSON.stringify(recentlyViewed.value)
-    )
+    writeStorageJson(RECENTLY_VIEWED_STORAGE_KEY, recentlyViewed.value)
   }
 
   function markRecentlyViewed(country) {
-    if (!country?.cca3) return
-
-    const code = String(country.cca3).trim().toUpperCase()
+    const code = normalizeCountryCode(country?.cca3)
     if (!code) return
 
     const name = country?.name?.common || country?.name?.official || code
@@ -68,7 +98,7 @@ export const useCountriesStore = defineStore('countries', () => {
     const next = [
       { code, name, flagSrc },
       ...recentlyViewed.value.filter((item) => item.code !== code),
-    ].slice(0, 5)
+    ].slice(0, MAX_RECENTLY_VIEWED)
 
     recentlyViewed.value = next
     persistRecentlyViewedCountries()
@@ -198,20 +228,35 @@ export const useCountriesStore = defineStore('countries', () => {
   const mostBorderedCountry = computed(() => topBorderCountries.value[0] || null)
 
   function persistFavorites() {
-    localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteCodes.value))
+    writeStorageJson(FAVORITES_STORAGE_KEY, favoriteCodes.value)
   }
 
   function isFavorite(code) {
-    return favoriteCodes.value.includes(code)
+    const normalizedCode = normalizeCountryCode(code)
+    if (!normalizedCode) return false
+    return favoriteCodes.value.includes(normalizedCode)
+  }
+
+  function addFavorite(code) {
+    const normalizedCode = normalizeCountryCode(code)
+    if (!normalizedCode || isFavorite(normalizedCode)) return
+    favoriteCodes.value = [...favoriteCodes.value, normalizedCode]
+    persistFavorites()
+  }
+
+  function removeFavorite(code) {
+    const normalizedCode = normalizeCountryCode(code)
+    if (!normalizedCode || !isFavorite(normalizedCode)) return
+    favoriteCodes.value = favoriteCodes.value.filter((item) => item !== normalizedCode)
+    persistFavorites()
   }
 
   function toggleFavorite(code) {
     if (isFavorite(code)) {
-      favoriteCodes.value = favoriteCodes.value.filter((item) => item !== code)
-    } else {
-      favoriteCodes.value = [...favoriteCodes.value, code]
+      removeFavorite(code)
+      return
     }
-    persistFavorites()
+    addFavorite(code)
   }
 
   function setSearchQuery(value) {
@@ -325,6 +370,8 @@ export const useCountriesStore = defineStore('countries', () => {
     recentlyViewedCountries: recentlyViewed,
     countrySearchItems,
     isFavorite,
+    addFavorite,
+    removeFavorite,
     toggleFavorite,
     setSearchQuery,
     setSelectedRegion,
