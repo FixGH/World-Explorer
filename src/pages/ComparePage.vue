@@ -109,7 +109,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useCountriesStore } from '@/stores/countries'
 import CountryCompareTable from '@/components/CountryCompareTable.vue'
 
@@ -127,6 +127,24 @@ onMounted(() => {
     store.fetchCountries()
   }
 })
+
+watch(
+  () => store.compareLeftCode,
+  (code) => {
+    if (!code) return
+    store.ensureCompareCountryData(code)
+  },
+  { immediate: true },
+)
+
+watch(
+  () => store.compareRightCode,
+  (code) => {
+    if (!code) return
+    store.ensureCompareCountryData(code)
+  },
+  { immediate: true },
+)
 </script>
 
 <style scoped>

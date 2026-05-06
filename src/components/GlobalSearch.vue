@@ -38,7 +38,7 @@
             </template>
             <v-list-item-title class="text-body-2">{{ item.name }}</v-list-item-title>
             <v-list-item-subtitle class="text-caption text-medium-emphasis">
-              {{ item.code }}
+              {{ item.code }} - {{ item.region || 'Région non disponible' }}
             </v-list-item-subtitle>
           </v-list-item>
 
@@ -78,7 +78,7 @@ const suggestions = computed(() => {
       if (!aStarts && bStarts) return 1
       return a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' })
     })
-    .slice(0, 5)
+    .slice(0, 8)
 })
 
 const showDropdown = computed(() => open.value && query.value.trim().length > 0)

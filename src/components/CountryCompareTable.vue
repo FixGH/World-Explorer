@@ -210,8 +210,14 @@ const leftPopulation = computed(() => (props.left?.population ? `${props.left.po
 const rightPopulation = computed(() => (props.right?.population ? `${props.right.population.toLocaleString('fr-FR')} habitants` : fallback))
 const leftArea = computed(() => (Number.isFinite(props.left?.area) ? `${props.left.area.toLocaleString('fr-FR')} km²` : fallback))
 const rightArea = computed(() => (Number.isFinite(props.right?.area) ? `${props.right.area.toLocaleString('fr-FR')} km²` : fallback))
-const leftBorders = computed(() => `${Number(props.left?.borders?.length || 0).toLocaleString('fr-FR')} frontière(s)`)
-const rightBorders = computed(() => `${Number(props.right?.borders?.length || 0).toLocaleString('fr-FR')} frontière(s)`)
+const leftBorders = computed(() => {
+  if (!Array.isArray(props.left?.borders)) return fallback
+  return `${props.left.borders.length.toLocaleString('fr-FR')} frontière(s)`
+})
+const rightBorders = computed(() => {
+  if (!Array.isArray(props.right?.borders)) return fallback
+  return `${props.right.borders.length.toLocaleString('fr-FR')} frontière(s)`
+})
 const leftRegionLabel = computed(() => regionMap[props.left?.region] || props.left?.region || fallback)
 const rightRegionLabel = computed(() => regionMap[props.right?.region] || props.right?.region || fallback)
 const leftDensity = computed(() => formatDensity(props.left))
@@ -234,7 +240,7 @@ function getMetricValue(metric, side) {
   if (!item) return null
   if (metric === 'population') return Number(item.population)
   if (metric === 'area') return Number(item.area)
-  if (metric === 'borders') return Number(item.borders?.length || 0)
+  if (metric === 'borders') return Array.isArray(item.borders) ? Number(item.borders.length) : null
   if (metric === 'density') return getDensityValue(item)
   return null
 }

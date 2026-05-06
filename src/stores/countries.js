@@ -78,6 +78,7 @@ export const useCountriesStore = defineStore('countries', () => {
   const sortOption = ref('name-asc')
   const compareLeftCode = ref('')
   const compareRightCode = ref('')
+  const compareCountriesCache = ref({})
   const selectedCountry = ref(null)
   const selectedCountryLoading = ref(false)
   const selectedCountryError = ref(null)
@@ -135,12 +136,14 @@ export const useCountriesStore = defineStore('countries', () => {
         const code = country?.cca3
         const name = country?.name?.common || country?.name?.official || code
         const flagSrc = country?.flags?.svg || country?.flags?.png || ''
+        const region = country?.region || ''
 
         if (!code) return null
         return {
           code: String(code).trim().toUpperCase(),
           name: typeof name === 'string' && name ? name : String(code).trim().toUpperCase(),
           flagSrc,
+          region,
         }
       })
       .filter(Boolean)
@@ -185,12 +188,12 @@ export const useCountriesStore = defineStore('countries', () => {
 
   const compareLeftCountry = computed(() => {
     const code = String(compareLeftCode.value || '').trim().toUpperCase()
-    return code ? countriesByCode.value.get(code) ?? null : null
+    return code ? compareCountriesCache.value[code] ?? countriesByCode.value.get(code) ?? null : null
   })
 
   const compareRightCountry = computed(() => {
     const code = String(compareRightCode.value || '').trim().toUpperCase()
-    return code ? countriesByCode.value.get(code) ?? null : null
+    return code ? compareCountriesCache.value[code] ?? countriesByCode.value.get(code) ?? null : null
   })
 
   const totalCountries = computed(() => countries.value.length)
@@ -355,6 +358,19 @@ export const useCountriesStore = defineStore('countries', () => {
     }
   }
 
+  async function ensureCompareCountryData(code) {
+    const normalizedCode = String(code || '').trim().toUpperCase()
+    if (!normalizedCode || compareCountriesCache.value[normalizedCode]) return
+
+    const country = await getCountryByCode(normalizedCode)
+    if (!country) return
+
+    compareCountriesCache.value = {
+      ...compareCountriesCache.value,
+      [normalizedCode]: country,
+    }
+  }
+
   return {
     countries,
     filteredCountries,
@@ -404,6 +420,7 @@ export const useCountriesStore = defineStore('countries', () => {
     getCountryNameByCode,
     fetchCountries,
     fetchCountryByCode,
+    ensureCompareCountryData,
     markRecentlyViewed,
   }
 })
