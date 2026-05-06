@@ -1,4 +1,5 @@
-const BASE_URL = (import.meta.env.VITE_REST_COUNTRIES_API_URL || 'https://restcountries.com/v3.1').replace(/\/+$/, '')
+import { apiClient } from '@/services/apiClient'
+
 const LIST_FIELDS = 'name,flags,capital,region,population,area,borders,cca3'
 const DETAIL_FIELDS = [
   'name',
@@ -20,18 +21,20 @@ const DETAIL_FIELDS = [
   'latlng',
 ].join(',')
 
-async function fetchJson(url) {
-  const response = await fetch(url)
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`)
+async function fetchJson(path, params) {
+  try {
+    const response = await apiClient.get(path, { params })
+    return response.data
+  } catch (error) {
+    if (error?.response?.status) {
+      throw new Error(`HTTP ${error.response.status}`)
+    }
+    throw new Error(error?.message || 'Erreur réseau')
   }
-
-  return response.json()
 }
 
 export async function getAllCountries() {
-  const countries = await fetchJson(`${BASE_URL}/all?fields=${LIST_FIELDS}`)
+  const countries = await fetchJson('/all', { fields: LIST_FIELDS })
 
   return [...countries].sort((a, b) => {
     const left = a?.name?.common || ''
@@ -41,7 +44,7 @@ export async function getAllCountries() {
 }
 
 export async function getCountryByCode(code) {
-  const data = await fetchJson(`${BASE_URL}/alpha/${encodeURIComponent(code)}?fields=${DETAIL_FIELDS}`)
+  const data = await fetchJson(`/alpha/${encodeURIComponent(code)}`, { fields: DETAIL_FIELDS })
 
   if (Array.isArray(data)) {
     return data[0] ?? null
