@@ -81,8 +81,25 @@ export const useCountriesStore = defineStore('countries', () => {
   const selectedCountry = ref(null)
   const selectedCountryLoading = ref(false)
   const selectedCountryError = ref(null)
+  const favoritesSnackbar = ref({
+    visible: false,
+    message: '',
+    color: 'success',
+  })
   const favoriteCodes = ref(loadFavoriteCodes())
   const recentlyViewed = ref(loadRecentlyViewedCountries())
+
+  function showFavoritesFeedback(message, color = 'success') {
+    favoritesSnackbar.value = {
+      visible: true,
+      message,
+      color,
+    }
+  }
+
+  function hideFavoritesFeedback() {
+    favoritesSnackbar.value.visible = false
+  }
 
   function persistRecentlyViewedCountries() {
     writeStorageJson(RECENTLY_VIEWED_STORAGE_KEY, recentlyViewed.value)
@@ -242,6 +259,7 @@ export const useCountriesStore = defineStore('countries', () => {
     if (!normalizedCode || isFavorite(normalizedCode)) return
     favoriteCodes.value = [...favoriteCodes.value, normalizedCode]
     persistFavorites()
+    showFavoritesFeedback('Pays ajouté aux favoris.')
   }
 
   function removeFavorite(code) {
@@ -249,6 +267,7 @@ export const useCountriesStore = defineStore('countries', () => {
     if (!normalizedCode || !isFavorite(normalizedCode)) return
     favoriteCodes.value = favoriteCodes.value.filter((item) => item !== normalizedCode)
     persistFavorites()
+    showFavoritesFeedback('Pays retiré des favoris.', 'info')
   }
 
   function toggleFavorite(code) {
@@ -365,6 +384,7 @@ export const useCountriesStore = defineStore('countries', () => {
     selectedCountry,
     selectedCountryLoading,
     selectedCountryError,
+    favoritesSnackbar,
     favoriteCodes,
     favoriteCountries,
     recentlyViewedCountries: recentlyViewed,
@@ -373,6 +393,7 @@ export const useCountriesStore = defineStore('countries', () => {
     addFavorite,
     removeFavorite,
     toggleFavorite,
+    hideFavoritesFeedback,
     setSearchQuery,
     setSelectedRegion,
     setSortOption,

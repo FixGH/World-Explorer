@@ -87,15 +87,27 @@
         </div>
       </v-container>
     </v-footer>
+
+    <v-snackbar
+      :model-value="store.favoritesSnackbar.visible"
+      :color="store.favoritesSnackbar.color"
+      location="bottom right"
+      timeout="2200"
+      @update:model-value="onFavoritesSnackbarUpdate"
+    >
+      {{ store.favoritesSnackbar.message }}
+    </v-snackbar>
   </v-app>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useCountriesStore } from '@/stores/countries'
 import GlobalSearch from '@/components/GlobalSearch.vue'
 
 const route = useRoute()
+const store = useCountriesStore()
 const drawer = ref(false)
 const currentYear = new Date().getFullYear()
 
@@ -112,6 +124,12 @@ function isNavActive(to) {
   if (to === '/') return route.path === '/'
   if (to === '/countries') return route.path === '/countries' || route.path.startsWith('/countries/')
   return route.path === to
+}
+
+function onFavoritesSnackbarUpdate(value) {
+  if (!value) {
+    store.hideFavoritesFeedback()
+  }
 }
 </script>
 
