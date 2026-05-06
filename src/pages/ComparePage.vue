@@ -14,7 +14,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card variant="tonal" class="mb-4" rounded="lg">
+    <v-card variant="tonal" class="mb-5 compare-select-card" rounded="lg">
       <v-card-text>
         <v-row>
           <v-col cols="12" md="6">
@@ -72,13 +72,14 @@
     <template v-else>
       <v-row class="mb-4">
         <v-col cols="12" md="6">
-          <v-card>
+          <v-card class="country-head-card" rounded="lg">
             <v-card-title class="d-flex align-center justify-space-between">
               <span>{{ store.compareLeftCountry.name?.common }}</span>
               <v-btn
-                variant="text"
+                variant="tonal"
                 prepend-icon="mdi-open-in-new"
                 :to="{ name: 'country-details', params: { code: store.compareLeftCountry.cca3 } }"
+                class="details-link-btn"
               >
                 Détails
               </v-btn>
@@ -86,13 +87,14 @@
           </v-card>
         </v-col>
         <v-col cols="12" md="6">
-          <v-card>
+          <v-card class="country-head-card" rounded="lg">
             <v-card-title class="d-flex align-center justify-space-between">
               <span>{{ store.compareRightCountry.name?.common }}</span>
               <v-btn
-                variant="text"
+                variant="tonal"
                 prepend-icon="mdi-open-in-new"
                 :to="{ name: 'country-details', params: { code: store.compareRightCountry.cca3 } }"
+                class="details-link-btn"
               >
                 Détails
               </v-btn>
@@ -136,6 +138,16 @@ onMounted(() => {
 .reset-btn {
   text-transform: none;
   font-weight: 600;
+}
+
+.compare-select-card,
+.country-head-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.details-link-btn {
+  text-transform: none;
 }
 
 @media (max-width: 860px) {

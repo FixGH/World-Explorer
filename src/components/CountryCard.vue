@@ -12,10 +12,38 @@
       {{ country.name?.common }}
     </v-card-title>
 
+    <v-card-subtitle class="pb-0 text-medium-emphasis">
+      {{ country.name?.official || 'Nom officiel non disponible' }}
+    </v-card-subtitle>
+
     <v-card-text class="flex-grow-1 country-meta">
-      <div class="text-medium-emphasis"><strong>Capitale :</strong> {{ country.capital?.[0] || 'Non disponible' }}</div>
-      <div class="text-medium-emphasis"><strong>Région :</strong> {{ country.region || 'Non disponible' }}</div>
-      <div class="text-medium-emphasis"><strong>Population :</strong> {{ formattedPopulation }}</div>
+      <div class="country-meta-item">
+        <span class="meta-label">Capitale</span>
+        <span class="meta-value">{{ country.capital?.[0] || 'Non disponible' }}</span>
+      </div>
+      <div class="country-meta-item">
+        <span class="meta-label">Région</span>
+        <span class="meta-value">{{ regionLabel }}</span>
+      </div>
+      <div class="country-meta-item">
+        <span class="meta-label">Population</span>
+        <span class="meta-value">{{ formattedPopulation }}</span>
+      </div>
+
+      <div class="d-flex flex-wrap ga-2 mt-1">
+        <v-chip size="x-small" variant="tonal" color="primary">
+          {{ independenceLabel }}
+        </v-chip>
+        <v-chip
+          v-for="insight in quickInsights"
+          :key="insight.label"
+          size="x-small"
+          variant="tonal"
+          :color="insight.color"
+        >
+          {{ insight.label }}
+        </v-chip>
+      </div>
     </v-card-text>
 
     <v-card-actions class="country-actions px-4 pb-4">
@@ -58,9 +86,54 @@ defineEmits(['toggle-favorite'])
 
 const flagSrc = computed(() => props.country?.flags?.svg || props.country?.flags?.png || '')
 
+const regionMap = {
+  Africa: 'Afrique',
+  Americas: 'Amériques',
+  Asia: 'Asie',
+  Europe: 'Europe',
+  Oceania: 'Océanie',
+  Antarctic: 'Antarctique',
+}
+
 const formattedPopulation = computed(() => {
   const value = props.country?.population
   return value ? value.toLocaleString('fr-FR') : 'Non disponible'
+})
+
+const regionLabel = computed(() => {
+  const region = props.country?.region
+  return regionMap[region] || region || 'Non disponible'
+})
+
+const independenceLabel = computed(() => {
+  if (props.country?.independent === true) return 'Pays indépendant'
+  if (props.country?.independent === false) return 'Territoire non indépendant'
+  return 'Statut politique non précisé'
+})
+
+const quickInsights = computed(() => {
+  const population = Number(props.country?.population || 0)
+  const area = Number(props.country?.area || 0)
+  const bordersCount = Number(props.country?.borders?.length || 0)
+  const insights = []
+
+  if (population >= 80_000_000) {
+    insights.push({ label: 'Population élevée', color: 'success' })
+  } else if (population > 0 && population <= 2_000_000) {
+    insights.push({ label: 'Population modérée', color: 'info' })
+  }
+
+  if (area >= 1_000_000) {
+    insights.push({ label: 'Grande superficie', color: 'secondary' })
+  } else if (area > 0 && area <= 100_000) {
+    insights.push({ label: 'Petit territoire', color: 'secondary' })
+  }
+
+  if (bordersCount >= 6) {
+    insights.push({ label: 'Pays très frontalier', color: 'warning' })
+  }
+
+  return insights.slice(0, 2)
 })
 
 const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart-outline'))
@@ -88,6 +161,25 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   display: grid;
   gap: 8px;
   line-height: 1.4;
+}
+
+.country-meta-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.meta-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  color: rgba(232, 248, 248, 0.66);
+}
+
+.meta-value {
+  color: rgba(235, 250, 250, 0.94);
+  font-weight: 600;
 }
 
 .country-actions {

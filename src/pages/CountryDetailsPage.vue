@@ -27,12 +27,12 @@
           <v-card-text>
             <div class="text-h5 mb-1">{{ country.name?.common || fallback }}</div>
             <div class="text-medium-emphasis">{{ country.name?.official || fallback }}</div>
-            <div class="mt-3 d-flex flex-wrap ga-2">
-              <v-chip size="small" variant="tonal">
-                {{ country.continents?.join(', ') || fallback }}
+            <div class="mt-3 d-flex flex-wrap ga-2 chip-group">
+              <v-chip size="small" variant="tonal" color="primary" class="info-chip">
+                Continent : {{ continentsLabel }}
               </v-chip>
-              <v-chip size="small" variant="tonal">
-                {{ independentLabel }}
+              <v-chip size="small" variant="tonal" color="secondary" class="info-chip">
+                {{ independentChipLabel }}
               </v-chip>
             </div>
           </v-card-text>
@@ -102,7 +102,7 @@
               <v-divider />
               <v-list lines="two">
                 <v-list-item prepend-icon="mdi-city" title="Capitale" :subtitle="country.capital?.[0] || fallback" />
-                <v-list-item prepend-icon="mdi-earth" title="Région" :subtitle="country.region || fallback" />
+                <v-list-item prepend-icon="mdi-earth" title="Région" :subtitle="regionLabel" />
                 <v-list-item prepend-icon="mdi-map-marker-radius" title="Sous-région" :subtitle="country.subregion || fallback" />
                 <v-list-item prepend-icon="mdi-map" title="Continents" :subtitle="continentsLabel" />
               </v-list>
@@ -116,7 +116,8 @@
               <v-list lines="two">
                 <v-list-item prepend-icon="mdi-account-group" title="Population" :subtitle="formattedPopulation" />
                 <v-list-item prepend-icon="mdi-ruler-square" title="Superficie" :subtitle="formattedArea" />
-                <v-list-item prepend-icon="mdi-flag" title="Statut indépendant" :subtitle="independentLabel" />
+                <v-list-item prepend-icon="mdi-flag" title="Statut politique" :subtitle="independentLabel" />
+                <v-list-item prepend-icon="mdi-transit-connection-variant" title="Pays frontaliers" :subtitle="borderCountLabel" />
               </v-list>
             </v-card>
           </v-col>
@@ -146,6 +147,7 @@
                 :key="borderCode"
                 color="primary"
                 variant="tonal"
+                class="border-chip"
                 :to="{ name: 'country-details', params: { code: borderCode } }"
               >
                 {{ borderCountryLabel(borderCode) }}
@@ -191,15 +193,28 @@ const fallback = 'Non disponible'
 const countryCode = computed(() => String(route.params.code || ''))
 const country = computed(() => store.selectedCountry)
 const flagSrc = computed(() => country.value?.flags?.svg || country.value?.flags?.png || '')
+const regionMap = {
+  Africa: 'Afrique',
+  Americas: 'Amériques',
+  Asia: 'Asie',
+  Europe: 'Europe',
+  Oceania: 'Océanie',
+  Antarctic: 'Antarctique',
+}
+
 const formattedPopulation = computed(() => {
   const value = country.value?.population
-  return Number.isFinite(value) ? value.toLocaleString('fr-FR') : fallback
+  return Number.isFinite(value) ? `${value.toLocaleString('fr-FR')} habitants` : fallback
 })
 const formattedArea = computed(() => {
   const value = country.value?.area
   return Number.isFinite(value) ? `${value.toLocaleString('fr-FR')} km²` : fallback
 })
 const continentsLabel = computed(() => country.value?.continents?.join(', ') || fallback)
+const regionLabel = computed(() => {
+  const region = country.value?.region
+  return regionMap[region] || region || fallback
+})
 const languagesLabel = computed(() => {
   const languages = country.value?.languages
   return languages ? Object.values(languages).join(', ') : fallback
@@ -217,11 +232,20 @@ const currenciesLabel = computed(() => {
 })
 const timezonesLabel = computed(() => country.value?.timezones?.join(', ') || fallback)
 const independentLabel = computed(() => {
-  if (country.value?.independent === true) return 'Oui'
-  if (country.value?.independent === false) return 'Non'
-  return fallback
+  if (country.value?.independent === true) return 'Pays indépendant'
+  if (country.value?.independent === false) return 'Territoire non indépendant'
+  return 'Statut politique non disponible'
 })
 const borders = computed(() => country.value?.borders || [])
+const independentChipLabel = computed(() => {
+  if (country.value?.independent === true) return 'Pays indépendant'
+  if (country.value?.independent === false) return 'Territoire non indépendant'
+  return 'Statut non précisé'
+})
+const borderCountLabel = computed(() => {
+  if (!borders.value.length) return 'Aucune frontière terrestre'
+  return `${borders.value.length.toLocaleString('fr-FR')} frontière(s) terrestre(s)`
+})
 const coordinates = computed(() => country.value?.latlng || [])
 const hasCoordinates = computed(() => {
   return Array.isArray(coordinates.value)
@@ -269,6 +293,14 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.02);
 }
 
+.chip-group {
+  row-gap: 8px;
+}
+
+.info-chip {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
 .details-map-links,
 .details-block {
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -296,6 +328,11 @@ onMounted(() => {
 
 .map-panel {
   overflow: hidden;
+}
+
+.border-chip {
+  border: 1px solid rgba(var(--v-theme-primary), 0.28);
+  font-weight: 600;
 }
 
 @media (max-width: 959px) {
