@@ -1,6 +1,6 @@
 import { apiClient } from '@/services/apiClient'
 
-const LIST_FIELDS = 'name,flags,capital,region,subregion,population,area,borders,cca3,continents,languages,currencies,independent'
+const LIST_FIELDS = 'name,flags,capital,region,subregion,population,area,borders,cca2,cca3'
 const DETAIL_FIELDS = [
   'name',
   'flags',
