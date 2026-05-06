@@ -1,13 +1,14 @@
 <template>
   <v-card class="home-hero" rounded="lg">
     <v-card-text class="hero-content py-10 py-md-12">
-      <div class="text-overline mb-2 hero-overline">Explorer mondial</div>
-      <h1 class="text-h3 text-md-h2 font-weight-bold mb-3 hero-title">Explorez le monde avec clarté et précision</h1>
+      <div class="text-overline mb-3 hero-overline">World Explorer</div>
+      <h1 class="text-h3 text-md-h2 font-weight-bold mb-3 hero-title">Explorez, comparez et comprenez le monde</h1>
       <p class="text-body-1 text-medium-emphasis mb-6 hero-description">
         Une application moderne pour découvrir les pays, comparer leurs données et garder vos favoris.
       </p>
       <div class="d-flex flex-wrap ga-2 mb-6 hero-highlights">
         <v-chip size="small" color="primary" variant="tonal">250+ pays et territoires</v-chip>
+        <v-chip size="small" color="primary" variant="tonal">Données consolidées</v-chip>
         <v-chip size="small" color="primary" variant="tonal">Comparaison instantanée</v-chip>
         <v-chip size="small" color="primary" variant="tonal">Favoris persistants</v-chip>
       </div>
@@ -50,14 +51,15 @@
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background:
+    radial-gradient(circle at 82% 14%, rgba(112, 232, 255, 0.25) 0%, rgba(112, 232, 255, 0) 38%),
     radial-gradient(circle at 12% 10%, rgba(146, 255, 250, 0.22) 0%, rgba(146, 255, 250, 0) 36%),
     linear-gradient(
     135deg,
-    rgba(var(--v-theme-primary), 0.28) 0%,
-    rgba(11, 30, 36, 0.76) 48%,
-    rgba(8, 20, 24, 0.84) 100%
+    rgba(var(--v-theme-primary), 0.3) 0%,
+    rgba(10, 32, 40, 0.8) 48%,
+    rgba(8, 20, 24, 0.88) 100%
   );
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 24px 62px rgba(0, 0, 0, 0.32);
 }
 
 .home-hero::after {
@@ -71,6 +73,7 @@
 .hero-content {
   position: relative;
   z-index: 1;
+  max-width: 980px;
 }
 
 .hero-title {
@@ -80,7 +83,7 @@
 
 .hero-overline {
   color: rgba(227, 255, 255, 0.82);
-  letter-spacing: 1.2px;
+  letter-spacing: 1.6px;
 }
 
 .hero-description {
@@ -93,7 +96,8 @@
 }
 
 .hero-highlights :deep(.v-chip) {
-  border: 1px solid rgba(var(--v-theme-primary), 0.25);
+  border: 1px solid rgba(var(--v-theme-primary), 0.28);
+  background: rgba(var(--v-theme-primary), 0.14);
 }
 
 .hero-btn {
@@ -113,5 +117,15 @@
 
 .hero-btn-soft {
   color: rgba(224, 255, 252, 0.9);
+}
+
+@media (max-width: 960px) {
+  .hero-title {
+    max-width: 100%;
+  }
+
+  .hero-btn {
+    min-width: 100%;
+  }
 }
 </style>

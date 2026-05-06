@@ -120,7 +120,7 @@ function isNavActive(to) {
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 10px 20px 28px;
+  padding: 0 20px 28px;
 }
 
 .nav-item {
@@ -136,7 +136,11 @@ function isNavActive(to) {
 }
 
 .app-header {
-  margin: 10px 18px 0;
+  position: fixed;
+  top: 10px;
+  left: 18px;
+  right: 18px;
+  margin: 0;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: linear-gradient(
@@ -147,6 +151,7 @@ function isNavActive(to) {
   );
   backdrop-filter: blur(14px);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
+  z-index: 1100;
 }
 
 .brand-link {
@@ -194,7 +199,7 @@ function isNavActive(to) {
 }
 
 .app-main {
-  padding-top: 16px;
+  padding-top: 92px;
 }
 
 .app-footer {
@@ -239,12 +244,18 @@ function isNavActive(to) {
 
 @media (max-width: 959px) {
   .app-header {
-    margin: 6px 10px 0;
+    top: 6px;
+    left: 10px;
+    right: 10px;
     border-radius: 14px;
   }
 
+  .app-main {
+    padding-top: 82px;
+  }
+
   .app-content {
-    padding: 6px 12px 20px;
+    padding: 0 12px 20px;
   }
 }
 </style>

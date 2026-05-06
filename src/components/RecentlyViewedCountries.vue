@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="tonal" rounded="lg" class="mb-6 recent-card">
+  <v-card variant="tonal" rounded="lg" class="recent-card">
     <v-card-text>
       <div class="d-flex align-center justify-space-between mb-3">
         <div>
@@ -76,7 +76,7 @@ defineProps({
 
 .recent-card {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
 }
 </style>
 
