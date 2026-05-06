@@ -8,9 +8,6 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
-import markerIcon from 'leaflet/dist/images/marker-icon.png'
-import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 
 const props = defineProps({
   latlng: {
@@ -23,10 +20,12 @@ const props = defineProps({
   },
 })
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
+const mapMarkerIcon = L.divIcon({
+  className: 'we-map-marker-wrap',
+  html: '<span class="we-map-marker"></span>',
+  iconSize: [24, 24],
+  iconAnchor: [12, 24],
+  popupAnchor: [0, -18],
 })
 
 const mapElement = ref(null)
@@ -46,7 +45,7 @@ function setView() {
   if (marker) {
     marker.setLatLng([lat, lng]).bindPopup(props.countryName)
   } else {
-    marker = L.marker([lat, lng]).addTo(map).bindPopup(props.countryName)
+    marker = L.marker([lat, lng], { icon: mapMarkerIcon }).addTo(map).bindPopup(props.countryName)
   }
 }
 
@@ -109,5 +108,33 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 320px;
   border-radius: 12px;
+}
+
+.country-map :deep(.we-map-marker-wrap) {
+  background: transparent;
+  border: none;
+}
+
+.country-map :deep(.we-map-marker) {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(96, 243, 233, 1), rgba(var(--v-theme-primary), 0.95));
+  border: 2px solid rgba(6, 20, 24, 0.72);
+  box-shadow: 0 0 0 6px rgba(var(--v-theme-primary), 0.2);
+}
+
+.country-map :deep(.we-map-marker)::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 8px;
+  height: 8px;
+  background: rgba(var(--v-theme-primary), 0.9);
+  border-radius: 0 0 2px 0;
+  transform: translateX(-50%) rotate(45deg);
 }
 </style>
