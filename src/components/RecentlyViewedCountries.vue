@@ -42,7 +42,10 @@
             </v-avatar>
           </template>
           <v-list-item-title>{{ entry.name }}</v-list-item-title>
-          <v-list-item-subtitle>{{ entry.code }}</v-list-item-subtitle>
+          <v-list-item-subtitle class="d-flex align-center justify-space-between">
+            <span>{{ entry.code }}</span>
+            <v-icon icon="mdi-arrow-right" size="16" class="text-medium-emphasis" />
+          </v-list-item-subtitle>
         </v-list-item>
       </v-list>
     </v-card-text>

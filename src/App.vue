@@ -72,12 +72,18 @@
     </v-main>
 
     <v-footer class="app-footer border-t-sm">
-      <v-container class="py-3">
-        <div class="d-flex flex-wrap align-center justify-space-between ga-2 text-medium-emphasis">
-          <span>World Explorer {{ currentYear }} - Explorez, comparez et sauvegardez vos pays favoris.</span>
-          <a href="https://restcountries.com" target="_blank" rel="noopener noreferrer" class="text-primary">
-            Donnees: restcountries.com
-          </a>
+      <v-container class="py-4">
+        <div class="footer-content text-medium-emphasis">
+          <div class="footer-left">
+            <div class="footer-brand">World Explorer {{ currentYear }}</div>
+            <div class="footer-subtitle">Explorez, comparez et sauvegardez vos pays favoris.</div>
+          </div>
+          <div class="footer-right">
+            <RouterLink :to="{ name: 'about' }" class="footer-link">À propos</RouterLink>
+            <a href="https://restcountries.com" target="_blank" rel="noopener noreferrer" class="footer-link text-primary">
+              Données : restcountries.com
+            </a>
+          </div>
         </div>
       </v-container>
     </v-footer>
@@ -193,8 +199,42 @@ function isNavActive(to) {
 
 .app-footer {
   margin-top: 10px;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  background: rgba(5, 14, 18, 0.42);
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(5, 14, 18, 0.6);
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+}
+
+.footer-brand {
+  font-weight: 700;
+  color: rgba(233, 255, 255, 0.92);
+}
+
+.footer-subtitle {
+  font-size: 0.92rem;
+}
+
+.footer-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.footer-link {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.footer-link:hover {
+  opacity: 0.84;
 }
 
 @media (max-width: 959px) {

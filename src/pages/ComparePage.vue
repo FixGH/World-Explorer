@@ -1,14 +1,14 @@
 <template>
   <v-container class="py-6">
-    <v-card variant="tonal" rounded="lg" class="mb-4">
-      <v-card-text class="d-flex align-center justify-space-between py-4">
+    <v-card variant="tonal" rounded="lg" class="mb-5 compare-hero">
+      <v-card-text class="d-flex align-center justify-space-between py-4 compare-hero-content">
         <div>
           <h1 class="text-h4 font-weight-bold">Comparer des pays</h1>
           <p class="text-medium-emphasis mt-1">
             Sélectionnez deux pays pour visualiser leurs données côte à côte.
           </p>
         </div>
-        <v-btn variant="text" color="secondary" rounded="lg" @click="store.resetCompare">
+        <v-btn variant="tonal" color="secondary" rounded="lg" class="reset-btn" @click="store.resetCompare">
           Réinitialiser
         </v-btn>
       </v-card-text>
@@ -126,3 +126,23 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.compare-hero {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, rgba(var(--v-theme-primary), 0.2), rgba(255, 255, 255, 0.03));
+}
+
+.reset-btn {
+  text-transform: none;
+  font-weight: 600;
+}
+
+@media (max-width: 860px) {
+  .compare-hero-content {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+}
+</style>
