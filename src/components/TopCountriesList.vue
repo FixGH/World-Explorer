@@ -1,6 +1,9 @@
 <template>
-  <v-card class="h-100">
-    <v-card-title>{{ title }}</v-card-title>
+  <v-card class="h-100 ranking-card">
+    <v-card-title class="d-flex align-center justify-space-between">
+      <span>{{ title }}</span>
+      <v-chip size="small" variant="tonal" color="primary">Top 10</v-chip>
+    </v-card-title>
     <v-divider />
     <v-list v-if="items.length">
       <v-list-item
@@ -12,6 +15,11 @@
         rounded="lg"
         class="rank-item mb-1"
       >
+        <template #prepend>
+          <v-avatar size="30" class="rank-badge" rounded="lg">
+            {{ index + 1 }}
+          </v-avatar>
+        </template>
         <template #append>
           <v-progress-linear
             :model-value="progressValue(valueAccessor(country))"
@@ -19,7 +27,7 @@
             bg-color="grey-darken-1"
             height="8"
             rounded
-            style="width: 120px"
+            style="width: 110px"
           />
         </template>
       </v-list-item>
@@ -63,8 +71,13 @@ function progressValue(value) {
 </script>
 
 <style scoped>
+.ranking-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.015);
+}
+
 .v-list-item {
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .rank-item {
@@ -73,5 +86,13 @@ function progressValue(value) {
 
 .v-list-item:hover {
   background: rgba(var(--v-theme-primary), 0.08);
+  transform: translateX(3px);
+}
+
+.rank-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgb(var(--v-theme-primary));
+  background: rgba(var(--v-theme-primary), 0.14);
 }
 </style>

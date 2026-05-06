@@ -1,7 +1,7 @@
 <template>
   <v-container class="py-6">
-    <v-card variant="tonal" rounded="lg" class="mb-4">
-      <v-card-text class="py-4">
+    <v-card variant="tonal" rounded="lg" class="mb-5 favorites-hero">
+      <v-card-text class="py-5">
         <h1 class="text-h4 font-weight-bold">Pays favoris</h1>
         <p class="text-medium-emphasis mt-1">
           Retrouvez rapidement les pays que vous avez sélectionnés.
@@ -11,7 +11,7 @@
 
     <StatsSummaryCards :items="favoriteSummaryItems" />
 
-    <v-card rounded="lg" class="mb-4" variant="tonal">
+    <v-card rounded="lg" class="mb-5 favorites-controls" variant="tonal">
       <v-card-text>
         <v-row>
           <v-col cols="12" md="6">
@@ -157,3 +157,15 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.favorites-hero {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, rgba(var(--v-theme-primary), 0.2), rgba(255, 255, 255, 0.03));
+}
+
+.favorites-controls {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="tonal" rounded="lg" class="mb-6">
+  <v-card variant="tonal" rounded="lg" class="mb-6 recent-card">
     <v-card-text>
       <div class="d-flex align-center justify-space-between mb-3">
         <div>
@@ -61,12 +61,19 @@ defineProps({
 <style scoped>
 .recent-item {
   cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+  border: 1px solid transparent;
 }
 
 .recent-item:hover {
   transform: translateY(-1px);
   background: rgba(var(--v-theme-primary), 0.08);
+  border-color: rgba(var(--v-theme-primary), 0.24);
+}
+
+.recent-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
 }
 </style>
 

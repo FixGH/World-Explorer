@@ -1,7 +1,7 @@
 <template>
   <v-container class="py-6">
-    <v-card variant="tonal" rounded="lg" class="mb-4">
-      <v-card-text class="d-flex align-center justify-space-between py-3">
+    <v-card variant="tonal" rounded="lg" class="mb-5 countries-hero">
+      <v-card-text class="d-flex align-center justify-space-between py-4">
         <h1 class="text-h4 font-weight-bold">Explorateur de pays</h1>
         <v-btn
           color="secondary"
@@ -9,6 +9,7 @@
           rounded="lg"
           prepend-icon="mdi-compare"
           to="/compare"
+          class="compare-btn"
         >
           Comparer
         </v-btn>
@@ -81,3 +82,23 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.countries-hero {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, rgba(var(--v-theme-primary), 0.2), rgba(255, 255, 255, 0.03));
+}
+
+.compare-btn {
+  text-transform: none;
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .countries-hero :deep(.v-card-text) {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+}
+</style>

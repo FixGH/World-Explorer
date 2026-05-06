@@ -9,6 +9,8 @@
         :prepend-icon="feature.icon"
         :title="feature.title"
         :subtitle="feature.description"
+        rounded="lg"
+        class="feature-item"
       />
     </v-list>
   </v-card>
@@ -42,5 +44,16 @@ const features = [
 <style scoped>
 .feature-card {
   border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.feature-item {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.feature-item:hover {
+  background: rgba(var(--v-theme-primary), 0.08);
+  transform: translateX(2px);
 }
 </style>

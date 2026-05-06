@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="py-4 py-md-6">
     <v-btn variant="text" :to="{ name: 'countries' }" class="mb-4">
       <v-icon icon="mdi-arrow-left" class="mr-1" />
       Retour à la liste
@@ -16,7 +16,7 @@
 
     <v-row v-else-if="country">
       <v-col cols="12" lg="4">
-        <v-card class="mb-4" rounded="lg">
+        <v-card class="mb-4 details-flag-card" rounded="lg">
           <v-img :src="flagSrc" :alt="country.name?.common" height="240" rounded="lg" cover>
             <template #error>
               <v-sheet height="240" class="d-flex align-center justify-center" rounded="lg">
@@ -38,10 +38,10 @@
           </v-card-text>
         </v-card>
 
-        <v-card rounded="lg">
+        <v-card rounded="lg" class="details-map-links">
           <v-card-title>Cartes</v-card-title>
           <v-card-text class="d-flex flex-wrap ga-2">
-            <v-btn
+          <v-btn
               :href="country.maps?.googleMaps"
               target="_blank"
               rel="noopener noreferrer"
@@ -49,6 +49,7 @@
               variant="tonal"
               prepend-icon="mdi-google-maps"
               :disabled="!country.maps?.googleMaps"
+              class="map-link-btn"
             >
               Google Maps
             </v-btn>
@@ -60,6 +61,7 @@
               variant="tonal"
               prepend-icon="mdi-map"
               :disabled="!country.maps?.openStreetMaps"
+              class="map-link-btn"
             >
               OpenStreetMap
             </v-btn>
@@ -73,6 +75,7 @@
             :prepend-icon="store.isFavorite(country.cca3) ? 'mdi-heart' : 'mdi-heart-outline'"
             variant="tonal"
             color="secondary"
+            class="favorite-toggle-btn"
             @click="store.toggleFavorite(country.cca3)"
           >
             {{ store.isFavorite(country.cca3) ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
@@ -81,7 +84,7 @@
 
         <v-row>
           <v-col cols="12" md="6">
-            <v-card class="h-100" rounded="lg">
+            <v-card class="h-100 details-block" rounded="lg">
               <v-card-title>Identité</v-card-title>
               <v-divider />
               <v-list lines="two">
@@ -94,7 +97,7 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card class="h-100" rounded="lg">
+            <v-card class="h-100 details-block" rounded="lg">
               <v-card-title>Géographie</v-card-title>
               <v-divider />
               <v-list lines="two">
@@ -107,7 +110,7 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card class="h-100" rounded="lg">
+            <v-card class="h-100 details-block" rounded="lg">
               <v-card-title>Statistiques</v-card-title>
               <v-divider />
               <v-list lines="two">
@@ -119,7 +122,7 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card class="h-100" rounded="lg">
+            <v-card class="h-100 details-block" rounded="lg">
               <v-card-title>Culture et temps</v-card-title>
               <v-divider />
               <v-list lines="two">
@@ -131,7 +134,7 @@
           </v-col>
         </v-row>
 
-        <v-card class="mt-4" rounded="lg">
+        <v-card class="mt-4 details-block" rounded="lg">
           <v-card-title>Pays frontaliers</v-card-title>
           <v-card-text>
             <div v-if="!borders.length" class="text-medium-emphasis">
@@ -151,7 +154,7 @@
           </v-card-text>
         </v-card>
 
-        <v-card class="mt-4" rounded="lg">
+        <v-card class="mt-4 details-block map-panel" rounded="lg">
           <v-card-title>Localisation du pays</v-card-title>
           <v-card-text>
             <CountryMap
@@ -256,6 +259,50 @@ onMounted(() => {
 .details-header {
   padding: 14px 16px;
   border-radius: 16px;
-  background: rgba(var(--v-theme-primary), 0.06);
+  border: 1px solid rgba(var(--v-theme-primary), 0.18);
+  background: linear-gradient(140deg, rgba(var(--v-theme-primary), 0.14), rgba(255, 255, 255, 0.03));
+}
+
+.details-flag-card {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.details-map-links,
+.details-block {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.details-block {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.details-block:hover {
+  transform: translateY(-2px);
+  border-color: rgba(var(--v-theme-primary), 0.28);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+}
+
+.map-link-btn {
+  text-transform: none;
+}
+
+.favorite-toggle-btn {
+  text-transform: none;
+  font-weight: 600;
+}
+
+.map-panel {
+  overflow: hidden;
+}
+
+@media (max-width: 959px) {
+  .details-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }
 </style>

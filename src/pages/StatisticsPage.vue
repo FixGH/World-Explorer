@@ -1,9 +1,9 @@
 <template>
   <v-container class="py-6">
-    <v-card variant="tonal" rounded="lg" class="mb-4">
-      <v-card-text class="py-4">
+    <v-card variant="tonal" rounded="lg" class="mb-5 stats-hero">
+      <v-card-text class="py-5">
         <h1 class="text-h4 font-weight-bold">Statistiques</h1>
-        <p class="text-medium-emphasis mt-1">
+        <p class="text-medium-emphasis mt-2">
           Analyse globale des pays et classements clés.
         </p>
       </v-card-text>
@@ -20,12 +20,12 @@
     <template v-else>
       <StatsSummaryCards :items="summaryItems" />
 
-      <v-row class="mb-4">
+      <v-row class="mb-5">
         <v-col cols="12" md="6">
-          <v-card class="h-100" rounded="lg">
+          <v-card class="h-100 stats-panel" rounded="lg">
             <v-card-title>Répartition par région</v-card-title>
             <v-divider />
-            <v-list>
+            <v-list class="py-2">
               <v-list-item
                 v-for="region in regionalItems"
                 :key="region.label"
@@ -37,9 +37,9 @@
                     :model-value="regionProgress(region.count)"
                     color="primary"
                     bg-color="grey-darken-1"
-                    height="8"
+                    height="10"
                     rounded
-                    style="width: 140px"
+                    style="width: 155px"
                   />
                 </template>
               </v-list-item>
@@ -48,24 +48,30 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-card class="h-100" rounded="lg">
+          <v-card class="h-100 stats-panel" rounded="lg">
             <v-card-title>Records mondiaux</v-card-title>
             <v-divider />
-            <v-list>
+            <v-list class="py-2">
               <v-list-item
                 title="Pays le plus peuplé"
                 :subtitle="recordSubtitle(store.mostPopulatedCountry, populationFormatter)"
                 :to="recordTo(store.mostPopulatedCountry)"
+                rounded="lg"
+                class="record-item"
               />
               <v-list-item
                 title="Pays le plus grand"
                 :subtitle="recordSubtitle(store.largestCountry, areaFormatter)"
                 :to="recordTo(store.largestCountry)"
+                rounded="lg"
+                class="record-item"
               />
               <v-list-item
                 title="Pays avec le plus de frontières"
                 :subtitle="recordSubtitle(store.mostBorderedCountry, bordersFormatter)"
                 :to="recordTo(store.mostBorderedCountry)"
+                rounded="lg"
+                class="record-item"
               />
             </v-list>
           </v-card>
@@ -199,3 +205,24 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.stats-hero {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, rgba(var(--v-theme-primary), 0.2), rgba(255, 255, 255, 0.03));
+}
+
+.stats-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.record-item {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.record-item:hover {
+  background: rgba(var(--v-theme-primary), 0.08);
+  transform: translateX(2px);
+}
+</style>

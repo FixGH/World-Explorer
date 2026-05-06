@@ -155,6 +155,14 @@ onBeforeUnmount(() => {
   min-width: 260px;
 }
 
+.global-search :deep(.v-field) {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(5, 17, 20, 0.4);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
 .search-dropdown {
   position: absolute;
   top: calc(100% + 8px);
@@ -163,6 +171,9 @@ onBeforeUnmount(() => {
   z-index: 10;
   border-radius: 16px;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(7, 16, 20, 0.95);
+  backdrop-filter: blur(10px);
 }
 
 .search-item {

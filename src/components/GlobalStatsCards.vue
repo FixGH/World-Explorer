@@ -25,11 +25,14 @@ defineProps({
 
 <style scoped>
 .stats-card {
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
 .stats-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  transform: translateY(-3px);
+  border-color: rgba(var(--v-theme-primary), 0.32);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.32);
 }
 </style>
