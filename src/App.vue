@@ -27,7 +27,6 @@
       </v-app-bar-title>
       <v-spacer />
       <div class="d-none d-md-flex ga-2 mr-4 nav-desktop">
-        <GlobalSearch class="mx-2 nav-search" />
         <v-btn
           variant="text"
           class="appbar-btn"
@@ -104,7 +103,6 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCountriesStore } from '@/stores/countries'
-import GlobalSearch from '@/components/GlobalSearch.vue'
 
 const route = useRoute()
 const store = useCountriesStore()
@@ -210,10 +208,6 @@ function onFavoritesSnackbarUpdate(value) {
   color: #fff;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-}
-
-.nav-search {
-  min-width: 280px;
 }
 
 .app-main {
