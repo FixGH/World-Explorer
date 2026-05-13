@@ -94,6 +94,141 @@ h3 {
   transform: translateY(-1px);
 }
 
+/* --- Barre d’application (alignement global : inclut AuthStatus hors scope App.vue) --- */
+.app-header .v-toolbar__content {
+  align-items: center;
+  column-gap: 6px;
+  padding-inline: 6px 8px;
+}
+
+@media (min-width: 960px) {
+  .app-header .v-toolbar__content {
+    column-gap: 8px;
+    padding-inline: 8px 12px;
+  }
+}
+
+.app-header .v-toolbar-title {
+  flex-shrink: 0;
+  align-self: center;
+  padding-inline-end: 6px;
+}
+
+.app-header .nav-desktop-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  min-width: 0;
+  margin-inline-end: 2px;
+}
+
+@media (min-width: 1280px) {
+  .app-header .nav-desktop-toolbar {
+    gap: 12px;
+    margin-inline-end: 6px;
+  }
+}
+
+.app-header .nav-desktop-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.app-header .nav-desktop-auth {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding-inline-start: 10px;
+  margin-inline-start: 2px;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.app-header .nav-search {
+  flex: 0 1 320px;
+  min-width: 0;
+  max-width: min(400px, 36vw);
+}
+
+@media (min-width: 1280px) {
+  .app-header .nav-search {
+    flex-basis: 360px;
+    max-width: min(420px, 38vw);
+  }
+}
+
+.app-header .nav-search.global-country-search {
+  min-width: min(240px, 26vw);
+}
+
+@media (min-width: 1280px) {
+  .app-header .nav-search.global-country-search {
+    min-width: 280px;
+  }
+}
+
+@media (min-width: 960px) and (max-width: 1279px) {
+  .app-header .nav-desktop-toolbar {
+    gap: 6px;
+  }
+
+  .app-header .nav-search {
+    flex: 0 1 200px;
+    max-width: 30vw;
+  }
+
+  .app-header .nav-search.global-country-search {
+    min-width: min(200px, 24vw);
+  }
+
+  .app-header .appbar-btn {
+    padding-inline: 8px !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Pas de translation sur les boutons de la barre (cohérent avec le champ recherche) */
+.app-header .v-btn:hover {
+  transform: none;
+}
+
+.app-header .appbar-btn {
+  min-height: 40px !important;
+  height: 40px !important;
+  padding-inline: 12px !important;
+  border-radius: 12px;
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.9);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.app-header .appbar-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14) !important;
+}
+
+.app-header .appbar-btn--active {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(124, 243, 232, 0.22);
+}
+
+.app-header .nav-user-chip {
+  font-weight: 600;
+  height: 32px;
+  align-self: center;
+}
+
 .v-btn--variant-tonal {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }

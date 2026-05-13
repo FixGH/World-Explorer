@@ -27,50 +27,54 @@
         </RouterLink>
       </v-app-bar-title>
       <v-spacer />
-      <div class="d-none d-md-flex ga-2 mr-4 nav-desktop">
-        <GlobalCountrySearch class="mx-2 nav-search" />
-        <v-btn
-          variant="text"
-          class="appbar-btn"
-          :to="{ name: 'countries' }"
-          :class="{ 'appbar-btn--active': isNavActive('/countries') }"
-        >
-          Explorer
-        </v-btn>
-        <v-btn
-          variant="text"
-          class="appbar-btn"
-          :to="{ name: 'compare' }"
-          :class="{ 'appbar-btn--active': isNavActive('/compare') }"
-        >
-          Comparer
-        </v-btn>
-        <v-btn
-          variant="text"
-          class="appbar-btn"
-          :to="{ name: 'statistics' }"
-          :class="{ 'appbar-btn--active': isNavActive('/statistics') }"
-        >
-          Statistiques
-        </v-btn>
-        <v-btn
-          v-if="authStore.isAuthenticated"
-          variant="text"
-          class="appbar-btn"
-          :to="{ name: 'add-country' }"
-          :class="{ 'appbar-btn--active': isNavActive('/add-country') }"
-        >
-          Ajouter
-        </v-btn>
-        <v-btn
-          variant="text"
-          class="appbar-btn"
-          :to="{ name: 'favorites' }"
-          :class="{ 'appbar-btn--active': isNavActive('/favorites') }"
-        >
-          Favoris
-        </v-btn>
-        <AuthStatus />
+      <div class="d-none d-md-flex nav-desktop-toolbar" role="presentation">
+        <GlobalCountrySearch class="nav-search flex-shrink-1" />
+        <nav class="nav-desktop-links" role="navigation" aria-label="Navigation principale">
+          <v-btn
+            variant="text"
+            class="appbar-btn"
+            :to="{ name: 'countries' }"
+            :class="{ 'appbar-btn--active': isNavActive('/countries') }"
+          >
+            Explorer
+          </v-btn>
+          <v-btn
+            variant="text"
+            class="appbar-btn"
+            :to="{ name: 'compare' }"
+            :class="{ 'appbar-btn--active': isNavActive('/compare') }"
+          >
+            Comparer
+          </v-btn>
+          <v-btn
+            variant="text"
+            class="appbar-btn"
+            :to="{ name: 'statistics' }"
+            :class="{ 'appbar-btn--active': isNavActive('/statistics') }"
+          >
+            Statistiques
+          </v-btn>
+          <v-btn
+            v-if="authStore.isAuthenticated"
+            variant="text"
+            class="appbar-btn"
+            :to="{ name: 'add-country' }"
+            :class="{ 'appbar-btn--active': isNavActive('/add-country') }"
+          >
+            Ajouter
+          </v-btn>
+          <v-btn
+            variant="text"
+            class="appbar-btn"
+            :to="{ name: 'favorites' }"
+            :class="{ 'appbar-btn--active': isNavActive('/favorites') }"
+          >
+            Favoris
+          </v-btn>
+        </nav>
+        <div class="nav-desktop-auth">
+          <AuthStatus />
+        </div>
       </div>
     </v-app-bar>
 
@@ -232,28 +236,6 @@ function onAuthSnackbarUpdate(value) {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.appbar-btn {
-  border-radius: 12px;
-  text-transform: none;
-  color: rgba(255, 255, 255, 0.86);
-  transition: all 0.22s ease;
-}
-
-.appbar-btn:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.16);
-  transform: translateY(-1px);
-}
-
-.appbar-btn--active {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-}
-
-.nav-search {
-  min-width: 280px;
-}
 
 .app-main {
   padding-top: 92px;

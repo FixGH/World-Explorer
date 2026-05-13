@@ -2,7 +2,7 @@
   <div ref="searchRoot" class="global-country-search">
     <v-text-field
       v-model="query"
-      density="comfortable"
+      density="compact"
       variant="solo"
       hide-details
       rounded="lg"
@@ -172,7 +172,7 @@ onBeforeUnmount(() => {
 .global-country-search {
   position: relative;
   width: 100%;
-  min-width: 260px;
+  min-width: 0;
   max-width: 420px;
 }
 

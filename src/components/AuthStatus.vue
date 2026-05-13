@@ -1,5 +1,5 @@
 <template>
-  <div class="auth-status d-flex align-center ga-2">
+  <div class="auth-status d-flex align-center ga-2 flex-shrink-0">
     <v-btn
       v-if="!authStore.isAuthenticated"
       variant="text"
@@ -10,7 +10,7 @@
     </v-btn>
 
     <template v-else>
-      <v-chip size="small" variant="tonal" color="primary">
+      <v-chip class="nav-user-chip" size="small" variant="tonal" color="primary">
         {{ authStore.user?.username || 'Utilisateur' }}
       </v-chip>
       <v-btn variant="text" class="appbar-btn" @click="authStore.logout">
