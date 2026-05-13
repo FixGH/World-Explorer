@@ -298,6 +298,14 @@ function formatCurrencies(currencies) {
 .compare-table-card {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.02);
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.compare-table :deep(table) {
+  width: 100%;
+  min-width: 520px;
 }
 
 .compare-table :deep(th) {

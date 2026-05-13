@@ -7,6 +7,10 @@
   --we-panel-border: rgba(144, 240, 232, 0.12);
   --we-text-strong: rgba(234, 252, 252, 0.95);
   --we-text-soft: rgba(194, 225, 225, 0.8);
+  /* Largeur utile max : desktop / ultrawide (évite la colonne trop étroite au centre) */
+  --we-content-max: 1440px;
+  /* Accueil : un peu plus resserré pour garder une hiérarchie lisible */
+  --we-content-max-narrow: 1280px;
 }
 
 html,
@@ -15,7 +19,12 @@ body,
   min-height: 100%;
 }
 
+html {
+  overflow-x: clip;
+}
+
 body {
+  overflow-x: clip;
   background:
     radial-gradient(circle at 8% 8%, rgba(23, 215, 209, 0.16) 0%, rgba(23, 215, 209, 0) 34%),
     radial-gradient(circle at 88% 12%, rgba(54, 168, 255, 0.14) 0%, rgba(54, 168, 255, 0) 36%),
@@ -26,7 +35,12 @@ body {
 }
 
 .v-container {
-  max-width: 1280px;
+  max-width: min(100%, var(--we-content-max));
+}
+
+/* Pages type accueil : largeur max plus modérée */
+.v-container.we-page-home {
+  max-width: min(100%, var(--we-content-max-narrow));
 }
 
 .v-card {

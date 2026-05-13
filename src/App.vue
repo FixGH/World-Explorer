@@ -174,9 +174,10 @@ function onAuthSnackbarUpdate(value) {
 <style scoped>
 .app-content {
   width: 100%;
-  max-width: 1240px;
+  max-width: var(--we-content-max);
   margin: 0 auto;
-  padding: 0 20px 28px;
+  padding: 0 clamp(12px, 3.5vw, 36px) 32px;
+  box-sizing: border-box;
 }
 
 .nav-item {
@@ -311,7 +312,7 @@ function onAuthSnackbarUpdate(value) {
   }
 
   .app-content {
-    padding: 0 12px 20px;
+    padding: 0 clamp(10px, 4vw, 20px) 20px;
   }
 }
 </style>

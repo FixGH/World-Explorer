@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-6 home-page">
+  <v-container class="py-6 home-page we-page-home">
     <HomeHero class="mb-6" />
 
     <v-row class="mb-6" align="stretch">
@@ -167,7 +167,6 @@ onMounted(() => {
 
 <style scoped>
 .home-page {
-  max-width: 1360px;
   position: relative;
 }
 
