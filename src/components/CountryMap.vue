@@ -59,7 +59,10 @@ function initializeMap() {
   }).addTo(map)
 
   setView()
-  nextTick(() => map?.invalidateSize())
+  nextTick(() => {
+    map?.invalidateSize()
+    window.requestAnimationFrame(() => map?.invalidateSize())
+  })
 }
 
 onMounted(() => {
@@ -74,6 +77,10 @@ watch(
       return
     }
     setView()
+    nextTick(() => {
+      map?.invalidateSize()
+      window.requestAnimationFrame(() => map?.invalidateSize())
+    })
   },
   { deep: true },
 )
@@ -99,15 +106,26 @@ onBeforeUnmount(() => {
 <style scoped>
 .country-map {
   width: 100%;
+  max-width: 100%;
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .map-canvas {
   width: 100%;
-  height: 320px;
+  max-width: 100%;
+  height: min(52vh, 420px);
+  min-height: 280px;
   border-radius: 12px;
+}
+
+@media (max-width: 600px) {
+  .map-canvas {
+    height: min(45vh, 340px);
+    min-height: 240px;
+  }
 }
 
 .country-map :deep(.we-map-marker-wrap) {
