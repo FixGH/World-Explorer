@@ -1,175 +1,200 @@
 <template>
-  <v-card class="compare-table-card" rounded="lg">
-    <v-card-title class="d-flex align-center justify-space-between flex-wrap ga-2">
-      <span>Comparaison détaillée</span>
-      <v-chip size="small" variant="tonal" color="primary">
-        Mise en évidence des écarts
+  <v-card class="compare-table-card" rounded="lg" elevation="0">
+    <v-card-title class="compare-table-title pa-5 pb-2">
+      <div>
+        <span class="text-h6 font-weight-bold d-block">Tableau comparatif</span>
+        <span class="text-caption text-medium-emphasis">
+          Les lignes en surbrillance indiquent la valeur la plus élevée pour les indicateurs numériques.
+        </span>
+      </div>
+      <v-chip size="small" variant="tonal" color="primary" prepend-icon="mdi-chart-box-outline" class="flex-shrink-0">
+        Indicateurs clés
       </v-chip>
     </v-card-title>
-    <v-divider />
-    <v-card-text>
+    <v-divider class="opacity-25" />
+    <v-card-text class="pa-0 compare-table-scroll-wrap">
       <v-table density="comfortable" class="compare-table">
         <thead>
           <tr>
-            <th class="text-left">Champ</th>
-            <th class="text-left">{{ leftTitle }}</th>
-            <th class="text-left">{{ rightTitle }}</th>
+            <th class="text-left compare-th-field">Critère</th>
+            <th class="text-left compare-th-side compare-th-left">
+              <span class="compare-th-label">{{ leftTitle }}</span>
+            </th>
+            <th class="text-left compare-th-side compare-th-right">
+              <span class="compare-th-label">{{ rightTitle }}</span>
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Drapeau</strong></td>
-            <td>
-              <v-img
-                v-if="left"
-                :src="leftFlagSrc"
-                :alt="left.name?.common"
-                height="56"
-                width="88"
-                cover
-              >
-                <template #error>
-                  <v-sheet height="56" width="88" class="d-flex align-center justify-center">
-                    <v-icon icon="mdi-flag-outline" />
-                  </v-sheet>
-                </template>
-              </v-img>
-              <span v-else class="text-medium-emphasis">Non disponible</span>
+            <td class="compare-field-cell"><strong>Drapeau</strong></td>
+            <td class="compare-val-cell compare-val-left">
+              <div class="flag-cell">
+                <v-img
+                  v-if="left"
+                  :src="leftFlagSrc"
+                  :alt="left.name?.common"
+                  height="56"
+                  width="88"
+                  cover
+                  rounded="lg"
+                  class="compare-flag-img"
+                >
+                  <template #error>
+                    <v-sheet height="56" width="88" class="d-flex align-center justify-center rounded-lg">
+                      <v-icon icon="mdi-flag-outline" />
+                    </v-sheet>
+                  </template>
+                </v-img>
+                <span v-else class="text-medium-emphasis">—</span>
+              </div>
             </td>
-            <td>
-              <v-img
-                v-if="right"
-                :src="rightFlagSrc"
-                :alt="right.name?.common"
-                height="56"
-                width="88"
-                cover
-              >
-                <template #error>
-                  <v-sheet height="56" width="88" class="d-flex align-center justify-center">
-                    <v-icon icon="mdi-flag-outline" />
-                  </v-sheet>
-                </template>
-              </v-img>
-              <span v-else class="text-medium-emphasis">Non disponible</span>
+            <td class="compare-val-cell compare-val-right">
+              <div class="flag-cell">
+                <v-img
+                  v-if="right"
+                  :src="rightFlagSrc"
+                  :alt="right.name?.common"
+                  height="56"
+                  width="88"
+                  cover
+                  rounded="lg"
+                  class="compare-flag-img"
+                >
+                  <template #error>
+                    <v-sheet height="56" width="88" class="d-flex align-center justify-center rounded-lg">
+                      <v-icon icon="mdi-flag-outline" />
+                    </v-sheet>
+                  </template>
+                </v-img>
+                <span v-else class="text-medium-emphasis">—</span>
+              </div>
             </td>
           </tr>
 
           <tr>
-            <td><strong>Nom commun</strong></td>
-            <td>{{ left?.name?.common || fallback }}</td>
-            <td>{{ right?.name?.common || fallback }}</td>
+            <td class="compare-field-cell"><strong>Nom commun</strong></td>
+            <td class="compare-val-cell compare-val-left">{{ left?.name?.common || fallback }}</td>
+            <td class="compare-val-cell compare-val-right">{{ right?.name?.common || fallback }}</td>
           </tr>
           <tr>
-            <td><strong>Capitale</strong></td>
-            <td>{{ left?.capital?.[0] || fallback }}</td>
-            <td>{{ right?.capital?.[0] || fallback }}</td>
+            <td class="compare-field-cell"><strong>Capitale</strong></td>
+            <td class="compare-val-cell compare-val-left">{{ left?.capital?.[0] || fallback }}</td>
+            <td class="compare-val-cell compare-val-right">{{ right?.capital?.[0] || fallback }}</td>
           </tr>
           <tr>
-            <td><strong>Région</strong></td>
-            <td>{{ leftRegionLabel }}</td>
-            <td>{{ rightRegionLabel }}</td>
+            <td class="compare-field-cell"><strong>Région</strong></td>
+            <td class="compare-val-cell compare-val-left">{{ leftRegionLabel }}</td>
+            <td class="compare-val-cell compare-val-right">{{ rightRegionLabel }}</td>
           </tr>
           <tr>
-            <td><strong>Sous-région</strong></td>
-            <td>{{ left?.subregion || fallback }}</td>
-            <td>{{ right?.subregion || fallback }}</td>
+            <td class="compare-field-cell"><strong>Sous-région</strong></td>
+            <td class="compare-val-cell compare-val-left">{{ left?.subregion || fallback }}</td>
+            <td class="compare-val-cell compare-val-right">{{ right?.subregion || fallback }}</td>
           </tr>
           <tr>
-            <td><strong>Continents</strong></td>
-            <td>{{ leftContinents }}</td>
-            <td>{{ rightContinents }}</td>
+            <td class="compare-field-cell"><strong>Continents</strong></td>
+            <td class="compare-val-cell compare-val-left">{{ leftContinents }}</td>
+            <td class="compare-val-cell compare-val-right">{{ rightContinents }}</td>
           </tr>
           <tr>
-            <td><strong>Langues</strong></td>
-            <td>{{ leftLanguages }}</td>
-            <td>{{ rightLanguages }}</td>
+            <td class="compare-field-cell"><strong>Langues</strong></td>
+            <td class="compare-val-cell compare-val-left">{{ leftLanguages }}</td>
+            <td class="compare-val-cell compare-val-right">{{ rightLanguages }}</td>
           </tr>
           <tr>
-            <td><strong>Monnaies</strong></td>
-            <td>{{ leftCurrencies }}</td>
-            <td>{{ rightCurrencies }}</td>
+            <td class="compare-field-cell"><strong>Monnaies</strong></td>
+            <td class="compare-val-cell compare-val-left">{{ leftCurrencies }}</td>
+            <td class="compare-val-cell compare-val-right">{{ rightCurrencies }}</td>
           </tr>
           <tr class="metric-row">
-            <td><strong>Population</strong></td>
-            <td :class="cellClass('population', 'left')">
+            <td class="compare-field-cell"><strong>Population</strong></td>
+            <td :class="['compare-val-cell', 'compare-val-left', cellClass('population', 'left')]">
               <div class="metric-cell">
-                <span>{{ leftPopulation }}</span>
-                <v-chip v-if="winnerFor('population') === 'left'" size="x-small" color="success" variant="tonal" prepend-icon="mdi-trending-up">
-                  Plus peuplé
-                </v-chip>
+                <span class="metric-value">{{ leftPopulation }}</span>
+                <span v-if="winnerFor('population') === 'left'" class="winner-badge winner-badge--population">
+                  <v-icon icon="mdi-account-multiple" size="14" class="mr-1" />
+                  Population plus élevée
+                </span>
               </div>
             </td>
-            <td :class="cellClass('population', 'right')">
+            <td :class="['compare-val-cell', 'compare-val-right', cellClass('population', 'right')]">
               <div class="metric-cell">
-                <span>{{ rightPopulation }}</span>
-                <v-chip v-if="winnerFor('population') === 'right'" size="x-small" color="success" variant="tonal" prepend-icon="mdi-trending-up">
-                  Plus peuplé
-                </v-chip>
-              </div>
-            </td>
-          </tr>
-          <tr class="metric-row">
-            <td><strong>Superficie</strong></td>
-            <td :class="cellClass('area', 'left')">
-              <div class="metric-cell">
-                <span>{{ leftArea }}</span>
-                <v-chip v-if="winnerFor('area') === 'left'" size="x-small" color="secondary" variant="tonal" prepend-icon="mdi-arrow-expand-all">
-                  Plus vaste
-                </v-chip>
-              </div>
-            </td>
-            <td :class="cellClass('area', 'right')">
-              <div class="metric-cell">
-                <span>{{ rightArea }}</span>
-                <v-chip v-if="winnerFor('area') === 'right'" size="x-small" color="secondary" variant="tonal" prepend-icon="mdi-arrow-expand-all">
-                  Plus vaste
-                </v-chip>
+                <span class="metric-value">{{ rightPopulation }}</span>
+                <span v-if="winnerFor('population') === 'right'" class="winner-badge winner-badge--population">
+                  <v-icon icon="mdi-account-multiple" size="14" class="mr-1" />
+                  Population plus élevée
+                </span>
               </div>
             </td>
           </tr>
           <tr class="metric-row">
-            <td><strong>Densité de population</strong></td>
-            <td :class="cellClass('density', 'left')">
+            <td class="compare-field-cell"><strong>Superficie</strong></td>
+            <td :class="['compare-val-cell', 'compare-val-left', cellClass('area', 'left')]">
               <div class="metric-cell">
-                <span>{{ leftDensity }}</span>
-                <v-chip v-if="winnerFor('density') === 'left'" size="x-small" color="info" variant="tonal" prepend-icon="mdi-speedometer">
-                  Plus dense
-                </v-chip>
+                <span class="metric-value">{{ leftArea }}</span>
+                <span v-if="winnerFor('area') === 'left'" class="winner-badge winner-badge--area">
+                  <v-icon icon="mdi-ruler-square" size="14" class="mr-1" />
+                  Superficie plus grande
+                </span>
               </div>
             </td>
-            <td :class="cellClass('density', 'right')">
+            <td :class="['compare-val-cell', 'compare-val-right', cellClass('area', 'right')]">
               <div class="metric-cell">
-                <span>{{ rightDensity }}</span>
-                <v-chip v-if="winnerFor('density') === 'right'" size="x-small" color="info" variant="tonal" prepend-icon="mdi-speedometer">
-                  Plus dense
-                </v-chip>
+                <span class="metric-value">{{ rightArea }}</span>
+                <span v-if="winnerFor('area') === 'right'" class="winner-badge winner-badge--area">
+                  <v-icon icon="mdi-ruler-square" size="14" class="mr-1" />
+                  Superficie plus grande
+                </span>
               </div>
             </td>
           </tr>
           <tr class="metric-row">
-            <td><strong>Frontières terrestres</strong></td>
-            <td :class="cellClass('borders', 'left')">
+            <td class="compare-field-cell"><strong>Densité de population</strong></td>
+            <td :class="['compare-val-cell', 'compare-val-left', cellClass('density', 'left')]">
               <div class="metric-cell">
-                <span>{{ leftBorders }}</span>
-                <v-chip v-if="winnerFor('borders') === 'left'" size="x-small" color="warning" variant="tonal" prepend-icon="mdi-transit-connection-variant">
-                  Plus frontalier
-                </v-chip>
+                <span class="metric-value">{{ leftDensity }}</span>
+                <span v-if="winnerFor('density') === 'left'" class="winner-badge winner-badge--density">
+                  <v-icon icon="mdi-speedometer" size="14" class="mr-1" />
+                  Densité plus forte
+                </span>
               </div>
             </td>
-            <td :class="cellClass('borders', 'right')">
+            <td :class="['compare-val-cell', 'compare-val-right', cellClass('density', 'right')]">
               <div class="metric-cell">
-                <span>{{ rightBorders }}</span>
-                <v-chip v-if="winnerFor('borders') === 'right'" size="x-small" color="warning" variant="tonal" prepend-icon="mdi-transit-connection-variant">
-                  Plus frontalier
-                </v-chip>
+                <span class="metric-value">{{ rightDensity }}</span>
+                <span v-if="winnerFor('density') === 'right'" class="winner-badge winner-badge--density">
+                  <v-icon icon="mdi-speedometer" size="14" class="mr-1" />
+                  Densité plus forte
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr class="metric-row">
+            <td class="compare-field-cell"><strong>Frontières terrestres</strong></td>
+            <td :class="['compare-val-cell', 'compare-val-left', cellClass('borders', 'left')]">
+              <div class="metric-cell">
+                <span class="metric-value">{{ leftBorders }}</span>
+                <span v-if="winnerFor('borders') === 'left'" class="winner-badge winner-badge--borders">
+                  <v-icon icon="mdi-road-variant" size="14" class="mr-1" />
+                  Plus de frontières
+                </span>
+              </div>
+            </td>
+            <td :class="['compare-val-cell', 'compare-val-right', cellClass('borders', 'right')]">
+              <div class="metric-cell">
+                <span class="metric-value">{{ rightBorders }}</span>
+                <span v-if="winnerFor('borders') === 'right'" class="winner-badge winner-badge--borders">
+                  <v-icon icon="mdi-road-variant" size="14" class="mr-1" />
+                  Plus de frontières
+                </span>
               </div>
             </td>
           </tr>
           <tr>
-            <td><strong>Statut politique</strong></td>
-            <td>{{ independentLabel(left?.independent) }}</td>
-            <td>{{ independentLabel(right?.independent) }}</td>
+            <td class="compare-field-cell"><strong>Statut politique</strong></td>
+            <td class="compare-val-cell compare-val-left">{{ independentLabel(left?.independent) }}</td>
+            <td class="compare-val-cell compare-val-right">{{ independentLabel(right?.independent) }}</td>
           </tr>
         </tbody>
       </v-table>
@@ -258,8 +283,8 @@ function cellClass(metric, side) {
 }
 
 function independentLabel(value) {
-  if (value === true) return 'Pays indépendant'
-  if (value === false) return 'Territoire non indépendant'
+  if (value === true) return 'État indépendant'
+  if (value === false) return 'Territoire dépendant'
   return fallback
 }
 
@@ -299,6 +324,17 @@ function formatCurrencies(currencies) {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.02);
   max-width: 100%;
+  overflow: hidden;
+}
+
+.compare-table-title {
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.compare-table-scroll-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -306,37 +342,172 @@ function formatCurrencies(currencies) {
 .compare-table :deep(table) {
   width: 100%;
   min-width: 520px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.compare-table :deep(th) {
+.compare-table :deep(thead th) {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+.compare-th-field {
+  z-index: 4 !important;
+  min-width: 132px;
+  max-width: 38vw;
+  padding: 14px 16px !important;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   font-weight: 700;
-  color: rgba(228, 248, 248, 0.86);
+  color: rgba(186, 218, 218, 0.85);
+  background: linear-gradient(180deg, rgba(14, 22, 28, 0.98), rgba(12, 18, 24, 0.98)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  vertical-align: bottom;
 }
 
-.compare-table :deep(td) {
-  padding-top: 12px !important;
-  padding-bottom: 12px !important;
+.compare-th-side {
+  padding: 14px 18px !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-bottom: 2px solid transparent !important;
+  vertical-align: bottom;
+}
+
+.compare-th-left {
+  background: rgba(var(--v-theme-primary), 0.1) !important;
+  border-bottom-color: rgba(var(--v-theme-primary), 0.45) !important;
+  color: rgba(236, 252, 252, 0.96);
+}
+
+.compare-th-right {
+  background: rgba(var(--v-theme-secondary), 0.1) !important;
+  border-bottom-color: rgba(var(--v-theme-secondary), 0.45) !important;
+  color: rgba(236, 244, 255, 0.96);
+}
+
+.compare-th-label {
+  display: inline-block;
+  max-width: 220px;
+  line-height: 1.3;
+}
+
+.compare-field-cell {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: 128px;
+  max-width: 40vw;
+  padding: 14px 16px !important;
+  font-size: 0.82rem;
+  color: rgba(200, 228, 228, 0.88);
+  background: linear-gradient(90deg, rgba(10, 16, 20, 0.98) 70%, rgba(10, 16, 20, 0.85) 100%) !important;
+  box-shadow: 6px 0 14px rgba(0, 0, 0, 0.18);
+  vertical-align: top;
+}
+
+.compare-val-cell {
+  padding: 14px 18px !important;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  vertical-align: top;
+  color: rgba(236, 252, 252, 0.94);
+}
+
+.compare-val-left {
+  background: rgba(var(--v-theme-primary), 0.04);
+}
+
+.compare-val-right {
+  background: rgba(var(--v-theme-secondary), 0.05);
+}
+
+.flag-cell {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+}
+
+.compare-flag-img {
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .metric-row td {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .metric-cell {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.metric-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.winner-badge {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.winner-badge--population {
+  color: rgba(200, 230, 210, 0.95);
+  background: rgba(76, 175, 80, 0.12);
+  border-color: rgba(129, 199, 132, 0.35);
+}
+
+.winner-badge--area {
+  color: rgba(210, 224, 255, 0.95);
+  background: rgba(var(--v-theme-secondary), 0.14);
+  border-color: rgba(var(--v-theme-secondary), 0.35);
+}
+
+.winner-badge--density {
+  color: rgba(200, 230, 245, 0.95);
+  background: rgba(33, 150, 243, 0.12);
+  border-color: rgba(100, 181, 246, 0.35);
+}
+
+.winner-badge--borders {
+  color: rgba(255, 224, 178, 0.96);
+  background: rgba(255, 152, 0, 0.12);
+  border-color: rgba(255, 183, 77, 0.38);
 }
 
 .metric-winner {
-  background: rgba(var(--v-theme-primary), 0.12);
+  background: rgba(var(--v-theme-primary), 0.11) !important;
+  box-shadow: inset 3px 0 0 rgba(var(--v-theme-primary), 0.55);
 }
 
-@media (max-width: 860px) {
+.compare-val-right.metric-winner {
+  box-shadow: inset 3px 0 0 rgba(var(--v-theme-secondary), 0.55);
+  background: rgba(var(--v-theme-secondary), 0.12) !important;
+}
+
+@media (max-width: 700px) {
+  .compare-th-label {
+    max-width: 140px;
+    font-size: 0.88rem;
+  }
+
   .metric-cell {
-    flex-direction: column;
-    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .winner-badge {
+    font-size: 0.62rem;
+    padding: 3px 8px 3px 6px;
   }
 }
 </style>
