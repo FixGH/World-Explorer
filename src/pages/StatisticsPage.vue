@@ -1,55 +1,105 @@
 <template>
-  <v-container class="py-6 statistics-page">
-    <v-card variant="tonal" rounded="lg" class="mb-5 stats-hero">
-      <v-card-text class="py-5">
-        <h1 class="text-h4 font-weight-bold">Statistiques</h1>
-        <p class="text-medium-emphasis mt-2 mb-0">
-          Analyse globale des pays et classements clés — données issues du jeu chargé (API + éventuels pays locaux).
+  <v-container class="py-6 py-md-8 statistics-page">
+    <v-card variant="tonal" rounded="lg" class="mb-8 stats-hero">
+      <v-card-text class="py-6 px-5 px-md-8">
+        <h1 class="text-h4 font-weight-bold mb-2">Statistiques</h1>
+        <p class="text-body-1 text-medium-emphasis mb-0 stats-hero-lead">
+          Synthèses et classements à partir des pays chargés (API REST Countries et éventuels pays locaux).
         </p>
       </v-card-text>
     </v-card>
 
-    <v-alert v-if="store.loading" type="info" variant="tonal" rounded="lg" class="mb-4">
+    <v-alert v-if="store.loading" type="info" variant="tonal" rounded="lg" class="mb-6">
       Chargement des statistiques…
     </v-alert>
 
-    <v-alert v-else-if="store.error" type="error" variant="tonal" rounded="lg" class="mb-4">
+    <v-alert v-else-if="store.error" type="error" variant="tonal" rounded="lg" class="mb-6">
       {{ store.error }}
     </v-alert>
 
     <template v-else>
-      <StatsSummaryCards :items="summaryItems" />
+      <!-- Vue d'ensemble -->
+      <section class="stats-section stats-section--major mb-10 mb-md-12">
+        <h2 class="stats-heading mb-6">
+          <span class="stats-heading-icon" aria-hidden="true" />
+          Vue d’ensemble
+        </h2>
+        <StatsSummaryCards :items="summaryItems" :md="3" margin-bottom="mb-0" />
+      </section>
 
-      <div v-if="insightItems.length" class="stats-section mt-2 mb-4">
-        <div class="stats-section-label text-overline text-medium-emphasis mb-3 px-1">
-          Indicateurs complémentaires
-        </div>
-        <StatsSummaryCards :items="insightItems" :md="4" />
-      </div>
+      <!-- Indicateurs clés -->
+      <section class="stats-section stats-section--major mb-10 mb-md-12">
+        <h2 class="stats-heading mb-2">
+          <span class="stats-heading-icon" aria-hidden="true" />
+          Indicateurs clés
+        </h2>
+        <p class="text-body-2 text-medium-emphasis mb-6 stats-section-desc">
+          Comparaisons utiles et records globaux sur le jeu de données actuel.
+        </p>
 
-      <div v-if="averageItems.length" class="stats-section mb-6">
-        <div class="stats-section-label text-overline text-medium-emphasis mb-3 px-1">
-          Moyennes (ensemble des pays affichés)
-        </div>
-        <StatsSummaryCards :items="averageItems" :md="6" />
-      </div>
+        <h3 class="stats-subheading mb-4">Complémentaires</h3>
+        <StatsSummaryCards
+          v-if="insightItems.length"
+          :items="insightItems"
+          :md="4"
+          margin-bottom="mb-6"
+        />
 
-      <v-row class="mb-5">
-        <v-col cols="12" md="6">
-          <v-card class="h-100 stats-panel" rounded="lg">
-            <v-card-title class="stats-panel-title">Répartition par région</v-card-title>
-            <v-divider class="opacity-25" />
-            <v-list class="py-2 px-2 region-list">
+        <h3 class="stats-subheading mb-4">Moyennes</h3>
+        <StatsSummaryCards
+          v-if="averageItems.length"
+          :items="averageItems"
+          :md="6"
+          margin-bottom="mb-8"
+        />
+
+        <h3 class="stats-subheading mb-4">Records mondiaux</h3>
+        <v-card class="stats-panel stats-records-card" rounded="lg">
+          <v-list class="py-2 px-2 px-md-3">
+            <v-list-item
+              title="Pays le plus peuplé"
+              :subtitle="recordSubtitle(store.mostPopulatedCountry, populationFormatter)"
+              :to="recordTo(store.mostPopulatedCountry)"
+              rounded="lg"
+              class="record-item mb-2"
+            />
+            <v-list-item
+              title="Pays le plus grand"
+              :subtitle="recordSubtitle(store.largestCountry, areaFormatter)"
+              :to="recordTo(store.largestCountry)"
+              rounded="lg"
+              class="record-item mb-2"
+            />
+            <v-list-item
+              title="Pays avec le plus de frontières terrestres"
+              :subtitle="recordSubtitle(store.mostBorderedCountry, bordersFormatter)"
+              :to="recordTo(store.mostBorderedCountry)"
+              rounded="lg"
+              class="record-item"
+            />
+          </v-list>
+        </v-card>
+      </section>
+
+      <!-- Répartition par région -->
+      <section class="stats-section stats-section--major mb-10 mb-md-12">
+        <h2 class="stats-heading mb-6">
+          <span class="stats-heading-icon" aria-hidden="true" />
+          Répartition par région
+        </h2>
+        <v-card class="stats-panel region-panel" rounded="lg">
+          <v-card-text class="pa-2 pa-md-4">
+            <v-list class="region-list py-0">
               <v-list-item
                 v-for="region in regionalItems"
                 :key="region.label"
-                class="region-item rounded-lg mb-1 px-3"
+                class="region-item rounded-xl mb-2 px-3 px-md-4"
               >
                 <div class="region-item-inner">
                   <div class="region-item-text">
                     <span class="region-name">{{ region.label }}</span>
                     <span class="region-count text-caption text-medium-emphasis">
-                      {{ region.count.toLocaleString('fr-FR') }} pays
+                      {{ formatIntFr(region.count) }} pays
                     </span>
                   </div>
                   <div class="region-progress">
@@ -64,71 +114,48 @@
                 </div>
               </v-list-item>
             </v-list>
-          </v-card>
-        </v-col>
+          </v-card-text>
+        </v-card>
+      </section>
 
-        <v-col cols="12" md="6">
-          <v-card class="h-100 stats-panel" rounded="lg">
-            <v-card-title class="stats-panel-title">Records mondiaux</v-card-title>
-            <v-divider class="opacity-25" />
-            <v-list class="py-2 px-2">
-              <v-list-item
-                title="Pays le plus peuplé"
-                :subtitle="recordSubtitle(store.mostPopulatedCountry, populationFormatter)"
-                :to="recordTo(store.mostPopulatedCountry)"
-                rounded="lg"
-                class="record-item mb-1"
-              />
-              <v-list-item
-                title="Pays le plus grand"
-                :subtitle="recordSubtitle(store.largestCountry, areaFormatter)"
-                :to="recordTo(store.largestCountry)"
-                rounded="lg"
-                class="record-item mb-1"
-              />
-              <v-list-item
-                title="Pays avec le plus de frontières terrestres"
-                :subtitle="recordSubtitle(store.mostBorderedCountry, bordersFormatter)"
-                :to="recordTo(store.mostBorderedCountry)"
-                rounded="lg"
-                class="record-item mb-1"
-              />
-            </v-list>
-          </v-card>
-        </v-col>
-      </v-row>
+      <!-- Classements -->
+      <section class="stats-section mb-4">
+        <h2 class="stats-heading mb-6">
+          <span class="stats-heading-icon" aria-hidden="true" />
+          Classements
+        </h2>
+        <p class="text-body-2 text-medium-emphasis mb-8 stats-section-desc">
+          Top 10 par population, superficie et nombre de frontières terrestres.
+        </p>
+        <v-row class="rankings-row">
+          <v-col cols="12" lg="4">
+            <TopCountriesList
+              title="Les plus peuplés"
+              :items="store.topPopulatedCountries"
+              :value-accessor="populationValue"
+              :formatter="populationFormatter"
+            />
+          </v-col>
 
-      <div class="stats-section-label text-overline text-medium-emphasis mb-3 px-1">
-        Classements Top 10
-      </div>
-      <v-row>
-        <v-col cols="12" md="4">
-          <TopCountriesList
-            title="Top 10 des pays les plus peuplés"
-            :items="store.topPopulatedCountries"
-            :value-accessor="populationValue"
-            :formatter="populationFormatter"
-          />
-        </v-col>
+          <v-col cols="12" lg="4">
+            <TopCountriesList
+              title="Les plus grands"
+              :items="store.topLargestCountries"
+              :value-accessor="areaValue"
+              :formatter="areaFormatter"
+            />
+          </v-col>
 
-        <v-col cols="12" md="4">
-          <TopCountriesList
-            title="Top 10 des pays les plus grands"
-            :items="store.topLargestCountries"
-            :value-accessor="areaValue"
-            :formatter="areaFormatter"
-          />
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <TopCountriesList
-            title="Top 10 des pays les plus frontaliers"
-            :items="store.topBorderCountries"
-            :value-accessor="bordersValue"
-            :formatter="bordersFormatter"
-          />
-        </v-col>
-      </v-row>
+          <v-col cols="12" lg="4">
+            <TopCountriesList
+              title="Les plus frontaliers"
+              :items="store.topBorderCountries"
+              :value-accessor="bordersValue"
+              :formatter="bordersFormatter"
+            />
+          </v-col>
+        </v-row>
+      </section>
     </template>
   </v-container>
 </template>
@@ -150,25 +177,38 @@ const regionLabels = {
   Antarctic: 'Antarctique',
 }
 
+/** Entiers avec espaces insécables / groupement français */
+function formatIntFr(n) {
+  return Math.round(Number(n)).toLocaleString('fr-FR', { maximumFractionDigits: 0 })
+}
+
+/** Nombres décimaux (ex. km² moyenne) */
+function formatDecimalFr(n, minD = 0, maxD = 2) {
+  return Number(n).toLocaleString('fr-FR', {
+    minimumFractionDigits: minD,
+    maximumFractionDigits: maxD,
+  })
+}
+
 const summaryItems = computed(() => [
   {
     label: 'Nombre total de pays',
-    value: store.totalCountries.toLocaleString('fr-FR'),
+    value: formatIntFr(store.totalCountries),
     icon: 'mdi-earth',
   },
   {
     label: 'Régions représentées',
-    value: store.totalRegions.toLocaleString('fr-FR'),
+    value: formatIntFr(store.totalRegions),
     icon: 'mdi-map',
   },
   {
     label: 'Population totale cumulée',
-    value: `${store.totalPopulation.toLocaleString('fr-FR')} habitants`,
+    value: `${formatIntFr(store.totalPopulation)} habitants`,
     icon: 'mdi-account-group',
   },
   {
     label: 'Superficie totale cumulée',
-    value: `${store.totalArea.toLocaleString('fr-FR')} km²`,
+    value: `${formatDecimalFr(store.totalArea, 0, 2)} km²`,
     icon: 'mdi-ruler-square',
   },
 ])
@@ -180,7 +220,8 @@ const insightItems = computed(() => {
   if (lr) {
     items.push({
       label: 'Région la plus représentée',
-      value: `${regionLabels[lr.region] || lr.region} · ${lr.count.toLocaleString('fr-FR')} pays`,
+      headline: regionLabels[lr.region] || lr.region,
+      detail: `${formatIntFr(lr.count)} pays`,
       icon: 'mdi-map-marker-multiple-outline',
     })
   }
@@ -189,7 +230,8 @@ const insightItems = computed(() => {
   if (lp) {
     items.push({
       label: 'Pays le moins peuplé',
-      value: `${lp.name?.common || 'Non disponible'} · ${populationFormatter(populationValue(lp))}`,
+      headline: lp.name?.common || 'Non disponible',
+      detail: populationFormatter(populationValue(lp)),
       icon: 'mdi-account-arrow-down-outline',
     })
   }
@@ -198,7 +240,8 @@ const insightItems = computed(() => {
   if (dense) {
     items.push({
       label: 'Plus forte densité démographique',
-      value: `${dense.name?.common || 'Non disponible'} · ${densityFormatter(dense)}`,
+      headline: dense.name?.common || 'Non disponible',
+      detail: densityFormatter(dense),
       icon: 'mdi-speedometer',
     })
   }
@@ -213,12 +256,14 @@ const averageItems = computed(() => {
   return [
     {
       label: 'Population moyenne (par pays)',
-      value: `${Math.round(ap).toLocaleString('fr-FR')} habitants`,
+      headline: formatIntFr(Math.round(ap)),
+      detail: 'habitants',
       icon: 'mdi-chart-timeline-variant',
     },
     {
       label: 'Superficie moyenne (par pays)',
-      value: `${aa.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} km²`,
+      headline: formatDecimalFr(aa, 2, 2),
+      detail: 'km²',
       icon: 'mdi-ruler-square-outline',
     },
   ]
@@ -244,15 +289,15 @@ function bordersValue(country) {
 }
 
 function populationFormatter(value) {
-  return `${Number(value).toLocaleString('fr-FR')} habitants`
+  return `${formatIntFr(value)} habitants`
 }
 
 function areaFormatter(value) {
-  return `${Number(value).toLocaleString('fr-FR')} km²`
+  return `${formatDecimalFr(value, 0, 2)} km²`
 }
 
 function bordersFormatter(value) {
-  return `${Number(value).toLocaleString('fr-FR')} frontière(s)`
+  return `${formatIntFr(value)} frontière(s)`
 }
 
 function densityFormatter(country) {
@@ -260,7 +305,7 @@ function densityFormatter(country) {
   const area = Number(country?.area)
   if (!Number.isFinite(population) || !Number.isFinite(area) || area <= 0) return 'Non disponible'
   const d = population / area
-  return `${d.toLocaleString('fr-FR', { maximumFractionDigits: 2 })} hab./km²`
+  return `${formatDecimalFr(d, 2, 2)} hab./km²`
 }
 
 function regionProgress(value) {
@@ -289,13 +334,55 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.stats-hero {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(145deg, rgba(var(--v-theme-primary), 0.2), rgba(255, 255, 255, 0.03));
+.statistics-page {
+  max-width: 100%;
 }
 
-.stats-section-label {
-  letter-spacing: 0.1em;
+.stats-hero {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.16), rgba(255, 255, 255, 0.03));
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+}
+
+.stats-hero-lead {
+  max-width: 640px;
+  line-height: 1.55;
+}
+
+.stats-section--major {
+  padding-bottom: 4px;
+}
+
+.stats-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: rgba(230, 252, 252, 0.92);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stats-heading-icon {
+  width: 4px;
+  height: 22px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgb(var(--v-theme-primary)), rgba(124, 243, 232, 0.35));
+  flex-shrink: 0;
+}
+
+.stats-subheading {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(168, 210, 210, 0.82);
+}
+
+.stats-section-desc {
+  max-width: 720px;
+  line-height: 1.5;
 }
 
 .stats-panel {
@@ -303,10 +390,14 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.02);
 }
 
-.stats-panel-title {
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  padding-top: 18px !important;
+.stats-records-card :deep(.v-list-item-subtitle) {
+  opacity: 0.95;
+  white-space: normal;
+  line-height: 1.45;
+}
+
+.region-panel {
+  overflow: hidden;
 }
 
 .region-list {
@@ -320,9 +411,9 @@ onMounted(() => {
 .region-item-inner {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   width: 100%;
-  padding: 6px 0;
+  padding: 10px 0;
 }
 
 .region-item-text {
@@ -330,38 +421,42 @@ onMounted(() => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .region-name {
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: 0.94rem;
 }
 
 .region-progress {
-  flex: 0 0 140px;
-  max-width: 42%;
+  flex: 0 0 min(160px, 38%);
+}
+
+.record-item {
+  transition: background-color 0.18s ease;
+  border: 1px solid transparent;
+}
+
+.record-item:hover {
+  background: rgba(var(--v-theme-primary), 0.07);
+  border-color: rgba(var(--v-theme-primary), 0.12);
+}
+
+.rankings-row {
+  row-gap: 24px;
 }
 
 @media (max-width: 600px) {
   .region-item-inner {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 12px;
   }
 
   .region-progress {
     flex: 1 1 auto;
     max-width: 100%;
   }
-}
-
-.record-item {
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.record-item:hover {
-  background: rgba(var(--v-theme-primary), 0.08);
-  transform: translateX(3px);
 }
 </style>

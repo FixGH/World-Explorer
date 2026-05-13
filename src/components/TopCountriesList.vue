@@ -1,55 +1,57 @@
 <template>
   <v-card class="h-100 ranking-card" rounded="lg">
-    <v-card-title class="d-flex align-center justify-space-between flex-wrap ga-2 pb-2">
+    <v-card-title class="ranking-card-title d-flex align-center justify-space-between flex-wrap ga-2">
       <span class="ranking-title">{{ title }}</span>
       <v-chip size="small" variant="tonal" color="primary">Top 10</v-chip>
     </v-card-title>
     <v-divider class="opacity-25" />
-    <v-list v-if="items.length" class="ranking-list py-2 px-2" density="comfortable">
+    <v-list v-if="items.length" class="ranking-list py-3 px-3" density="comfortable">
       <v-list-item
         v-for="(country, index) in items"
         :key="country.cca3"
         :to="{ name: 'country-details', params: { code: country.cca3 } }"
         rounded="lg"
-        class="rank-item mb-1 pa-2"
+        class="rank-item mb-2"
       >
-        <template #prepend>
-          <div class="flag-rank-cell">
-            <v-avatar size="46" rounded="lg" class="flag-avatar flex-shrink-0">
-              <v-img :src="flagSrc(country)" :alt="country.name?.common || ''" cover>
-                <template #error>
-                  <v-sheet class="flag-fallback fill-height d-flex align-center justify-center">
-                    <v-icon icon="mdi-flag-outline" size="22" />
-                  </v-sheet>
-                </template>
-              </v-img>
-            </v-avatar>
-            <span class="rank-index" aria-hidden="true">{{ index + 1 }}</span>
+        <div class="rank-row-layout">
+          <div class="rank-flag-col">
+            <div class="flag-rank-cell">
+              <v-avatar size="40" rounded="lg" class="flag-avatar flex-shrink-0">
+                <v-img :src="flagSrc(country)" :alt="country.name?.common || ''" cover>
+                  <template #error>
+                    <v-sheet class="flag-fallback fill-height d-flex align-center justify-center">
+                      <v-icon icon="mdi-flag-outline" size="20" />
+                    </v-sheet>
+                  </template>
+                </v-img>
+              </v-avatar>
+              <span class="rank-index" aria-hidden="true">{{ index + 1 }}</span>
+            </div>
           </div>
-        </template>
 
-        <v-list-item-title class="country-title text-body-1 font-weight-bold">
-          {{ country.name?.common || 'Non disponible' }}
-        </v-list-item-title>
-        <v-list-item-subtitle class="country-value text-body-2 mt-1">
-          {{ formatValue(valueAccessor(country)) }}
-        </v-list-item-subtitle>
+          <div class="rank-main-col min-width-0">
+            <div class="country-title text-body-2 font-weight-bold text-truncate">
+              {{ country.name?.common || 'Non disponible' }}
+            </div>
+            <div class="country-value text-caption text-medium-emphasis mt-1">
+              {{ formatValue(valueAccessor(country)) }}
+            </div>
+          </div>
 
-        <template #append>
-          <div class="rank-progress-wrap">
+          <div class="rank-bar-col">
             <v-progress-linear
               :model-value="progressValue(valueAccessor(country))"
               color="primary"
               bg-color="grey-darken-2"
-              height="8"
+              height="7"
               rounded
               class="rank-progress"
             />
           </div>
-        </template>
+        </div>
       </v-list-item>
     </v-list>
-    <v-card-text v-else class="text-medium-emphasis py-6 text-center">
+    <v-card-text v-else class="text-medium-emphasis py-8 text-center">
       Données non disponibles.
     </v-card-text>
   </v-card>
@@ -99,18 +101,23 @@ function progressValue(value) {
   background: rgba(255, 255, 255, 0.02);
 }
 
+.ranking-card-title {
+  padding-top: 18px !important;
+  padding-bottom: 12px !important;
+}
+
 .ranking-title {
   font-weight: 700;
   letter-spacing: 0.02em;
+  font-size: 1rem;
 }
 
 .flag-rank-cell {
   position: relative;
-  margin-right: 4px;
 }
 
 .flag-avatar {
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.11);
   overflow: hidden;
 }
 
@@ -120,70 +127,71 @@ function progressValue(value) {
 
 .rank-index {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
+  bottom: -3px;
+  right: -3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   color: rgba(232, 252, 252, 0.92);
-  background: rgba(8, 18, 22, 0.88);
-  border: 1px solid rgba(124, 243, 232, 0.35);
+  background: rgba(8, 18, 22, 0.9);
+  border: 1px solid rgba(124, 243, 232, 0.32);
   border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-}
-
-.country-title {
-  line-height: 1.35;
 }
 
 .country-value {
   font-variant-numeric: tabular-nums;
-  opacity: 0.92;
+  letter-spacing: 0.02em;
 }
 
-.rank-progress-wrap {
-  width: 112px;
-  flex-shrink: 0;
+.rank-row-layout {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(72px, 104px);
+  align-items: center;
+  gap: 12px 14px;
+  width: 100%;
+}
+
+.rank-bar-col {
   align-self: center;
 }
 
 .rank-progress {
-  opacity: 0.95;
+  opacity: 0.92;
 }
 
 .rank-item {
   cursor: pointer;
   transition:
-    background-color 0.2s ease,
-    transform 0.2s ease,
-    border-color 0.2s ease;
+    background-color 0.18s ease,
+    border-color 0.18s ease;
   border: 1px solid transparent;
+  padding: 10px 12px !important;
 }
 
 .rank-item:hover {
-  background: rgba(var(--v-theme-primary), 0.09) !important;
-  border-color: rgba(var(--v-theme-primary), 0.18);
-  transform: translateX(4px);
+  background: rgba(var(--v-theme-primary), 0.07) !important;
+  border-color: rgba(var(--v-theme-primary), 0.14);
 }
 
-.ranking-list :deep(.v-list-item__prepend) {
-  width: auto;
-  margin-inline-end: 12px;
+.ranking-list :deep(.v-list-item__content) {
+  overflow: visible;
 }
 
-.ranking-list :deep(.v-list-item__append) {
-  align-self: center;
-}
+@media (max-width: 520px) {
+  .rank-row-layout {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
+  }
 
-@media (max-width: 600px) {
-  .rank-progress-wrap {
-    width: 88px;
+  .rank-bar-col {
+    grid-column: 1 / -1;
+    max-width: 100%;
   }
 }
 </style>
