@@ -1,6 +1,6 @@
 <template>
   <v-row class="mb-4">
-    <v-col v-for="item in items" :key="item.label" cols="12" sm="6" md="3">
+    <v-col v-for="item in items" :key="item.label" cols="12" sm="6" :md="md">
       <v-card class="summary-card h-100">
         <v-card-text class="d-flex justify-space-between align-start ga-4">
           <div>
@@ -21,6 +21,11 @@ defineProps({
   items: {
     type: Array,
     required: true,
+  },
+  /** Largeur colonne sur breakpoint md (12/md = nombre de cartes par ligne). */
+  md: {
+    type: Number,
+    default: 3,
   },
 })
 </script>

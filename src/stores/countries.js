@@ -301,6 +301,55 @@ export const useCountriesStore = defineStore('countries', () => {
   const largestCountry = computed(() => topLargestCountries.value[0] || null)
   const mostBorderedCountry = computed(() => topBorderCountries.value[0] || null)
 
+  /** Pays avec la population la plus faible (parmi les valeurs numériques connues). */
+  const leastPopulatedCountry = computed(() => {
+    const list = countries.value.filter((c) => Number.isFinite(c?.population))
+    if (!list.length) return null
+    return [...list].sort((a, b) => (a.population || 0) - (b.population || 0))[0]
+  })
+
+  /** Pays avec la plus forte densité (hab./km²), superficie strictement positive. */
+  const mostDenseCountry = computed(() => {
+    let best = null
+    let bestDensity = -1
+    for (const c of countries.value) {
+      const pop = Number(c?.population)
+      const area = Number(c?.area)
+      if (!Number.isFinite(pop) || !Number.isFinite(area) || area <= 0) continue
+      const d = pop / area
+      if (d > bestDensity) {
+        bestDensity = d
+        best = c
+      }
+    }
+    return best
+  })
+
+  /** Région du monde comptant le plus de pays dans le jeu chargé (ex-aequo : première max rencontrée dans l’ordre fixe des régions). */
+  const leadingRegionByCount = computed(() => {
+    let bestRegion = null
+    let max = -1
+    for (const item of regionDistribution.value) {
+      if (item.count > max) {
+        max = item.count
+        bestRegion = item.region
+      }
+    }
+    return bestRegion != null && max > 0 ? { region: bestRegion, count: max } : null
+  })
+
+  const averagePopulationPerCountry = computed(() => {
+    const n = countries.value.length
+    if (!n) return null
+    return totalPopulation.value / n
+  })
+
+  const averageAreaPerCountry = computed(() => {
+    const n = countries.value.length
+    if (!n) return null
+    return totalArea.value / n
+  })
+
   function persistFavorites() {
     writeStorageJson(FAVORITES_STORAGE_KEY, favoriteCodes.value)
   }
@@ -537,6 +586,11 @@ export const useCountriesStore = defineStore('countries', () => {
     mostPopulatedCountry,
     largestCountry,
     mostBorderedCountry,
+    leastPopulatedCountry,
+    mostDenseCountry,
+    leadingRegionByCount,
+    averagePopulationPerCountry,
+    averageAreaPerCountry,
     selectedCountry,
     selectedCountryLoading,
     selectedCountryError,

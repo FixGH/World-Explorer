@@ -1,47 +1,67 @@
 <template>
-  <v-container class="py-6">
+  <v-container class="py-6 statistics-page">
     <v-card variant="tonal" rounded="lg" class="mb-5 stats-hero">
       <v-card-text class="py-5">
         <h1 class="text-h4 font-weight-bold">Statistiques</h1>
-        <p class="text-medium-emphasis mt-2">
-          Analyse globale des pays et classements clés.
+        <p class="text-medium-emphasis mt-2 mb-0">
+          Analyse globale des pays et classements clés — données issues du jeu chargé (API + éventuels pays locaux).
         </p>
       </v-card-text>
     </v-card>
 
-    <v-alert v-if="store.loading" type="info" variant="tonal" class="mb-4">
-      Chargement des statistiques...
+    <v-alert v-if="store.loading" type="info" variant="tonal" rounded="lg" class="mb-4">
+      Chargement des statistiques…
     </v-alert>
 
-    <v-alert v-else-if="store.error" type="error" variant="tonal" class="mb-4">
+    <v-alert v-else-if="store.error" type="error" variant="tonal" rounded="lg" class="mb-4">
       {{ store.error }}
     </v-alert>
 
     <template v-else>
       <StatsSummaryCards :items="summaryItems" />
 
+      <div v-if="insightItems.length" class="stats-section mt-2 mb-4">
+        <div class="stats-section-label text-overline text-medium-emphasis mb-3 px-1">
+          Indicateurs complémentaires
+        </div>
+        <StatsSummaryCards :items="insightItems" :md="4" />
+      </div>
+
+      <div v-if="averageItems.length" class="stats-section mb-6">
+        <div class="stats-section-label text-overline text-medium-emphasis mb-3 px-1">
+          Moyennes (ensemble des pays affichés)
+        </div>
+        <StatsSummaryCards :items="averageItems" :md="6" />
+      </div>
+
       <v-row class="mb-5">
         <v-col cols="12" md="6">
           <v-card class="h-100 stats-panel" rounded="lg">
-            <v-card-title>Répartition par région</v-card-title>
-            <v-divider />
-            <v-list class="py-2">
+            <v-card-title class="stats-panel-title">Répartition par région</v-card-title>
+            <v-divider class="opacity-25" />
+            <v-list class="py-2 px-2 region-list">
               <v-list-item
                 v-for="region in regionalItems"
                 :key="region.label"
-                :title="region.label"
-                :subtitle="`${region.count.toLocaleString('fr-FR')} pays`"
+                class="region-item rounded-lg mb-1 px-3"
               >
-                <template #append>
-                  <v-progress-linear
-                    :model-value="regionProgress(region.count)"
-                    color="primary"
-                    bg-color="grey-darken-1"
-                    height="10"
-                    rounded
-                    style="width: 155px"
-                  />
-                </template>
+                <div class="region-item-inner">
+                  <div class="region-item-text">
+                    <span class="region-name">{{ region.label }}</span>
+                    <span class="region-count text-caption text-medium-emphasis">
+                      {{ region.count.toLocaleString('fr-FR') }} pays
+                    </span>
+                  </div>
+                  <div class="region-progress">
+                    <v-progress-linear
+                      :model-value="regionProgress(region.count)"
+                      color="primary"
+                      bg-color="grey-darken-2"
+                      height="10"
+                      rounded
+                    />
+                  </div>
+                </div>
               </v-list-item>
             </v-list>
           </v-card>
@@ -49,35 +69,38 @@
 
         <v-col cols="12" md="6">
           <v-card class="h-100 stats-panel" rounded="lg">
-            <v-card-title>Records mondiaux</v-card-title>
-            <v-divider />
-            <v-list class="py-2">
+            <v-card-title class="stats-panel-title">Records mondiaux</v-card-title>
+            <v-divider class="opacity-25" />
+            <v-list class="py-2 px-2">
               <v-list-item
                 title="Pays le plus peuplé"
                 :subtitle="recordSubtitle(store.mostPopulatedCountry, populationFormatter)"
                 :to="recordTo(store.mostPopulatedCountry)"
                 rounded="lg"
-                class="record-item"
+                class="record-item mb-1"
               />
               <v-list-item
                 title="Pays le plus grand"
                 :subtitle="recordSubtitle(store.largestCountry, areaFormatter)"
                 :to="recordTo(store.largestCountry)"
                 rounded="lg"
-                class="record-item"
+                class="record-item mb-1"
               />
               <v-list-item
-                title="Pays avec le plus de frontières"
+                title="Pays avec le plus de frontières terrestres"
                 :subtitle="recordSubtitle(store.mostBorderedCountry, bordersFormatter)"
                 :to="recordTo(store.mostBorderedCountry)"
                 rounded="lg"
-                class="record-item"
+                class="record-item mb-1"
               />
             </v-list>
           </v-card>
         </v-col>
       </v-row>
 
+      <div class="stats-section-label text-overline text-medium-emphasis mb-3 px-1">
+        Classements Top 10
+      </div>
       <v-row>
         <v-col cols="12" md="4">
           <TopCountriesList
@@ -140,7 +163,7 @@ const summaryItems = computed(() => [
   },
   {
     label: 'Population totale cumulée',
-    value: store.totalPopulation.toLocaleString('fr-FR'),
+    value: `${store.totalPopulation.toLocaleString('fr-FR')} habitants`,
     icon: 'mdi-account-group',
   },
   {
@@ -149,6 +172,57 @@ const summaryItems = computed(() => [
     icon: 'mdi-ruler-square',
   },
 ])
+
+const insightItems = computed(() => {
+  const items = []
+
+  const lr = store.leadingRegionByCount
+  if (lr) {
+    items.push({
+      label: 'Région la plus représentée',
+      value: `${regionLabels[lr.region] || lr.region} · ${lr.count.toLocaleString('fr-FR')} pays`,
+      icon: 'mdi-map-marker-multiple-outline',
+    })
+  }
+
+  const lp = store.leastPopulatedCountry
+  if (lp) {
+    items.push({
+      label: 'Pays le moins peuplé',
+      value: `${lp.name?.common || 'Non disponible'} · ${populationFormatter(populationValue(lp))}`,
+      icon: 'mdi-account-arrow-down-outline',
+    })
+  }
+
+  const dense = store.mostDenseCountry
+  if (dense) {
+    items.push({
+      label: 'Plus forte densité démographique',
+      value: `${dense.name?.common || 'Non disponible'} · ${densityFormatter(dense)}`,
+      icon: 'mdi-speedometer',
+    })
+  }
+
+  return items
+})
+
+const averageItems = computed(() => {
+  const ap = store.averagePopulationPerCountry
+  const aa = store.averageAreaPerCountry
+  if (ap == null || aa == null) return []
+  return [
+    {
+      label: 'Population moyenne (par pays)',
+      value: `${Math.round(ap).toLocaleString('fr-FR')} habitants`,
+      icon: 'mdi-chart-timeline-variant',
+    },
+    {
+      label: 'Superficie moyenne (par pays)',
+      value: `${aa.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} km²`,
+      icon: 'mdi-ruler-square-outline',
+    },
+  ]
+})
 
 const regionalItems = computed(() => {
   return store.regionDistribution.map((item) => ({
@@ -170,15 +244,23 @@ function bordersValue(country) {
 }
 
 function populationFormatter(value) {
-  return `${value.toLocaleString('fr-FR')} habitants`
+  return `${Number(value).toLocaleString('fr-FR')} habitants`
 }
 
 function areaFormatter(value) {
-  return `${value.toLocaleString('fr-FR')} km²`
+  return `${Number(value).toLocaleString('fr-FR')} km²`
 }
 
 function bordersFormatter(value) {
-  return `${value.toLocaleString('fr-FR')} frontière(s)`
+  return `${Number(value).toLocaleString('fr-FR')} frontière(s)`
+}
+
+function densityFormatter(country) {
+  const population = Number(country?.population)
+  const area = Number(country?.area)
+  if (!Number.isFinite(population) || !Number.isFinite(area) || area <= 0) return 'Non disponible'
+  const d = population / area
+  return `${d.toLocaleString('fr-FR', { maximumFractionDigits: 2 })} hab./km²`
 }
 
 function regionProgress(value) {
@@ -191,7 +273,7 @@ function recordSubtitle(country, formatter) {
   if (!country) return 'Non disponible'
   const isBordersFormatter = formatter === bordersFormatter
   const numericValue = isBordersFormatter ? bordersValue(country) : formatter === areaFormatter ? areaValue(country) : populationValue(country)
-  return `${country.name?.common || 'Non disponible'} - ${formatter(numericValue)}`
+  return `${country.name?.common || 'Non disponible'} — ${formatter(numericValue)}`
 }
 
 function recordTo(country) {
@@ -212,9 +294,66 @@ onMounted(() => {
   background: linear-gradient(145deg, rgba(var(--v-theme-primary), 0.2), rgba(255, 255, 255, 0.03));
 }
 
+.stats-section-label {
+  letter-spacing: 0.1em;
+}
+
 .stats-panel {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   background: rgba(255, 255, 255, 0.02);
+}
+
+.stats-panel-title {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding-top: 18px !important;
+}
+
+.region-list {
+  max-width: 100%;
+}
+
+.region-item {
+  min-height: 56px !important;
+}
+
+.region-item-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 6px 0;
+}
+
+.region-item-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.region-name {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.region-progress {
+  flex: 0 0 140px;
+  max-width: 42%;
+}
+
+@media (max-width: 600px) {
+  .region-item-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .region-progress {
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
 }
 
 .record-item {
@@ -223,6 +362,6 @@ onMounted(() => {
 
 .record-item:hover {
   background: rgba(var(--v-theme-primary), 0.08);
-  transform: translateX(2px);
+  transform: translateX(3px);
 }
 </style>

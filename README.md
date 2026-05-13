@@ -1,170 +1,224 @@
 # World Explorer
 
-Application web de visualisation de pays construite avec Vue 3 et Vuetify, basée sur l’API REST Countries.  
-Le projet propose une expérience moderne pour explorer, comparer et analyser des données pays avec une interface responsive.
+Application web **single-page** (SPA) de démonstration pédagogique : exploration des pays du monde à partir de l’API publique **REST Countries**, enrichie d’un **état local** (favoris, historique, pays personnalisés) et d’une **authentification front-end simulée** pour protéger certaines actions d’écriture.
 
-## Présentation rapide
+---
 
-World Explorer est un projet scolaire orienté front-end qui met en pratique :
-- la consommation d’API REST,
-- la gestion d’état centralisée avec Pinia,
-- le routage dynamique,
-- la persistance locale côté navigateur.
+## Présentation
+
+**World Explorer** propose une interface en français (Vuetify 3, thème sombre) pour parcourir une liste de pays, consulter des fiches détaillées, comparer deux territoires, visualiser des statistiques agrégées et gérer des favoris. Une carte **Leaflet** (tuiles OpenStreetMap) illustre la localisation lorsque des coordonnées sont disponibles.
+
+Le dépôt peut conserver le nom technique du paquet npm (`esig-141-demo-vuetify-api`) ; le produit présenté aux utilisateurs est **World Explorer**.
+
+---
 
 ## Objectifs du projet
 
-- Concevoir une application Vue structurée et maintenable.
-- Afficher des données pays de manière claire et utile pour l’utilisateur.
-- Proposer des interactions concrètes : recherche, filtres, tri, favoris, comparaison.
-- Appliquer de bonnes pratiques de qualité (composants réutilisables, états loading/error, configuration environnement).
+- Mettre en œuvre une **architecture Vue 3** claire (pages, composants, état global, services).
+- Consommer une **API REST distante** de manière structurée (client HTTP dédié, couche service).
+- Offrir une **expérience utilisateur** soignée : navigation, chargement, erreurs, responsive.
+- Compléter avec des **données persistantes côté client** (`localStorage`) et une **démo d’authentification** sans backend (projet scolaire).
+
+---
 
 ## Fonctionnalités principales
 
-- Explorateur de pays avec recherche, filtre par région et tri.
-- Détail d’un pays via route dynamique.
-- Comparaison de deux pays avec mise en évidence des écarts.
-- Carte Leaflet sur la page détail.
-- Gestion des favoris avec persistance `localStorage`.
-- Historique des pays récemment consultés (persisté).
-- Vue statistiques globale.
-- Recherche globale dans la barre de navigation.
-- Page 404 pour routes inconnues.
+| Domaine | Description |
+|--------|-------------|
+| **Accueil** | Aperçu des accès rapides, statistiques globales, favoris et pays récemment consultés. |
+| **Explorateur** | Liste des pays avec recherche, filtre par région, tri ; cartes pays avec accès fiche et favoris. |
+| **Fiche pays** | Informations détaillées, cartes externes (Google Maps / OSM si disponibles), carte Leaflet, voisins frontaliers cliquables. |
+| **Favoris** | Liste des pays marqués favoris, recherche et tri locaux. |
+| **Comparer** | Choix de deux pays, tableau comparatif avec mise en évidence des écarts sur les indicateurs clés. |
+| **Statistiques** | Synthèses et classements (population, superficie, frontières, répartition par région). |
+| **Recherche globale** | Champ dans la barre d’application pour accéder rapidement à une fiche pays. |
+| **Pays récemment vus** | Historique limité (dernières fiches ouvertes), persisté. |
+| **Pays personnalisés** | Ajout / suppression **locale** de pays fictifs (utilisateur connecté en démo) ; données officielles REST Countries en lecture seule. |
+| **Authentification démo** | Connexion simulée (`admin` / `admin`), persistance de session ; route `/add-country` protégée. |
+| **À propos** | Page d’information sur le projet. |
+| **404** | Route catch-all pour URL inconnues. |
+
+---
 
 ## Technologies utilisées
 
-- **Vue 3** (Composition API)
-- **Vuetify 3**
-- **Pinia**
-- **Vue Router 4**
-- **Axios**
-- **Leaflet**
-- **REST Countries API**
-- **localStorage** (persistance favoris/récents)
+| Technologie | Rôle |
+|-------------|------|
+| **Vue 3** | Framework UI (Composition API, `<script setup>`). |
+| **Vuetify 3** | Composants Material Design, thème, mise en page responsive. |
+| **Pinia** | Stores `countries` et `auth` ; état partagé entre pages. |
+| **Vue Router 4** | Navigation, routes dynamiques (`/countries/:code`), garde sur `/add-country`. |
+| **Axios** | Client HTTP via `apiClient` (`src/services/apiClient.js`) pour REST Countries. |
+| **Leaflet** | Carte interactive sur la fiche pays (`CountryMap.vue`). |
+| **REST Countries** | API publique de données pays (JSON). |
+| **Vite 5** | Build et serveur de développement. |
+| **localStorage** | Persistance des favoris, historique, pays personnalisés, session auth démo. |
+
+---
 
 ## Installation
 
+Prérequis : **Node.js** (version compatible avec Vite 5, typiquement **18+** recommandé) et **npm**.
+
 ```bash
+git clone <url-du-depot>
+cd World-Explorer
 npm install
 ```
 
+---
+
 ## Variables d’environnement
 
-Le projet utilise une variable pour l’URL de base de l’API :
+1. Copier le fichier d’exemple (recommandé pour documenter la configuration locale) :
 
-```env
-VITE_REST_COUNTRIES_API_URL=https://restcountries.com/v3.1
-```
+   ```bash
+   copy .env.example .env
+   ```
 
-Fichier fourni :
-- `.env.example`
+   Sous Linux ou macOS : `cp .env.example .env`
 
-Vous pouvez copier ce fichier vers `.env` si vous souhaitez personnaliser la configuration locale :
+2. Définir l’URL de base de l’API (sans slash final en fin de chaîne ; le client normalise si besoin) :
 
-```bash
-cp .env.example .env
-```
+   ```env
+   VITE_REST_COUNTRIES_API_URL=https://restcountries.com/v3.1
+   ```
 
-> `.env` est optionnel : une valeur de fallback est prévue dans le service API.
+Si `.env` est absent, l’application utilise la **même valeur par défaut** dans `apiClient.js`.
 
-## Lancer le projet en développement
+Les variables Vite doivent être préfixées par `VITE_` pour être exposées au code client.
 
-```bash
-npm run dev
-```
+---
 
-## Build de production
+## Commandes
 
-```bash
-npm run build
-```
+| Commande | Usage |
+|----------|--------|
+| `npm run dev` | Lance le serveur de développement (**http://localhost:3000** selon `vite.config.mjs`). |
+| `npm run build` | Compile l’application pour la production (`dist/`). |
+| `npm run preview` | Sert le build localement pour vérification. |
+| `npm run lint` | Analyse ESLint (avec `--fix` selon `package.json`). |
+
+---
 
 ## Structure du projet
 
-```text
-src/
-├── App.vue
-├── main.js
-├── components/          # Composants UI réutilisables
-├── pages/               # Pages routées
-├── router/              # Définition des routes
-├── services/            # Accès API (Axios)
-├── stores/              # Stores Pinia
-├── plugins/             # Configuration Vuetify
-└── styles/              # Styles globaux
 ```
+World-Explorer/
+├── public/
+├── src/
+│   ├── assets/              # Ressources statiques (ex. image par défaut pays personnalisés)
+│   ├── components/          # Composants réutilisables (cartes, filtres, carte, comparaison, etc.)
+│   ├── pages/               # Vues associées aux routes
+│   ├── plugins/             # Enregistrement Vuetify, etc.
+│   ├── router/              # Définition des routes et garde d’authentification
+│   ├── services/            # Client API Axios + appels REST Countries
+│   ├── stores/              # Pinia (pays, authentification démo)
+│   ├── styles/              # Styles globaux (ex. ui.css)
+│   ├── utils/               # Utilitaires (ex. URL drapeau / placeholder)
+│   ├── App.vue
+│   └── main.js
+├── .env.example
+├── package.json
+├── vite.config.mjs
+└── README.md
+```
+
+---
 
 ## Architecture technique
 
-- **Pages (`src/pages`)**  
-  Regroupent la logique de présentation des écrans principaux : accueil, exploration, comparaison, détail, statistiques, favoris, etc.
+### Pages (`src/pages/`)
 
-- **Composants (`src/components`)**  
-  Contiennent des briques réutilisables (cartes pays, filtres, états loading/error, table de comparaison, recherche globale, etc.).
+Chaque fichier sous `pages/` correspond à une **vue principale** montée par le routeur : accueil, liste pays, détail (`:code`), favoris, comparer, statistiques, à propos, connexion, ajout de pays personnalisé, page 404.
 
-- **Store Pinia (`src/stores/countries.js`)**  
-  Centralise l’état applicatif : données API, recherche/filtres/tri, comparaison, favoris, récents, statistiques calculées.
+### Composants (`src/components/`)
 
-- **Services API (`src/services`)**  
-  Encapsulent les appels HTTP via Axios (`apiClient` + `countriesService`) pour éviter de disperser les requêtes dans les composants/pages.
+Fragments UI réutilisables : filtres, cartes pays, états chargement/erreur, tableau de comparaison, carte Leaflet, recherche globale dans la barre, formulaires, etc. Cela limite la duplication et facilite la maintenance.
 
-- **Routing (`src/router/index.js`)**  
-  Gère la navigation, dont la route dynamique de détail (`/countries/:code`) et la page 404.
+### Stores Pinia (`src/stores/`)
 
-- **Persistance locale (`localStorage`)**  
-  Utilisée pour conserver les favoris et les pays récemment consultés entre les sessions.
+- **`countries`** : liste officielle + pays personnalisés, chargement/erreur, filtres, favoris, comparaison, pays sélectionné pour la fiche, statistiques dérivées, persistance `localStorage` pour favoris, récents, pays custom.
+- **`auth`** : session démo (`login` / `logout`), persistance `localStorage` ; **aucune sécurité réelle** (commentaire dans le code).
 
-## API utilisée
+### Services (`src/services/`)
 
-- **REST Countries** : [https://restcountries.com](https://restcountries.com)
-- Données récupérées :
-  - liste des pays (nom, drapeau, région, population, superficie, etc.),
-  - détail d’un pays (capitale, langues, monnaies, coordonnées, frontières, cartes, etc.).
+- **`apiClient.js`** : instance Axios (`baseURL`, timeout) branchée sur `VITE_REST_COUNTRIES_API_URL`.
+- **`countriesService.js`** : fonctions `getAllCountries` et `getCountryByCode` (paramètre `fields` pour limiter la charge réseau).
 
-## Détail des fonctionnalités clés
+### Routage (`src/router/index.js`)
 
-- **Country Explorer**  
-  Liste de pays consultable avec cartes et accès au détail.
+Historique HTML5, routes nommées, props sur la fiche pays. **`beforeEach`** : si `meta.requiresAuth` (route `/add-country`) et utilisateur non connecté → redirection vers `/login` avec `redirect` dans la query.
 
-- **Recherche / filtre / tri**  
-  Recherche textuelle, filtre par région, tri par nom ou population.
+### Persistance `localStorage`
 
-- **Détail pays**  
-  Vue complète d’un pays avec informations structurées.
+Exemples de clés utilisées par l’application (à titre documentaire ; le code reste la référence) :
 
-- **Carte Leaflet**  
-  Positionnement visuel du pays via coordonnées.
+| Clé | Contenu |
+|-----|---------|
+| `world-explorer-auth` | Session de la démo d’authentification (non sécurisée). |
+| `world-explorer-favorites` | Liste des codes pays favoris. |
+| `world-explorer-recently-viewed` | Derniers pays consultés (aperçu). |
+| `world-explorer-custom-countries` | Pays personnalisés ajoutés localement. |
 
-- **Favoris**  
-  Ajout/retrait rapide + notifications snackbar + persistance locale.
+Les données **officielles** ne sont jamais modifiées sur le serveur REST Countries ; seul le **navigateur** stocke les ajouts locaux.
 
-- **Comparaison**  
-  Comparaison côte à côte de deux pays sur des indicateurs pertinents.
+---
 
-- **Statistiques**  
-  Vue d’ensemble mondiale avec classements et indicateurs.
+## API utilisée : REST Countries
 
-- **Récemment consultés**  
-  Historique limité et persistant des dernières fiches ouvertes.
+- **Base** : `https://restcountries.com/v3.1` (configurable).
+- **Appels** :
+  - `GET /all` avec filtre de champs pour la liste d’exploration.
+  - `GET /alpha/{code}` pour le détail par code ISO alpha (ex. `FRA`).
 
-- **Recherche globale**  
-  Accès rapide à un pays depuis la barre de navigation.
+Les réponses fournissent notamment noms, drapeaux, capitale, régions, population, superficie, frontières, langues, monnaies, fuseaux, coordonnées pour la carte, etc., selon les champs demandés.
 
-- **Page 404**  
-  Gestion propre des routes invalides.
+---
 
-## Qualité et bonnes pratiques
+## Fonctionnalités détaillées (référence rapide)
 
-- Composants réutilisables et découplage UI/logique.
-- État global centralisé dans Pinia.
-- Abstraction des appels API via services dédiés.
-- Design responsive (desktop/tablette/mobile).
-- Gestion explicite des états de chargement et d’erreur.
-- Persistance `localStorage` robuste (fallback et validation de données).
+- **Explorateur** : chargement de la liste, filtres (`CountryFilters`), tri, cartes (`CountryCard`), lien vers fiche ; pays personnalisés mélangés à la liste avec badge dédié si applicable.
+- **Recherche / filtre / tri** : gérés dans le store `countries` et reflétés sur la page liste.
+- **Fiche pays** : chargement par code, affichage structuré, favori, cartes, Leaflet si `latlng` valide, liens vers pays frontaliers.
+- **Carte Leaflet** : marqueur et popup ; tuiles OSM.
+- **Favoris** : bascule depuis liste ou fiche ; page dédiée avec résumés.
+- **Comparaison** : sélection A/B, tableau des champs et indicateurs avec surbrillance du « gagnant » sur les métriques numériques.
+- **Statistiques** : agrégations et tops à partir du jeu de pays chargé (officiel + éventuels pays locaux).
+- **Récemment vus** : mis à jour à l’ouverture d’une fiche ; affichage sur l’accueil.
+- **Recherche globale** : composant dans la barre d’application pour sauter vers une fiche.
+- **404** : route finale `pathMatch` pour chemins inconnus.
 
-## Améliorations possibles
+---
 
-- Déploiement (Vercel/Netlify) avec pipeline CI simple.
-- Enrichissement des graphiques/statistiques.
-- Recommandations de pays (similitude région/population/langues).
-- Fonctions cartographiques avancées (couches, interactions supplémentaires).
-- Interface multilingue (i18n).
+## Qualité et bonnes pratiques observées
+
+- **Composants réutilisables** pour listes, erreurs, chargement, comparaison, carte.
+- **État centralisé Pinia** pour éviter les duplications de logique entre pages.
+- **Abstraction API** : appels REST regroupés dans `countriesService` + client Axios unique.
+- **Interface responsive** : grille Vuetify, ajustements CSS (tableaux, mise en page).
+- **États chargement / erreur** : retours visuels explicites sur les pages concernées.
+- **Persistance locale** pour préférences et démo sans backend.
+
+---
+
+## Pistes d’amélioration (hors périmètre actuel)
+
+- **Déploiement** : hébergement statique (GitHub Pages, Netlify, Vercel) avec `base` Vite adapté si sous-chemin.
+- **Graphiques** : intégration d’une librairie de charts pour les statistiques.
+- **Recommandations** : suggestions de pays proches (culture, région) à partir des données déjà chargées.
+- **Carte avancée** : contours pays, clusters, autres fonds de carte.
+- **Multilingue** : i18n (vue-i18n) pour EN/FR ou autres langues.
+- **Tests automatisés** : tests unitaires sur le store et tests de composants (Vitest + Vue Test Utils).
+
+---
+
+## Avertissement (projet scolaire)
+
+L’**authentification** et les **pays personnalisés** sont implémentés **côté client uniquement** : ce n’est pas un modèle de sécurité en production. Les identifiants démo et les données locales peuvent être modifiés ou effacés depuis les outils de développement du navigateur.
+
+---
+
+## Résumé de ce document
+
+Ce **README.md** a été ajouté pour documenter de façon **complète et professionnelle** le projet **World Explorer** : objectifs, fonctionnalités réelles, stack (**Vue 3, Vuetify, Pinia, Vue Router, Axios, Leaflet, REST Countries, localStorage**), installation, variable `VITE_REST_COUNTRIES_API_URL`, commandes `dev` / `build`, structure des dossiers, architecture (pages, composants, stores, services, routeur, persistance), description de l’API, inventaire des écrans, bonnes pratiques et pistes d’évolution — le tout en **français**, sans inventer de fonctionnalités absentes du code.
