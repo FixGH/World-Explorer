@@ -1,5 +1,15 @@
 <template>
-  <v-card class="country-card h-100 d-flex flex-column" rounded="lg">
+  <v-card
+    class="country-card country-card--interactive h-100 d-flex flex-column"
+    rounded="lg"
+    role="link"
+    :tabindex="0"
+    :aria-label="`Ouvrir la fiche — ${country.name?.common || 'Pays'}`"
+    :title="'Cliquer pour ouvrir la fiche pays'"
+    @click="openCountryDetails"
+    @keydown.enter.prevent="openCountryDetails"
+    @keydown.space.prevent="openCountryDetails"
+  >
     <div class="country-flag-wrap">
       <v-img
         :src="flagSrc"
@@ -75,18 +85,10 @@
       </div>
 
       <v-card-actions class="country-actions px-4 pb-4 pt-1 mt-auto">
-        <v-btn
-          color="primary"
-          variant="flat"
-          :to="{ name: 'country-details', params: { code: country.cca3 } }"
-          rounded="lg"
-          size="default"
-          prepend-icon="mdi-information-outline"
-          class="details-btn"
-        >
-          Fiche pays
-        </v-btn>
-
+        <p class="country-actions-hint text-caption text-medium-emphasis mb-0 me-auto d-none d-sm-flex align-center ga-1">
+          <v-icon icon="mdi-chevron-right" size="16" class="country-actions-hint-icon" aria-hidden="true" />
+          Voir la fiche
+        </p>
         <div class="country-actions-icons d-inline-flex align-center ga-1">
           <v-btn
             :icon="favoriteIcon"
@@ -94,7 +96,7 @@
             variant="tonal"
             rounded="lg"
             class="favorite-btn"
-            @click="$emit('toggle-favorite', country.cca3)"
+            @click.stop="$emit('toggle-favorite', country.cca3)"
           />
           <v-btn
             v-if="canDelete"
@@ -104,7 +106,7 @@
             rounded="lg"
             aria-label="Supprimer ce pays personnalisé"
             class="delete-btn"
-            @click="$emit('delete-country', country.cca3)"
+            @click.stop="$emit('delete-country', country.cca3)"
           />
         </div>
       </v-card-actions>
@@ -114,7 +116,10 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
+
+const router = useRouter()
 
 const props = defineProps({
   country: {
@@ -132,6 +137,10 @@ const props = defineProps({
 })
 
 defineEmits(['toggle-favorite', 'delete-country'])
+
+function openCountryDetails() {
+  router.push({ name: 'country-details', params: { code: props.country.cca3 } })
+}
 
 const flagSrc = computed(() => getCountryFlagSrc(props.country))
 
@@ -219,6 +228,19 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   transform: translateY(-3px);
   border-color: rgba(var(--v-theme-primary), 0.28);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+}
+
+.country-card--interactive {
+  cursor: pointer;
+}
+
+.country-card--interactive:focus-visible {
+  outline: 2px solid rgba(var(--v-theme-primary), 0.65);
+  outline-offset: 2px;
+}
+
+.country-card--interactive:hover .country-name {
+  color: rgb(var(--v-theme-primary));
 }
 
 .country-flag-wrap {
@@ -329,20 +351,25 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   padding-top: 14px !important;
 }
 
-.country-actions-icons {
-  margin-left: auto;
+.country-actions-hint {
+  opacity: 0.72;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  user-select: none;
 }
 
-.details-btn {
-  text-transform: none;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  min-height: 40px;
+.country-actions-hint-icon {
+  opacity: 0.85;
+}
+
+.country-actions-icons {
+  flex-shrink: 0;
 }
 
 .favorite-btn,
@@ -373,9 +400,7 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
     text-align: left;
   }
 
-  .country-actions-icons {
-    margin-left: 0;
-    width: 100%;
+  .country-actions {
     justify-content: flex-end;
   }
 }

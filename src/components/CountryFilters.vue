@@ -1,8 +1,8 @@
 <template>
   <v-card variant="tonal" class="mb-5 filters-card" rounded="lg">
-    <v-card-text>
-      <v-row>
-        <v-col cols="12" md="5">
+    <v-card-text class="filters-card-text">
+      <v-row class="filters-row" align="stretch">
+        <v-col cols="12" md="12" lg="4" class="filters-col">
           <v-text-field
             :model-value="searchQuery"
             label="Recherche par nom"
@@ -16,7 +16,7 @@
           />
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="6" lg="3" class="filters-col">
           <v-select
             :model-value="selectedRegion"
             :items="regionItems"
@@ -28,7 +28,7 @@
           />
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="6" lg="3" class="filters-col">
           <v-select
             :model-value="sortOption"
             :items="sortItems"
@@ -40,8 +40,16 @@
           />
         </v-col>
 
-        <v-col cols="12" md="1" class="d-flex align-center justify-end">
-          <v-btn variant="tonal" color="secondary" class="reset-btn" @click="$emit('reset')">Réinitialiser</v-btn>
+        <v-col cols="12" sm="12" md="12" lg="2" class="filters-col filters-reset-col">
+          <v-btn
+            variant="tonal"
+            color="secondary"
+            class="reset-btn"
+            prepend-icon="mdi-backup-restore"
+            @click="$emit('reset')"
+          >
+            Réinitialiser
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-text>
@@ -49,7 +57,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   searchQuery: {
     type: String,
     default: '',
@@ -89,13 +97,52 @@ const sortItems = [
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
 }
 
-.reset-btn {
-  min-width: 122px;
+.filters-card-text {
+  padding: 16px 18px 18px;
 }
 
-@media (max-width: 960px) {
+@media (min-width: 960px) {
+  .filters-card-text {
+    padding: 20px 22px 22px;
+  }
+}
+
+.filters-row {
+  margin-top: -6px;
+  margin-bottom: -6px;
+}
+
+.filters-col {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.filters-reset-col {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+@media (min-width: 1280px) {
+  .filters-reset-col {
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+
+.reset-btn {
+  width: 100%;
+  min-height: 44px;
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 1280px) {
   .reset-btn {
-    width: 100%;
+    width: auto;
+    min-width: 8.75rem;
+    align-self: center;
   }
 }
 </style>

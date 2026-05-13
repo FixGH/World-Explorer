@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-6">
+  <v-container class="py-6 countries-page">
     <v-card variant="tonal" rounded="lg" class="mb-5 countries-hero">
       <v-card-text class="d-flex align-center justify-space-between py-4">
         <h1 class="text-h4 font-weight-bold">Explorateur de pays</h1>
