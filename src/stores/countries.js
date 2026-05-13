@@ -1,9 +1,12 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { getAllCountries, getCountryByCode } from '@/services/countriesService'
+import { useAuthStore } from '@/stores/auth'
+import { CUSTOM_COUNTRY_FLAG_ASSET, getCountryFlagSrc } from '@/utils/countryFlagSrc'
 
 const FAVORITES_STORAGE_KEY = 'world-explorer-favorites'
 const RECENTLY_VIEWED_STORAGE_KEY = 'world-explorer-recently-viewed'
+const CUSTOM_COUNTRIES_STORAGE_KEY = 'world-explorer-custom-countries'
 const MAX_RECENTLY_VIEWED = 5
 
 function normalizeCountryCode(value) {
@@ -69,8 +72,52 @@ function loadRecentlyViewedCountries() {
   return uniqueByCode
 }
 
+function sanitizeCustomCountry(country) {
+  if (!country || typeof country !== 'object') return null
+  const code = normalizeCountryCode(country.cca3)
+  if (!code) return null
+
+  const name = country?.name?.common || country?.name?.official || code
+  const officialName = country?.name?.official || name
+  const capital = Array.isArray(country.capital) ? country.capital : [country.capital || 'Non disponible']
+
+  return {
+    name: {
+      common: String(name),
+      official: String(officialName),
+    },
+    flags: {
+      svg: CUSTOM_COUNTRY_FLAG_ASSET,
+      png: CUSTOM_COUNTRY_FLAG_ASSET,
+    },
+    capital: [String(capital[0] || 'Non disponible')],
+    region: String(country?.region || 'Autre'),
+    subregion: String(country?.subregion || ''),
+    population: Number(country?.population || 0),
+    area: Number(country?.area || 0),
+    borders: Array.isArray(country?.borders) ? country.borders : [],
+    cca2: String(country?.cca2 || code.slice(0, 2)).toUpperCase(),
+    cca3: code,
+    continents: Array.isArray(country?.continents) ? country.continents : ['Monde'],
+    languages: country?.languages && typeof country.languages === 'object' ? country.languages : { fra: 'Français' },
+    currencies: country?.currencies && typeof country.currencies === 'object' ? country.currencies : null,
+    timezones: Array.isArray(country?.timezones) ? country.timezones : [],
+    independent: country?.independent ?? null,
+    maps: country?.maps && typeof country.maps === 'object' ? country.maps : {},
+    latlng: Array.isArray(country?.latlng) ? country.latlng : [],
+    isCustom: true,
+  }
+}
+
+function loadCustomCountries() {
+  const parsed = readStorageJson(CUSTOM_COUNTRIES_STORAGE_KEY, [])
+  if (!Array.isArray(parsed)) return []
+  return parsed.map((item) => sanitizeCustomCountry(item)).filter(Boolean)
+}
+
 export const useCountriesStore = defineStore('countries', () => {
-  const countries = ref([])
+  const officialCountries = ref([])
+  const customCountries = ref(loadCustomCountries())
   const loading = ref(false)
   const error = ref(null)
   const searchQuery = ref('')
@@ -89,6 +136,9 @@ export const useCountriesStore = defineStore('countries', () => {
   })
   const favoriteCodes = ref(loadFavoriteCodes())
   const recentlyViewed = ref(loadRecentlyViewedCountries())
+  const countries = computed(() => {
+    return [...officialCountries.value, ...customCountries.value]
+  })
 
   function showFavoritesFeedback(message, color = 'success') {
     favoritesSnackbar.value = {
@@ -106,12 +156,16 @@ export const useCountriesStore = defineStore('countries', () => {
     writeStorageJson(RECENTLY_VIEWED_STORAGE_KEY, recentlyViewed.value)
   }
 
+  function persistCustomCountries() {
+    writeStorageJson(CUSTOM_COUNTRIES_STORAGE_KEY, customCountries.value)
+  }
+
   function markRecentlyViewed(country) {
     const code = normalizeCountryCode(country?.cca3)
     if (!code) return
 
     const name = country?.name?.common || country?.name?.official || code
-    const flagSrc = country?.flags?.svg || country?.flags?.png || ''
+    const flagSrc = getCountryFlagSrc(country)
 
     const next = [
       { code, name, flagSrc },
@@ -135,7 +189,7 @@ export const useCountriesStore = defineStore('countries', () => {
       .map((country) => {
         const code = country?.cca3
         const name = country?.name?.common || country?.name?.official || code
-        const flagSrc = country?.flags?.svg || country?.flags?.png || ''
+        const flagSrc = getCountryFlagSrc(country)
         const region = country?.region || ''
 
         if (!code) return null
@@ -321,7 +375,7 @@ export const useCountriesStore = defineStore('countries', () => {
     loading.value = true
     error.value = null
     try {
-      countries.value = await getAllCountries()
+      officialCountries.value = await getAllCountries()
     } catch (err) {
       error.value = `Impossible de charger les pays : ${err.message}`
     } finally {
@@ -343,6 +397,12 @@ export const useCountriesStore = defineStore('countries', () => {
     selectedCountry.value = null
 
     try {
+      const localCountry = customCountries.value.find((item) => item.cca3 === normalizedCode)
+      if (localCountry) {
+        selectedCountry.value = localCountry
+        return
+      }
+
       const country = await getCountryByCode(normalizedCode)
 
       if (!country) {
@@ -362,6 +422,15 @@ export const useCountriesStore = defineStore('countries', () => {
     const normalizedCode = String(code || '').trim().toUpperCase()
     if (!normalizedCode || compareCountriesCache.value[normalizedCode]) return
 
+    const localCountry = customCountries.value.find((item) => item.cca3 === normalizedCode)
+    if (localCountry) {
+      compareCountriesCache.value = {
+        ...compareCountriesCache.value,
+        [normalizedCode]: localCountry,
+      }
+      return
+    }
+
     const country = await getCountryByCode(normalizedCode)
     if (!country) return
 
@@ -371,7 +440,78 @@ export const useCountriesStore = defineStore('countries', () => {
     }
   }
 
+  function showActionReservedFeedback() {
+    showFavoritesFeedback('Action réservée aux utilisateurs connectés', 'warning')
+  }
+
+  function generateCustomCode() {
+    let code = ''
+    do {
+      code = `X${Math.random().toString(36).slice(2, 7)}`.toUpperCase()
+    } while (countriesByCode.value.has(code))
+    return code
+  }
+
+  function addCustomCountry(payload) {
+    const authStore = useAuthStore()
+    if (!authStore.isAuthenticated) {
+      showActionReservedFeedback()
+      return { success: false, reason: 'unauthorized' }
+    }
+
+    const name = String(payload?.name || '').trim()
+    if (!name) return { success: false, reason: 'invalid' }
+
+    const code = generateCustomCode()
+    const customCountry = sanitizeCustomCountry({
+      name: {
+        common: name,
+        official: name,
+      },
+      capital: [String(payload?.capital || '').trim() || 'Non disponible'],
+      region: String(payload?.region || '').trim() || 'Autre',
+      population: Number(payload?.population || 0),
+      area: Number(payload?.area || 0),
+      cca3: code,
+      cca2: code.slice(0, 2),
+      isCustom: true,
+    })
+
+    customCountries.value = [...customCountries.value, customCountry]
+    persistCustomCountries()
+    showFavoritesFeedback('Pays personnalisé ajouté')
+    return { success: true }
+  }
+
+  function deleteCustomCountry(code) {
+    const authStore = useAuthStore()
+    if (!authStore.isAuthenticated) {
+      showActionReservedFeedback()
+      return { success: false, reason: 'unauthorized' }
+    }
+
+    const normalizedCode = normalizeCountryCode(code)
+    const target = customCountries.value.find((country) => country.cca3 === normalizedCode)
+    if (!target) return { success: false, reason: 'not-found' }
+
+    customCountries.value = customCountries.value.filter((country) => country.cca3 !== normalizedCode)
+    persistCustomCountries()
+
+    if (selectedCountry.value?.cca3 === normalizedCode) {
+      selectedCountry.value = null
+    }
+    if (compareCountriesCache.value[normalizedCode]) {
+      const { [normalizedCode]: ignored, ...rest } = compareCountriesCache.value
+      compareCountriesCache.value = rest
+    }
+
+    showFavoritesFeedback('Pays personnalisé supprimé', 'info')
+    return { success: true }
+  }
+
   return {
+    officialCountries,
+    customCountries,
     countries,
     filteredCountries,
     loading,
@@ -410,6 +550,9 @@ export const useCountriesStore = defineStore('countries', () => {
     removeFavorite,
     toggleFavorite,
     hideFavoritesFeedback,
+    showActionReservedFeedback,
+    addCustomCountry,
+    deleteCustomCountry,
     setSearchQuery,
     setSelectedRegion,
     setSortOption,

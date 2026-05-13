@@ -98,7 +98,7 @@
               >
                 <template #prepend>
                   <v-avatar size="32" rounded="lg">
-                    <v-img :src="country.flags?.svg || country.flags?.png" :alt="country.name?.common" cover />
+                    <v-img :src="getCountryFlagSrc(country)" :alt="country.name?.common" cover />
                   </v-avatar>
                 </template>
                 <v-list-item-title>{{ country.name?.common }}</v-list-item-title>
@@ -128,6 +128,7 @@ import { useCountriesStore } from '@/stores/countries'
 import HomeHero from '@/components/HomeHero.vue'
 import GlobalStatsCards from '@/components/GlobalStatsCards.vue'
 import RecentlyViewedCountries from '@/components/RecentlyViewedCountries.vue'
+import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
 
 const store = useCountriesStore()
 

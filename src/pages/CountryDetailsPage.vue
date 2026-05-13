@@ -185,6 +185,7 @@ import { useCountriesStore } from '@/stores/countries'
 import LoadingState from '@/components/LoadingState.vue'
 import ErrorState from '@/components/ErrorState.vue'
 import CountryMap from '@/components/CountryMap.vue'
+import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
 
 const route = useRoute()
 const store = useCountriesStore()
@@ -192,7 +193,7 @@ const fallback = 'Non disponible'
 
 const countryCode = computed(() => String(route.params.code || ''))
 const country = computed(() => store.selectedCountry)
-const flagSrc = computed(() => country.value?.flags?.svg || country.value?.flags?.png || '')
+const flagSrc = computed(() => getCountryFlagSrc(country.value))
 const regionMap = {
   Africa: 'Afrique',
   Americas: 'Amériques',

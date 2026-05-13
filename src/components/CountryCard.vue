@@ -10,6 +10,14 @@
 
     <v-card-title class="text-wrap font-weight-bold text-body-1 pt-4">
       {{ country.name?.common }}
+      <v-chip
+        v-if="country.isCustom"
+        size="x-small"
+        variant="outlined"
+        class="custom-country-badge ml-2"
+      >
+        Personnalisé
+      </v-chip>
     </v-card-title>
 
     <v-card-subtitle class="pb-0 text-medium-emphasis">
@@ -64,12 +72,21 @@
         class="favorite-btn"
         @click="$emit('toggle-favorite', country.cca3)"
       />
+      <v-btn
+        v-if="canDelete"
+        icon="mdi-delete-outline"
+        variant="tonal"
+        color="error"
+        rounded="lg"
+        @click="$emit('delete-country', country.cca3)"
+      />
     </v-card-actions>
   </v-card>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
 
 const props = defineProps({
   country: {
@@ -80,11 +97,15 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  canDelete: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-defineEmits(['toggle-favorite'])
+defineEmits(['toggle-favorite', 'delete-country'])
 
-const flagSrc = computed(() => props.country?.flags?.svg || props.country?.flags?.png || '')
+const flagSrc = computed(() => getCountryFlagSrc(props.country))
 
 const regionMap = {
   Africa: 'Afrique',
@@ -197,5 +218,12 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
 
 .favorite-btn:hover {
   transform: scale(1.05);
+}
+
+.custom-country-badge {
+  opacity: 0.88;
+  font-weight: 500;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  color: rgba(235, 250, 250, 0.82) !important;
 }
 </style>

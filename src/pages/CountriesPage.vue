@@ -3,16 +3,29 @@
     <v-card variant="tonal" rounded="lg" class="mb-5 countries-hero">
       <v-card-text class="d-flex align-center justify-space-between py-4">
         <h1 class="text-h4 font-weight-bold">Explorateur de pays</h1>
-        <v-btn
-          color="secondary"
-          variant="tonal"
-          rounded="lg"
-          prepend-icon="mdi-compare"
-          to="/compare"
-          class="compare-btn"
-        >
-          Comparer
-        </v-btn>
+        <div class="d-flex ga-2 hero-actions">
+          <v-btn
+            color="secondary"
+            variant="tonal"
+            rounded="lg"
+            prepend-icon="mdi-compare"
+            to="/compare"
+            class="compare-btn"
+          >
+            Comparer
+          </v-btn>
+          <v-btn
+            v-if="authStore.isAuthenticated"
+            color="primary"
+            variant="tonal"
+            rounded="lg"
+            prepend-icon="mdi-plus"
+            :to="{ name: 'add-country' }"
+            class="compare-btn"
+          >
+            Ajouter un pays
+          </v-btn>
+        </div>
       </v-card-text>
     </v-card>
 
@@ -58,7 +71,9 @@
           <CountryCard
             :country="country"
             :is-favorite="store.isFavorite(country.cca3)"
+            :can-delete="authStore.isAuthenticated && Boolean(country.isCustom)"
             @toggle-favorite="store.toggleFavorite"
+            @delete-country="store.deleteCustomCountry"
           />
         </v-col>
       </v-row>
@@ -69,12 +84,14 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useCountriesStore } from '@/stores/countries'
+import { useAuthStore } from '@/stores/auth'
 import CountryCard from '@/components/CountryCard.vue'
 import CountryFilters from '@/components/CountryFilters.vue'
 import LoadingState from '@/components/LoadingState.vue'
 import ErrorState from '@/components/ErrorState.vue'
 
 const store = useCountriesStore()
+const authStore = useAuthStore()
 
 onMounted(() => {
   if (!store.countries.length) {

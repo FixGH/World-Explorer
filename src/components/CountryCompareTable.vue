@@ -179,6 +179,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
 
 const props = defineProps({
   left: {
@@ -195,8 +196,8 @@ const leftTitle = computed(() => props.left?.name?.common || 'Pays A')
 const rightTitle = computed(() => props.right?.name?.common || 'Pays B')
 const fallback = 'Non disponible'
 
-const leftFlagSrc = computed(() => props.left?.flags?.svg || props.left?.flags?.png || '')
-const rightFlagSrc = computed(() => props.right?.flags?.svg || props.right?.flags?.png || '')
+const leftFlagSrc = computed(() => getCountryFlagSrc(props.left))
+const rightFlagSrc = computed(() => getCountryFlagSrc(props.right))
 const regionMap = {
   Africa: 'Afrique',
   Americas: 'Amériques',

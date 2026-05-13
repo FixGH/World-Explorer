@@ -12,6 +12,7 @@
           class="nav-item"
           :class="{ 'nav-item--active': isNavActive(item.to) }"
         />
+        <AuthStatus class="mt-2 px-2" />
       </v-list>
     </v-navigation-drawer>
 
@@ -27,6 +28,7 @@
       </v-app-bar-title>
       <v-spacer />
       <div class="d-none d-md-flex ga-2 mr-4 nav-desktop">
+        <GlobalCountrySearch class="mx-2 nav-search" />
         <v-btn
           variant="text"
           class="appbar-btn"
@@ -52,6 +54,15 @@
           Statistiques
         </v-btn>
         <v-btn
+          v-if="authStore.isAuthenticated"
+          variant="text"
+          class="appbar-btn"
+          :to="{ name: 'add-country' }"
+          :class="{ 'appbar-btn--active': isNavActive('/add-country') }"
+        >
+          Ajouter
+        </v-btn>
+        <v-btn
           variant="text"
           class="appbar-btn"
           :to="{ name: 'favorites' }"
@@ -59,6 +70,7 @@
         >
           Favoris
         </v-btn>
+        <AuthStatus />
       </div>
     </v-app-bar>
 
@@ -96,27 +108,49 @@
     >
       {{ store.favoritesSnackbar.message }}
     </v-snackbar>
+
+    <v-snackbar
+      :model-value="authStore.authSnackbar.visible"
+      :color="authStore.authSnackbar.color"
+      location="bottom right"
+      timeout="2200"
+      @update:model-value="onAuthSnackbarUpdate"
+    >
+      {{ authStore.authSnackbar.message }}
+    </v-snackbar>
   </v-app>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCountriesStore } from '@/stores/countries'
+import { useAuthStore } from '@/stores/auth'
+import GlobalCountrySearch from '@/components/GlobalCountrySearch.vue'
+import AuthStatus from '@/components/AuthStatus.vue'
 
 const route = useRoute()
 const store = useCountriesStore()
+const authStore = useAuthStore()
 const drawer = ref(false)
 const currentYear = new Date().getFullYear()
 
-const navItems = [
-  { title: 'Accueil', to: '/', icon: 'mdi-home' },
-  { title: 'Pays', to: '/countries', icon: 'mdi-earth' },
-  { title: 'Comparer', to: '/compare', icon: 'mdi-compare' },
-  { title: 'Statistiques', to: '/statistics', icon: 'mdi-chart-bar' },
-  { title: 'Favoris', to: '/favorites', icon: 'mdi-heart' },
-  { title: 'À propos', to: '/about', icon: 'mdi-information' },
-]
+const navItems = computed(() => {
+  const items = [
+    { title: 'Accueil', to: '/', icon: 'mdi-home' },
+    { title: 'Pays', to: '/countries', icon: 'mdi-earth' },
+    { title: 'Comparer', to: '/compare', icon: 'mdi-compare' },
+    { title: 'Statistiques', to: '/statistics', icon: 'mdi-chart-bar' },
+    { title: 'Favoris', to: '/favorites', icon: 'mdi-heart' },
+  ]
+
+  if (authStore.isAuthenticated) {
+    items.push({ title: 'Ajouter', to: '/add-country', icon: 'mdi-plus-box' })
+  }
+
+  items.push({ title: 'À propos', to: '/about', icon: 'mdi-information' })
+  return items
+})
 
 function isNavActive(to) {
   if (to === '/') return route.path === '/'
@@ -127,6 +161,12 @@ function isNavActive(to) {
 function onFavoritesSnackbarUpdate(value) {
   if (!value) {
     store.hideFavoritesFeedback()
+  }
+}
+
+function onAuthSnackbarUpdate(value) {
+  if (!value) {
+    authStore.hideAuthFeedback()
   }
 }
 </script>
@@ -208,6 +248,10 @@ function onFavoritesSnackbarUpdate(value) {
   color: #fff;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.nav-search {
+  min-width: 280px;
 }
 
 .app-main {
