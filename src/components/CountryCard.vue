@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="country-card country-card--interactive h-100 d-flex flex-column"
+    class="country-card country-card--interactive h-100 d-flex flex-column flex-md-row"
     rounded="xl"
     role="link"
     :tabindex="0"
@@ -14,12 +14,11 @@
       <v-img
         :src="flagSrc"
         :alt="`Drapeau — ${country.name?.common || ''}`"
-        height="120"
         cover
         class="country-card__img"
       >
         <template #error>
-          <v-sheet height="120" class="country-card__fallback d-flex align-center justify-center">
+          <v-sheet class="country-card__fallback d-flex align-center justify-center">
             <v-icon icon="mdi-flag-outline" size="40" class="country-card__fallback-icon" />
           </v-sheet>
         </template>
@@ -30,7 +29,7 @@
           :icon="favoriteIcon"
           :aria-label="isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
           variant="flat"
-          size="small"
+          size="x-small"
           class="country-card__fav-btn"
           @click.stop="$emit('toggle-favorite', country.cca3)"
         />
@@ -44,9 +43,9 @@
           v-if="canDelete"
           icon="mdi-delete-outline"
           variant="text"
-          size="small"
+          size="x-small"
           color="error"
-          density="comfortable"
+          density="compact"
           aria-label="Supprimer ce pays personnalisé"
           class="country-card__delete"
           @click.stop="$emit('delete-country', country.cca3)"
@@ -55,16 +54,19 @@
 
       <ul class="country-card__stats" aria-label="Informations principales">
         <li class="country-card__stat">
-          <v-icon icon="mdi-city-variant-outline" size="18" class="country-card__stat-icon" aria-hidden="true" />
-          <span class="country-card__stat-text">{{ capitalLabel }}</span>
+          <v-icon icon="mdi-city-variant-outline" size="16" class="country-card__stat-icon" aria-hidden="true" />
+          <span class="country-card__stat-label">Capitale</span>
+          <span class="country-card__stat-value">{{ capitalLabel }}</span>
         </li>
         <li class="country-card__stat">
-          <v-icon icon="mdi-earth" size="18" class="country-card__stat-icon" aria-hidden="true" />
-          <span class="country-card__stat-text">{{ regionLabel }}</span>
+          <v-icon icon="mdi-earth" size="16" class="country-card__stat-icon" aria-hidden="true" />
+          <span class="country-card__stat-label">Région</span>
+          <span class="country-card__stat-value">{{ regionLabel }}</span>
         </li>
         <li class="country-card__stat">
-          <v-icon icon="mdi-account-group-outline" size="18" class="country-card__stat-icon" aria-hidden="true" />
-          <span class="country-card__stat-text">{{ formattedPopulation }}</span>
+          <v-icon icon="mdi-account-group-outline" size="16" class="country-card__stat-icon" aria-hidden="true" />
+          <span class="country-card__stat-label">Population</span>
+          <span class="country-card__stat-value">{{ formattedPopulation }}</span>
         </li>
       </ul>
 
@@ -72,10 +74,10 @@
         <v-chip
           v-for="(b, i) in displayBadges"
           :key="i"
-          size="small"
+          size="x-small"
           :variant="b.outlined ? 'outlined' : 'tonal'"
           :color="b.color"
-          class="country-card__chip text-none font-weight-semibold"
+          class="country-card__chip text-none"
         >
           {{ b.label }}
         </v-chip>
@@ -148,13 +150,13 @@ const quickInsights = computed(() => {
   if (population >= 80_000_000) {
     insights.push({ label: 'Très peuplé', color: 'success' })
   } else if (population > 0 && population <= 2_000_000) {
-    insights.push({ label: 'Pays compact', color: 'info' })
+    insights.push({ label: 'Peuplé modestement', color: 'info' })
   }
 
   if (area >= 1_000_000) {
     insights.push({ label: 'Grand territoire', color: 'secondary' })
   } else if (area > 0 && area <= 100_000) {
-    insights.push({ label: 'Île / territoire modeste', color: 'secondary' })
+    insights.push({ label: 'Superficie réduite', color: 'secondary' })
   }
 
   if (bordersCount >= 6) {
@@ -164,7 +166,7 @@ const quickInsights = computed(() => {
   return insights.slice(0, 2)
 })
 
-/** Au plus 2 pastilles : Personnalisé + 1 accent, ou jusqu’à 2 accents. */
+/** Pastilles optionnelles : Personnalisé + jusqu’à 2 faits ; pas de badge « statut » par défaut. */
 const displayBadges = computed(() => {
   const out = []
   if (props.country?.isCustom) {
@@ -174,13 +176,6 @@ const displayBadges = computed(() => {
   const maxExtra = props.country?.isCustom ? 1 : 2
   for (let i = 0; i < Math.min(maxExtra, qi.length); i += 1) {
     out.push({ label: qi[i].label, color: qi[i].color, outlined: false })
-  }
-  if (!props.country?.isCustom && out.length === 0) {
-    if (props.country?.independent === false) {
-      out.push({ label: 'Territoire lié', color: 'info', outlined: false })
-    } else if (props.country?.independent === true) {
-      out.push({ label: 'État souverain', color: 'success', outlined: false })
-    }
   }
   return out.slice(0, 2)
 })
@@ -194,11 +189,12 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: linear-gradient(155deg, rgba(255, 255, 255, 0.06), rgba(8, 18, 22, 0.92));
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.26);
+  align-items: stretch;
   transition:
-    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.32s ease,
+    border-color 0.32s ease;
 }
 
 .country-card::before {
@@ -210,9 +206,9 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   opacity: 0;
   background: linear-gradient(
     125deg,
-    rgba(124, 243, 232, 0.15),
-    transparent 40%,
-    rgba(54, 168, 255, 0.1)
+    rgba(124, 243, 232, 0.12),
+    transparent 45%,
+    rgba(54, 168, 255, 0.08)
   );
   transition: opacity 0.35s ease;
 }
@@ -222,12 +218,12 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
 }
 
 .country-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(var(--v-theme-primary), 0.45);
+  transform: translateY(-4px);
+  border-color: rgba(var(--v-theme-primary), 0.38);
   box-shadow:
-    0 22px 56px rgba(0, 0, 0, 0.38),
-    0 0 0 1px rgba(124, 243, 232, 0.12),
-    0 0 48px rgba(23, 215, 209, 0.12);
+    0 18px 48px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(124, 243, 232, 0.1),
+    0 0 36px rgba(23, 215, 209, 0.1);
 }
 
 .country-card--interactive {
@@ -239,11 +235,23 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   outline-offset: 3px;
 }
 
+/* --- Média : bandeau haut sur mobile, colonne gauche sur tablette + --- */
 .country-card__media {
   position: relative;
   flex-shrink: 0;
   overflow: hidden;
   border-radius: 16px 16px 0 0;
+  min-height: 108px;
+}
+
+@media (min-width: 960px) {
+  .country-card__media {
+    flex: 0 0 40%;
+    max-width: 240px;
+    min-height: 0;
+    align-self: stretch;
+    border-radius: 16px 0 0 16px;
+  }
 }
 
 .country-card__media-glow {
@@ -251,27 +259,43 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124, 243, 232, 0.2), transparent 70%);
-  opacity: 0.65;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124, 243, 232, 0.18), transparent 70%);
+  opacity: 0.55;
   mix-blend-mode: screen;
 }
 
 .country-card__img {
   display: block;
+  height: 108px;
+}
+
+@media (min-width: 960px) {
+  .country-card__img {
+    height: 100%;
+    min-height: 156px;
+  }
 }
 
 .country-card__img :deep(img) {
   object-fit: cover;
   object-position: center;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .country-card:hover .country-card__img :deep(img) {
-  transform: scale(1.07);
+  transform: scale(1.04);
 }
 
 .country-card__fallback {
+  min-height: 108px;
+  height: 100%;
   background: linear-gradient(145deg, rgba(15, 28, 34, 0.96), rgba(25, 48, 56, 0.88));
+}
+
+@media (min-width: 960px) {
+  .country-card__fallback {
+    min-height: 156px;
+  }
 }
 
 .country-card__fallback-icon {
@@ -283,18 +307,18 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(180deg, transparent 35%, rgba(6, 12, 16, 0.55) 100%);
+  background: linear-gradient(180deg, transparent 40%, rgba(6, 12, 16, 0.45) 100%);
 }
 
 .country-card__fav {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 10px;
+  right: 10px;
   z-index: 3;
 }
 
 .country-card__fav-btn {
-  background: rgba(6, 14, 18, 0.55) !important;
+  background: rgba(6, 14, 18, 0.58) !important;
   backdrop-filter: blur(10px);
   color: rgba(255, 255, 255, 0.92) !important;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -302,34 +326,47 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
 }
 
 .country-card__fav-btn:hover {
-  transform: scale(1.06);
-  background: rgba(var(--v-theme-primary), 0.28) !important;
+  transform: scale(1.05);
+  background: rgba(var(--v-theme-primary), 0.26) !important;
 }
 
 .country-card__body {
-  padding: 14px 16px 16px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 16px 18px 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex: 1;
-  min-height: 0;
+  gap: 12px;
+}
+
+@media (min-width: 960px) {
+  .country-card__body {
+    padding: 18px 20px 20px;
+    justify-content: center;
+    gap: 10px;
+  }
 }
 
 .country-card__title-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
+  gap: 8px 10px;
 }
 
 .country-card__name {
   margin: 0;
-  font-size: 1.05rem;
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: clamp(1.02rem, 0.95rem + 0.35vw, 1.2rem);
   font-weight: 800;
   letter-spacing: 0.01em;
-  line-height: 1.25;
+  line-height: 1.28;
   color: rgba(248, 255, 255, 0.98);
   transition: color 0.25s ease;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .country-card:hover .country-card__name {
@@ -338,7 +375,8 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
 
 .country-card__delete {
   flex-shrink: 0;
-  opacity: 0.85;
+  margin-top: 2px;
+  opacity: 0.9;
 }
 
 .country-card__stats {
@@ -347,46 +385,77 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .country-card__stat {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 5.2rem) 1fr;
+  align-items: baseline;
+  column-gap: 8px;
+  row-gap: 2px;
   min-width: 0;
 }
 
-.country-card__stat-icon {
-  flex-shrink: 0;
-  color: rgba(124, 243, 232, 0.75);
+@media (max-width: 959px) {
+  .country-card__stat {
+    grid-template-columns: 18px 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .country-card__stat-icon {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    align-self: start;
+    margin-top: 3px;
+  }
+
+  .country-card__stat-label {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .country-card__stat-value {
+    grid-column: 2;
+    grid-row: 2;
+    text-align: left;
+  }
 }
 
-.country-card__stat-text {
-  font-size: 0.875rem;
+.country-card__stat-icon {
+  color: rgba(124, 243, 232, 0.65);
+  margin-top: 2px;
+}
+
+.country-card__stat-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(150, 188, 188, 0.75);
+}
+
+.country-card__stat-value {
+  font-size: 0.84rem;
   font-weight: 600;
-  color: rgba(210, 236, 236, 0.92);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: rgba(210, 236, 236, 0.9);
+  min-width: 0;
+  text-align: right;
 }
 
 .country-card__badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 2px;
+  gap: 8px;
+  margin-top: 4px;
+  max-width: 100%;
 }
 
 .country-card__chip {
-  font-size: 0.7rem;
-  letter-spacing: 0.02em;
-}
-
-@media (max-width: 400px) {
-  .country-card__stat-text {
-    white-space: normal;
-  }
+  max-width: 100%;
+  font-weight: 600;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.03em;
+  height: 22px !important;
 }
 </style>

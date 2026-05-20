@@ -1,12 +1,17 @@
 <template>
-  <v-card variant="flat" class="filters-toolbar mb-5" rounded="xl">
-    <v-card-text class="filters-toolbar__inner">
-      <v-row class="filters-toolbar__row" align="center">
-        <v-col cols="12" md="12" lg="4" class="filters-toolbar__col">
+  <v-card variant="flat" class="filters-panel" rounded="xl">
+    <v-card-text class="filters-panel__inner">
+      <div class="filters-panel__heading">
+        <v-icon icon="mdi-tune-variant" size="20" class="filters-panel__heading-icon" aria-hidden="true" />
+        <span class="filters-panel__heading-text">Recherche &amp; filtres</span>
+      </div>
+
+      <v-row class="filters-panel__row filters-panel__row--search" align="stretch">
+        <v-col cols="12" class="filters-panel__col">
           <v-text-field
             :model-value="searchQuery"
             label="Rechercher un pays"
-            placeholder="France, Japon, Kenya…"
+            placeholder="Tapez un nom : France, Japon, Brésil…"
             prepend-inner-icon="mdi-magnify"
             variant="solo-filled"
             density="comfortable"
@@ -17,8 +22,10 @@
             @update:model-value="$emit('update:search-query', $event)"
           />
         </v-col>
+      </v-row>
 
-        <v-col cols="12" sm="6" md="6" lg="3" class="filters-toolbar__col">
+      <v-row class="filters-panel__row filters-panel__row--controls" align="end">
+        <v-col cols="12" sm="12" md="5" lg="5" class="filters-panel__col">
           <v-select
             :model-value="selectedRegion"
             :items="regionItems"
@@ -32,7 +39,7 @@
           />
         </v-col>
 
-        <v-col cols="12" sm="6" md="6" lg="3" class="filters-toolbar__col">
+        <v-col cols="12" sm="12" md="5" lg="5" class="filters-panel__col">
           <v-select
             :model-value="sortOption"
             :items="sortItems"
@@ -46,7 +53,7 @@
           />
         </v-col>
 
-        <v-col cols="12" sm="12" md="12" lg="2" class="filters-toolbar__col filters-toolbar__col--reset">
+        <v-col cols="12" sm="12" md="2" lg="2" class="filters-panel__col filters-panel__col--reset">
           <v-btn
             variant="tonal"
             color="primary"
@@ -54,6 +61,7 @@
             rounded="xl"
             class="reset-btn text-none font-weight-bold"
             prepend-icon="mdi-backup-restore"
+            block
             @click="$emit('reset')"
           >
             Réinitialiser
@@ -100,105 +108,127 @@ const sortItems = [
 </script>
 
 <style scoped>
-.filters-toolbar {
-  position: sticky;
-  top: 88px;
-  z-index: 4;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(10, 22, 28, 0.55);
-  backdrop-filter: blur(18px) saturate(1.35);
-  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+.filters-panel {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 20, 26, 0.72);
+  backdrop-filter: blur(20px) saturate(1.25);
+  -webkit-backdrop-filter: blur(20px) saturate(1.25);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(124, 243, 232, 0.06) inset,
+    0 16px 48px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(124, 243, 232, 0.05) inset,
     0 1px 0 rgba(255, 255, 255, 0.06) inset;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.filters-toolbar:hover {
-  border-color: rgba(124, 243, 232, 0.22);
-  box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(124, 243, 232, 0.1) inset;
-}
-
-.filters-toolbar__inner {
-  padding: 14px 16px 16px !important;
+.filters-panel__inner {
+  padding: 18px 18px 20px !important;
 }
 
 @media (min-width: 960px) {
-  .filters-toolbar__inner {
-    padding: 18px 20px 20px !important;
+  .filters-panel__inner {
+    padding: 22px 24px 24px !important;
   }
 }
 
-.filters-toolbar__row {
-  margin-top: -4px;
-  margin-bottom: -4px;
+.filters-panel__heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.filters-toolbar__col {
-  padding-top: 4px;
-  padding-bottom: 4px;
+.filters-panel__heading-icon {
+  color: rgb(var(--v-theme-primary));
+  opacity: 0.95;
 }
 
-.filters-toolbar__col--reset {
+.filters-panel__heading-text {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(186, 224, 222, 0.88);
+}
+
+.filters-panel__row {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.filters-panel__row--search {
+  margin-bottom: 8px;
+}
+
+.filters-panel__row--controls {
+  margin-top: 4px;
+}
+
+.filters-panel__col {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.filters-panel__col--reset {
   display: flex;
   align-items: stretch;
-  justify-content: flex-start;
 }
 
-@media (min-width: 1280px) {
-  .filters-toolbar__col--reset {
-    justify-content: flex-end;
-    align-items: center;
+@media (min-width: 960px) {
+  .filters-panel__col--reset {
+    align-items: flex-end;
   }
 }
 
 .filters-field :deep(.v-field) {
-  border-radius: 14px !important;
+  border-radius: 16px !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(5, 14, 18, 0.45) !important;
+  background: rgba(4, 12, 16, 0.55) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    border-color 0.28s ease,
+    box-shadow 0.28s ease,
+    transform 0.2s ease;
 }
 
 .filters-field :deep(.v-field--focused) {
   border-color: rgba(var(--v-theme-primary), 0.55) !important;
   box-shadow:
-    0 0 0 1px rgba(124, 243, 232, 0.2),
+    0 0 0 1px rgba(124, 243, 232, 0.25),
+    0 10px 32px rgba(0, 0, 0, 0.28),
+    0 0 40px rgba(23, 215, 209, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.filters-field--search :deep(.v-field) {
+  min-height: 52px;
+}
+
+.filters-field--search :deep(.v-field--focused) {
+  transform: translateY(-1px);
 }
 
 .filters-field :deep(.v-label) {
   font-weight: 600;
-  opacity: 0.88;
+  opacity: 0.9;
 }
 
 .reset-btn {
-  width: 100%;
   min-height: 48px;
   letter-spacing: 0.02em;
-  box-shadow: 0 8px 22px rgba(var(--v-theme-primary), 0.18);
+  box-shadow: 0 6px 18px rgba(var(--v-theme-primary), 0.15);
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .reset-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(var(--v-theme-primary), 0.28);
+  box-shadow: 0 10px 26px rgba(var(--v-theme-primary), 0.22);
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 960px) {
   .reset-btn {
-    width: auto;
-    min-width: 9rem;
-  }
-}
-
-@media (max-width: 959px) {
-  .filters-toolbar {
-    position: relative;
-    top: auto;
+    height: 48px;
   }
 }
 </style>

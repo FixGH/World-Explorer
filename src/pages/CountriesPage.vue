@@ -55,77 +55,12 @@
         :search-query="store.searchQuery"
         :selected-region="store.selectedRegion"
         :sort-option="store.sortOption"
-        class="countries-page__filters mb-6 mb-md-8"
+        class="mb-8 mb-md-10"
         @update:search-query="store.setSearchQuery"
         @update:selected-region="store.setSelectedRegion"
         @update:sort-option="store.setSortOption"
         @reset="store.resetFilters"
       />
-
-      <section
-        v-if="showExplorationModes && store.filteredCountries.length"
-        class="countries-modes mb-8"
-        aria-label="Modes d’exploration"
-      >
-        <div class="countries-modes__block">
-          <div class="countries-modes__head">
-            <span class="countries-modes__emoji" aria-hidden="true">🌍</span>
-            <div>
-              <h2 class="countries-modes__title">Pays populaires</h2>
-              <p class="countries-modes__hint">Les destinations les plus consultées — un clic pour ouvrir la fiche.</p>
-            </div>
-          </div>
-          <div class="countries-modes__scroll">
-            <RouterLink
-              v-for="c in popularStrip"
-              :key="c.cca3"
-              :to="{ name: 'country-details', params: { code: c.cca3 } }"
-              class="mini-land"
-            >
-              <v-avatar size="48" rounded="lg" class="mini-land__avatar">
-                <v-img :src="flagSrc(c)" :alt="`Drapeau — ${c.name?.common || ''}`" cover>
-                  <template #error>
-                    <v-icon icon="mdi-flag-outline" />
-                  </template>
-                </v-img>
-              </v-avatar>
-              <span class="mini-land__name">{{ c.name?.common }}</span>
-            </RouterLink>
-          </div>
-        </div>
-
-        <div class="countries-modes__block countries-modes__block--accent">
-          <div class="countries-modes__head">
-            <span class="countries-modes__emoji" aria-hidden="true">🔥</span>
-            <div>
-              <h2 class="countries-modes__title">Découverte rapide</h2>
-              <p class="countries-modes__hint">Quatre pays à mettre sous les yeux avant de plonger dans la grille.</p>
-            </div>
-          </div>
-          <div class="countries-modes__quick">
-            <RouterLink
-              v-for="c in quickDiscovery"
-              :key="c.cca3"
-              :to="{ name: 'country-details', params: { code: c.cca3 } }"
-              class="quick-chip"
-            >
-              <span class="quick-chip__dot" aria-hidden="true" />
-              {{ c.name?.common }}
-            </RouterLink>
-          </div>
-          <v-btn
-            color="primary"
-            variant="tonal"
-            rounded="xl"
-            size="large"
-            class="text-none font-weight-bold mt-4"
-            prepend-icon="mdi-shuffle-variant"
-            @click="goRandomExplorer"
-          >
-            Explorer au hasard
-          </v-btn>
-        </div>
-      </section>
 
       <v-card
         v-if="!store.filteredCountries.length"
@@ -153,8 +88,8 @@
           cols="12"
           sm="6"
           md="6"
-          lg="4"
-          xl="3"
+          lg="6"
+          xl="6"
         >
           <CountryCard
             :country="country"
@@ -170,58 +105,16 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 import { useCountriesStore } from '@/stores/countries'
 import { useAuthStore } from '@/stores/auth'
 import CountryCard from '@/components/CountryCard.vue'
 import CountryFilters from '@/components/CountryFilters.vue'
 import LoadingState from '@/components/LoadingState.vue'
 import ErrorState from '@/components/ErrorState.vue'
-import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
 
 const store = useCountriesStore()
 const authStore = useAuthStore()
-const router = useRouter()
-
-const showExplorationModes = computed(() => {
-  return (
-    !store.searchQuery?.trim() &&
-    store.selectedRegion === 'all' &&
-    store.sortOption === 'name-asc' &&
-    store.countries.length > 0
-  )
-})
-
-const popularStrip = computed(() => store.topPopulatedCountries.slice(0, 6))
-
-const quickDiscovery = computed(() => {
-  const picks = [
-    store.topPopulatedCountries[1],
-    store.topLargestCountries[0],
-    store.topBorderCountries[0],
-    store.topPopulatedCountries[3],
-  ].filter(Boolean)
-  const seen = new Set()
-  return picks.filter((c) => {
-    if (!c?.cca3 || seen.has(c.cca3)) return false
-    seen.add(c.cca3)
-    return true
-  })
-})
-
-function flagSrc(country) {
-  return getCountryFlagSrc(country)
-}
-
-function goRandomExplorer() {
-  const list = store.filteredCountries.length ? store.filteredCountries : store.countries
-  if (!list.length) return
-  const pick = list[Math.floor(Math.random() * list.length)]
-  if (pick?.cca3) {
-    router.push({ name: 'country-details', params: { code: pick.cca3 } })
-  }
-}
 
 onMounted(() => {
   if (!store.countries.length) {
@@ -322,145 +215,6 @@ onMounted(() => {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
 }
 
-.countries-page__filters {
-  position: relative;
-  z-index: 2;
-}
-
-.countries-modes {
-  display: grid;
-  gap: 18px;
-}
-
-@media (min-width: 960px) {
-  .countries-modes {
-    grid-template-columns: 1.15fr 0.85fr;
-    align-items: stretch;
-  }
-}
-
-.countries-modes__block {
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 20px 20px 22px;
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(6, 16, 20, 0.75));
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.26);
-}
-
-.countries-modes__block--accent {
-  border-color: rgba(124, 243, 232, 0.22);
-  background: linear-gradient(155deg, rgba(23, 215, 209, 0.1), rgba(8, 20, 26, 0.88));
-}
-
-.countries-modes__head {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  margin-bottom: 16px;
-}
-
-.countries-modes__emoji {
-  font-size: 1.75rem;
-  line-height: 1;
-}
-
-.countries-modes__title {
-  margin: 0 0 4px;
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: rgba(248, 255, 255, 0.98);
-}
-
-.countries-modes__hint {
-  margin: 0;
-  font-size: 0.88rem;
-  line-height: 1.45;
-  color: rgba(180, 210, 210, 0.88);
-}
-
-.countries-modes__scroll {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scroll-snap-type: x proximity;
-  -webkit-overflow-scrolling: touch;
-}
-
-.mini-land {
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 104px;
-  text-decoration: none;
-  color: inherit;
-  padding: 10px 8px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.18);
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-}
-
-.mini-land:hover {
-  transform: translateY(-4px);
-  border-color: rgba(var(--v-theme-primary), 0.45);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
-}
-
-.mini-land__avatar {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.mini-land__name {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.25;
-  color: rgba(236, 252, 252, 0.95);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.countries-modes__quick {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.quick-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 999px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.88rem;
-  color: rgba(248, 255, 255, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.06);
-  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.quick-chip:hover {
-  transform: translateY(-2px);
-  border-color: rgba(var(--v-theme-primary), 0.5);
-  background: rgba(var(--v-theme-primary), 0.12);
-}
-
-.quick-chip__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgb(var(--v-theme-primary));
-  box-shadow: 0 0 12px rgba(124, 243, 232, 0.8);
-}
-
 .countries-empty {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: linear-gradient(165deg, rgba(255, 255, 255, 0.04), rgba(6, 16, 20, 0.85));
@@ -484,6 +238,30 @@ onMounted(() => {
 }
 
 .countries-grid {
-  margin-top: 4px;
+  margin-top: 8px;
+  row-gap: 8px;
+}
+
+.countries-grid :deep(> .v-col) {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+@media (min-width: 960px) {
+  .countries-grid {
+    row-gap: 12px;
+  }
+
+  .countries-grid :deep(> .v-col) {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-inline: 14px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .countries-grid :deep(> .v-col) {
+    padding-inline: 20px;
+  }
 }
 </style>
