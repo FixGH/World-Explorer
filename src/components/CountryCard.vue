@@ -5,7 +5,6 @@
     role="link"
     :tabindex="0"
     :aria-label="`Ouvrir la fiche — ${country.name?.common || 'Pays'}`"
-    :title="'Cliquer pour ouvrir la fiche pays'"
     @click="openCountryDetails"
     @keydown.enter.prevent="openCountryDetails"
     @keydown.space.prevent="openCountryDetails"
@@ -85,10 +84,6 @@
       </div>
 
       <v-card-actions class="country-actions px-4 pb-4 pt-1 mt-auto">
-        <p class="country-actions-hint text-caption text-medium-emphasis mb-0 me-auto d-none d-sm-flex align-center ga-1">
-          <v-icon icon="mdi-chevron-right" size="16" class="country-actions-hint-icon" aria-hidden="true" />
-          Voir la fiche
-        </p>
         <div class="country-actions-icons d-inline-flex align-center ga-1">
           <v-btn
             :icon="favoriteIcon"
