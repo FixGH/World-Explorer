@@ -5,15 +5,15 @@
       <div class="stats-hero__aurora" aria-hidden="true" />
       <div class="stats-hero__mesh" aria-hidden="true" />
       <div class="stats-hero__particles" aria-hidden="true">
-        <span v-for="i in 18" :key="i" class="stats-hero__dot" />
+        <span v-for="i in 10" :key="i" class="stats-hero__dot" />
       </div>
       <div class="stats-hero__layout">
         <div class="stats-hero__copy">
           <p class="stats-hero__eyebrow">World Explorer</p>
           <h1 id="stats-hero-title" class="stats-hero__title">Statistiques mondiales</h1>
           <p class="stats-hero__lead">
-            Un panorama vivant de la planète : volumes, records, répartitions et curiosités géographiques — le tout
-            calculé sur votre jeu de données actuel.
+            Panorama analytique de la planète : volumes globaux, records, répartitions régionales et classements —
+            calculés sur votre jeu de données.
           </p>
         </div>
         <div class="stats-hero__globe" aria-hidden="true">
@@ -35,168 +35,134 @@
 
     <template v-else>
       <!-- Vue d'ensemble -->
-      <section class="stats-section stats-section--major mb-8 mb-md-10">
-        <h2 class="stats-heading mb-6">
-          <span class="stats-heading-icon" aria-hidden="true" />
-          Vue d’ensemble
-        </h2>
-        <div class="stats-kpi-shell">
+      <section class="stats-section">
+        <header class="stats-section-header">
+          <h2 class="stats-heading">
+            <span class="stats-heading-icon" aria-hidden="true" />
+            Vue d’ensemble
+          </h2>
+        </header>
+        <div class="stats-kpi-shell stats-kpi-shell--overview">
           <StatsSummaryCards :items="summaryItems" :md="3" margin-bottom="mb-0" />
         </div>
       </section>
 
       <!-- Records mondiaux -->
-      <section class="stats-section stats-section--major mb-8 mb-md-10">
-        <h2 class="stats-heading mb-2">
-          <span class="stats-heading-icon" aria-hidden="true" />
-          Records du monde
-        </h2>
-        <p class="stats-section-desc mb-6">
-          Les extrêmes de votre atlas : population, superficie, frontières, densité et le pays le plus discret.
-        </p>
-        <v-row class="stats-records-row" align="stretch">
-          <v-col v-for="rec in worldRecords" :key="rec.key" cols="12" sm="6" lg="4">
-            <component
-              :is="rec.to ? 'RouterLink' : 'div'"
-              v-bind="rec.to ? { to: rec.to } : {}"
-              class="stat-record-tile"
-              :class="{ 'stat-record-tile--disabled': !rec.to }"
-            >
-              <div class="stat-record-tile__glow" aria-hidden="true" />
-              <v-avatar size="52" rounded="lg" class="stat-record-tile__flag">
-                <v-img v-if="rec.country" :src="flagSrc(rec.country)" :alt="rec.name || ''" cover>
-                  <template #error>
-                    <v-sheet class="stat-record-fallback d-flex align-center justify-center fill-height">
-                      <v-icon icon="mdi-flag-outline" size="26" />
-                    </v-sheet>
-                  </template>
-                </v-img>
-                <v-icon v-else icon="mdi-earth-off" size="28" />
-              </v-avatar>
-              <div class="stat-record-tile__body">
-                <span class="stat-record-tile__kicker">{{ rec.kicker }}</span>
-                <span class="stat-record-tile__name">{{ rec.name }}</span>
-                <span class="stat-record-tile__metric">{{ rec.metric }}</span>
-              </div>
-              <v-icon v-if="rec.to" icon="mdi-chevron-right" class="stat-record-tile__chev" aria-hidden="true" />
-            </component>
-          </v-col>
-        </v-row>
-      </section>
-
-      <!-- Indicateurs clés -->
-      <section class="stats-section stats-section--major mb-8 mb-md-10">
-        <h2 class="stats-heading mb-2">
-          <span class="stats-heading-icon" aria-hidden="true" />
-          Indicateurs clés
-        </h2>
-        <p class="stats-section-desc mb-6">
-          Tendances, moyennes et signaux complémentaires pour compléter les records.
-        </p>
-
-        <h3 class="stats-subheading mb-4">Complémentaires</h3>
-        <div v-if="insightItems.length" class="stats-kpi-shell stats-kpi-shell--insights mb-8">
-          <StatsSummaryCards :items="insightItems" :md="4" margin-bottom="mb-0" />
-        </div>
-
-        <h3 class="stats-subheading mb-4">Moyennes</h3>
-        <div v-if="averageItems.length" class="stats-kpi-shell stats-kpi-shell--avg mb-8">
-          <StatsSummaryCards :items="averageItems" :md="6" margin-bottom="mb-0" />
+      <section class="stats-section stats-section--featured">
+        <header class="stats-section-header">
+          <h2 class="stats-heading">
+            <span class="stats-heading-icon" aria-hidden="true" />
+            Records mondiaux
+          </h2>
+          <p class="stats-section-desc">
+            Les extrêmes qui structurent votre atlas — population, superficie, frontières et densité.
+          </p>
+        </header>
+        <div class="stats-records-grid">
+          <component
+            v-for="rec in worldRecords"
+            :key="rec.key"
+            :is="rec.to ? 'RouterLink' : 'div'"
+            v-bind="rec.to ? { to: rec.to } : {}"
+            class="stat-record-tile"
+            :class="{ 'stat-record-tile--disabled': !rec.to }"
+          >
+            <div class="stat-record-tile__glow" aria-hidden="true" />
+            <v-avatar size="60" rounded="lg" class="stat-record-tile__flag">
+              <v-img v-if="rec.country" :src="flagSrc(rec.country)" :alt="rec.name || ''" cover>
+                <template #error>
+                  <v-sheet class="stat-record-fallback d-flex align-center justify-center fill-height">
+                    <v-icon icon="mdi-flag-outline" size="28" />
+                  </v-sheet>
+                </template>
+              </v-img>
+              <v-icon v-else icon="mdi-earth-off" size="30" />
+            </v-avatar>
+            <div class="stat-record-tile__body">
+              <span class="stat-record-tile__kicker">{{ rec.kicker }}</span>
+              <span class="stat-record-tile__name">{{ rec.name }}</span>
+              <span class="stat-record-tile__metric">{{ rec.metric }}</span>
+            </div>
+            <v-icon v-if="rec.to" icon="mdi-chevron-right" class="stat-record-tile__chev" aria-hidden="true" />
+          </component>
         </div>
       </section>
 
-      <!-- Population moyenne par région -->
-      <section v-if="continentPopAverages.length" class="stats-section stats-section--major mb-8 mb-md-10">
-        <h2 class="stats-heading mb-2">
-          <span class="stats-heading-icon" aria-hidden="true" />
-          Population moyenne par région
-        </h2>
-        <p class="stats-section-desc mb-6">
-          Répartition démographique moyenne sur les pays présents dans chaque grande zone.
-        </p>
-        <v-row class="stats-mini-avg-row" align="stretch">
-          <v-col v-for="row in continentPopAverages" :key="row.region" cols="12" sm="6" md="4" lg="4">
-            <v-card class="stats-mini-avg" rounded="xl" variant="flat">
-              <v-card-text class="pa-5">
-                <div class="stats-mini-avg__icon">
-                  <v-icon :icon="regionIcon(row.region)" size="26" />
-                </div>
-                <div class="stats-mini-avg__label">{{ row.label }}</div>
-                <div class="stats-mini-avg__value">{{ formatIntFr(Math.round(row.avg)) }}</div>
-                <div class="stats-mini-avg__hint">habitants / pays (moy.)</div>
-                <div class="stats-mini-avg__meta">{{ formatIntFr(row.countries) }} pays</div>
+      <!-- Analyse : régions + indicateurs -->
+      <v-row class="stats-analysis-row" align="stretch">
+        <v-col cols="12" lg="7" class="stats-analysis-col">
+          <section class="stats-section stats-section--inset stats-section--panel">
+            <header class="stats-section-header">
+              <h2 class="stats-heading">
+                <span class="stats-heading-icon" aria-hidden="true" />
+                Répartition par région
+              </h2>
+              <p class="stats-section-desc">Distribution des pays par grande zone géographique.</p>
+            </header>
+            <v-card class="stats-panel region-panel" rounded="xl">
+              <v-card-text class="region-panel__body">
+                <v-list class="region-list py-0">
+                  <v-list-item
+                    v-for="region in regionalItems"
+                    :key="region.label"
+                    class="region-item rounded-xl"
+                  >
+                    <div class="region-item-inner">
+                      <div class="region-item-icon" aria-hidden="true">
+                        <v-icon :icon="regionIcon(region.key)" size="24" />
+                      </div>
+                      <div class="region-item-text">
+                        <span class="region-name">{{ region.label }}</span>
+                        <span class="region-count">
+                          {{ formatIntFr(region.count) }} pays · {{ regionShareLabel(region.count) }}
+                        </span>
+                      </div>
+                      <div class="region-progress">
+                        <div class="region-progress-track">
+                          <div
+                            class="region-progress-fill"
+                            :style="{ width: `${regionProgress(region.count)}%` }"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </v-list-item>
+                </v-list>
               </v-card-text>
             </v-card>
-          </v-col>
-        </v-row>
-      </section>
+          </section>
+        </v-col>
 
-      <!-- Répartition par région -->
-      <section class="stats-section stats-section--major mb-8 mb-md-10">
-        <h2 class="stats-heading mb-6">
-          <span class="stats-heading-icon" aria-hidden="true" />
-          Répartition par région
-        </h2>
-        <v-card class="stats-panel region-panel" rounded="xl">
-          <v-card-text class="pa-4 pa-md-6">
-            <v-list class="region-list py-0">
-              <v-list-item
-                v-for="region in regionalItems"
-                :key="region.label"
-                class="region-item rounded-xl mb-3 px-3 px-md-4"
-              >
-                <div class="region-item-inner">
-                  <div class="region-item-icon" aria-hidden="true">
-                    <v-icon :icon="regionIcon(region.key)" size="22" />
-                  </div>
-                  <div class="region-item-text">
-                    <span class="region-name">{{ region.label }}</span>
-                    <span class="region-count text-caption text-medium-emphasis">
-                      {{ formatIntFr(region.count) }} pays
-                    </span>
-                  </div>
-                  <div class="region-progress">
-                    <div class="region-progress-track">
-                      <div
-                        class="region-progress-fill"
-                        :style="{ width: `${regionProgress(region.count)}%` }"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-        </v-card>
-      </section>
-
-      <!-- Fait du monde -->
-      <section class="stats-section mb-8 mb-md-10">
-        <v-card class="stats-fact-card" rounded="xl" variant="flat">
-          <v-card-text class="stats-fact-card__inner pa-6 pa-md-7 d-flex flex-wrap align-center ga-4">
-            <div class="stats-fact-card__icon" aria-hidden="true">
-              <v-icon icon="mdi-lightbulb-on-outline" size="32" />
+        <v-col cols="12" lg="5" class="stats-analysis-col">
+          <section v-if="keyIndicatorItems.length" class="stats-section stats-section--inset stats-section--panel">
+            <header class="stats-section-header">
+              <h2 class="stats-heading">
+                <span class="stats-heading-icon" aria-hidden="true" />
+                Indicateurs clés
+              </h2>
+              <p class="stats-section-desc">Moyennes et signaux complémentaires issus des données.</p>
+            </header>
+            <div class="stats-kpi-shell stats-kpi-shell--compact stats-kpi-shell--stacked">
+              <StatsSummaryCards :items="keyIndicatorItems" :md="12" margin-bottom="mb-0" />
             </div>
-            <div class="stats-fact-card__copy flex-grow-1 min-width-0">
-              <div class="stats-fact-card__kicker">Le saviez-vous ?</div>
-              <p class="stats-fact-card__text mb-0">{{ worldFactLine }}</p>
-            </div>
-          </v-card-text>
-        </v-card>
-      </section>
+          </section>
+        </v-col>
+      </v-row>
 
       <!-- Classements -->
-      <section class="stats-section mb-4">
-        <h2 class="stats-heading mb-2">
-          <span class="stats-heading-icon" aria-hidden="true" />
-          Classements
-        </h2>
-        <p class="stats-section-desc mb-8">
-          Top 10 par population, superficie, frontières — et les pays les plus discrets en nombre d’habitants.
-        </p>
+      <section class="stats-section stats-section--rankings">
+        <header class="stats-section-header">
+          <h2 class="stats-heading">
+            <span class="stats-heading-icon" aria-hidden="true" />
+            Classements
+          </h2>
+          <p class="stats-section-desc">
+            Top 10 par population, superficie, frontières et pays les moins peuplés.
+          </p>
+        </header>
 
-        <v-row class="rankings-row">
-          <v-col cols="12" md="6" lg="3">
+        <v-row class="rankings-row" align="stretch">
+          <v-col cols="12" md="6" class="ranking-col">
             <TopCountriesList
               title="Les plus peuplés"
               :items="store.topPopulatedCountries"
@@ -205,7 +171,7 @@
             />
           </v-col>
 
-          <v-col cols="12" md="6" lg="3">
+          <v-col cols="12" md="6" class="ranking-col">
             <TopCountriesList
               title="Les plus grands"
               :items="store.topLargestCountries"
@@ -214,7 +180,7 @@
             />
           </v-col>
 
-          <v-col cols="12" md="6" lg="3">
+          <v-col cols="12" md="6" class="ranking-col">
             <TopCountriesList
               title="Les plus frontaliers"
               :items="store.topBorderCountries"
@@ -223,7 +189,7 @@
             />
           </v-col>
 
-          <v-col cols="12" md="6" lg="3">
+          <v-col cols="12" md="6" class="ranking-col">
             <TopCountriesList
               title="Les moins peuplés"
               :items="topLeastPopulated"
@@ -254,8 +220,6 @@ const regionLabels = {
   Oceania: 'Océanie',
   Antarctic: 'Antarctique',
 }
-
-const regionOrder = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania', 'Antarctic']
 
 function formatIntFr(n) {
   return Math.round(Number(n)).toLocaleString('fr-FR', { maximumFractionDigits: 0 })
@@ -363,6 +327,8 @@ const averageItems = computed(() => {
   ]
 })
 
+const keyIndicatorItems = computed(() => [...insightItems.value, ...averageItems.value])
+
 const regionalItems = computed(() => {
   return store.regionDistribution.map((item) => ({
     key: item.region,
@@ -376,25 +342,6 @@ const topLeastPopulated = computed(() => {
     .filter((c) => Number.isFinite(c?.population))
     .sort((a, b) => (a.population || 0) - (b.population || 0))
     .slice(0, 10)
-})
-
-const continentPopAverages = computed(() => {
-  const sums = {}
-  const counts = {}
-  for (const c of store.countries) {
-    const r = c?.region
-    if (!r || !regionLabels[r]) continue
-    sums[r] = (sums[r] || 0) + Number(c.population || 0)
-    counts[r] = (counts[r] || 0) + 1
-  }
-  return regionOrder
-    .map((region) => ({
-      region,
-      label: regionLabels[region],
-      avg: counts[region] ? sums[region] / counts[region] : 0,
-      countries: counts[region] || 0,
-    }))
-    .filter((row) => row.countries > 0)
 })
 
 const worldRecords = computed(() => {
@@ -454,25 +401,12 @@ const worldRecords = computed(() => {
   return list
 })
 
-const worldFactLine = computed(() => {
-  const n = store.totalCountries
-  const p = store.totalPopulation
-  const a = store.totalArea
-  const idx = n % 4
-  if (idx === 0) {
-    return `Votre atlas compte ${formatIntFr(n)} pays pour une population cumulée d’environ ${formatIntFr(p)} habitants.`
-  }
-  if (idx === 1) {
-    return `La superficie cumulée représente environ ${formatDecimalFr(a, 0, 0)} km² — l’équivalent de nombreuses terres émergées à explorer.`
-  }
-  if (idx === 2) {
-    const lr = store.leadingRegionByCount
-    if (lr) {
-      return `La zone la plus fournie est ${regionLabels[lr.region] || lr.region}, avec ${formatIntFr(lr.count)} pays dans le jeu de données.`
-    }
-  }
-  return 'Chaque indicateur se met à jour avec les pays chargés : comparez, ouvrez les fiches, et observez les extrêmes évoluer.'
-})
+function regionShareLabel(count) {
+  const total = store.totalCountries
+  if (!total) return '—'
+  const pct = (count / total) * 100
+  return `${formatDecimalFr(pct, 0, 1)} %`
+}
 
 function populationValue(country) {
   return Number(country?.population || 0)
@@ -521,7 +455,15 @@ onMounted(() => {
 
 <style scoped>
 .statistics-page {
-  max-width: min(100%, 1320px) !important;
+  --stats-section-gap: clamp(40px, 5vw, 64px);
+  --stats-block-gap: 20px;
+  --stats-card-gap: 20px;
+  --stats-card-pad: clamp(20px, 2.5vw, 28px);
+  --stats-shadow-soft: 0 8px 28px rgba(0, 0, 0, 0.22);
+  --stats-shadow-lift: 0 14px 36px rgba(0, 0, 0, 0.28);
+
+  max-width: min(100%, 1420px) !important;
+  padding-inline: clamp(12px, 2vw, 20px) !important;
 }
 
 /* --- Hero --- */
@@ -531,12 +473,13 @@ onMounted(() => {
   border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   padding: clamp(26px, 4.5vw, 48px) clamp(20px, 3.5vw, 40px);
-  margin-bottom: clamp(24px, 4vw, 40px);
+  margin-bottom: var(--stats-section-gap);
   min-height: min(320px, 52vw);
   display: flex;
   align-items: center;
   background: linear-gradient(165deg, rgba(12, 32, 38, 0.95), rgba(6, 14, 18, 0.98));
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--stats-shadow-lift);
+  isolation: isolate;
 }
 
 .stats-hero__aurora {
@@ -634,47 +577,6 @@ onMounted(() => {
   left: 18%;
   animation-delay: 1.1s;
 }
-.stats-hero__dot:nth-child(11) {
-  top: 72%;
-  left: 44%;
-  animation-delay: 2.4s;
-}
-.stats-hero__dot:nth-child(12) {
-  top: 62%;
-  left: 72%;
-  animation-delay: 0.6s;
-}
-.stats-hero__dot:nth-child(13) {
-  top: 82%;
-  left: 28%;
-  animation-delay: 1.6s;
-}
-.stats-hero__dot:nth-child(14) {
-  top: 8%;
-  left: 92%;
-  animation-delay: 2.2s;
-}
-.stats-hero__dot:nth-child(15) {
-  top: 56%;
-  left: 66%;
-  animation-delay: 0.9s;
-}
-.stats-hero__dot:nth-child(16) {
-  top: 26%;
-  left: 6%;
-  animation-delay: 1.2s;
-}
-.stats-hero__dot:nth-child(17) {
-  top: 76%;
-  left: 92%;
-  animation-delay: 2.6s;
-}
-.stats-hero__dot:nth-child(18) {
-  top: 88%;
-  left: 58%;
-  animation-delay: 0.4s;
-}
-
 @keyframes stats-twinkle {
   0%,
   100% {
@@ -790,11 +692,21 @@ onMounted(() => {
 }
 
 /* --- KPI shells (StatsSummaryCards) --- */
+.stats-kpi-shell :deep(.v-row) {
+  margin: 0;
+  row-gap: var(--stats-card-gap);
+}
+
+.stats-kpi-shell :deep(.v-col) {
+  padding-top: calc(var(--stats-card-gap) / 2);
+  padding-bottom: calc(var(--stats-card-gap) / 2);
+}
+
 .stats-kpi-shell :deep(.summary-card) {
   border-radius: 18px !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(6, 16, 22, 0.9));
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.26);
+  box-shadow: var(--stats-shadow-soft);
   transition:
     transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.3s ease,
@@ -802,11 +714,43 @@ onMounted(() => {
 }
 
 .stats-kpi-shell :deep(.summary-card:hover) {
-  transform: translateY(-5px);
-  border-color: rgba(var(--v-theme-primary), 0.4);
-  box-shadow:
-    0 22px 52px rgba(0, 0, 0, 0.34),
-    0 0 0 1px rgba(124, 243, 232, 0.1) inset;
+  transform: translateY(-2px);
+  border-color: rgba(var(--v-theme-primary), 0.28);
+  box-shadow: var(--stats-shadow-lift);
+}
+
+.stats-kpi-shell :deep(.v-card-text) {
+  padding: var(--stats-card-pad) !important;
+}
+
+.stats-kpi-shell--compact :deep(.summary-card) {
+  min-height: 116px;
+}
+
+.stats-kpi-shell--compact :deep(.summary-label) {
+  margin-bottom: 10px !important;
+}
+
+.stats-kpi-shell--compact :deep(.summary-headline) {
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.stats-kpi-shell--compact :deep(.summary-detail) {
+  margin-top: 8px !important;
+}
+
+.stats-kpi-shell--compact :deep(.summary-icon-wrap) {
+  width: 44px;
+  height: 44px;
+  margin-top: 2px;
+}
+
+.stats-kpi-shell--stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
 }
 
 .stats-kpi-shell :deep(.summary-icon-wrap) {
@@ -823,25 +767,31 @@ onMounted(() => {
 }
 
 /* --- Record tiles --- */
+.stats-records-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--stats-card-gap);
+}
+
 .stat-record-tile {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   height: 100%;
-  min-height: 112px;
-  padding: 16px 18px;
-  border-radius: 18px;
+  min-height: 132px;
+  padding: 20px 22px;
+  border-radius: 20px;
   text-decoration: none;
   color: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.055), rgba(6, 16, 22, 0.92));
-  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.07), rgba(6, 16, 22, 0.94));
+  box-shadow: var(--stats-shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   overflow: hidden;
   transition:
-    transform 0.28s ease,
-    border-color 0.28s ease,
-    box-shadow 0.28s ease;
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .stat-record-tile--disabled {
@@ -850,11 +800,9 @@ onMounted(() => {
 }
 
 .stat-record-tile:not(.stat-record-tile--disabled):hover {
-  transform: translateY(-4px);
-  border-color: rgba(var(--v-theme-primary), 0.42);
-  box-shadow:
-    0 20px 48px rgba(0, 0, 0, 0.36),
-    0 0 40px rgba(23, 215, 209, 0.1);
+  transform: translateY(-3px);
+  border-color: rgba(var(--v-theme-primary), 0.32);
+  box-shadow: var(--stats-shadow-lift);
 }
 
 .stat-record-tile__glow {
@@ -872,7 +820,8 @@ onMounted(() => {
 
 .stat-record-tile__flag {
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
 .stat-record-fallback {
@@ -896,16 +845,17 @@ onMounted(() => {
 }
 
 .stat-record-tile__name {
-  font-size: 1.05rem;
+  font-size: 1.12rem;
   font-weight: 800;
   color: rgba(248, 255, 255, 0.98);
   line-height: 1.25;
 }
 
 .stat-record-tile__metric {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(200, 232, 230, 0.9);
+  color: rgba(124, 243, 232, 0.88);
+  font-variant-numeric: tabular-nums;
 }
 
 .stat-record-tile__chev {
@@ -919,150 +869,199 @@ onMounted(() => {
   color: rgba(124, 243, 232, 0.95);
 }
 
-.stats-records-row {
-  row-gap: 16px;
+/* --- Section chrome --- */
+.stats-section {
+  margin-bottom: var(--stats-section-gap);
+  position: relative;
 }
 
-/* --- Section chrome --- */
-.stats-section--major {
-  padding-bottom: 2px;
+.stats-section::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--stats-section-gap) * -0.5);
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(124, 243, 232, 0.12) 20%,
+    rgba(124, 243, 232, 0.12) 80%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+.stats-section:first-of-type::before,
+.stats-hero + .stats-section::before,
+.stats-alert + .stats-section::before {
+  display: none;
+}
+
+.stats-section--rankings {
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+
+.stats-section--rankings::before {
+  top: calc(var(--stats-section-gap) * -0.45);
+}
+
+.stats-section-header {
+  margin-bottom: var(--stats-block-gap);
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stats-section-header::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 2px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgb(var(--v-theme-primary)), transparent);
+  opacity: 0.65;
 }
 
 .stats-heading {
-  font-size: 1.15rem;
+  margin: 0 0 8px;
+  font-size: clamp(1.05rem, 0.95rem + 0.35vw, 1.28rem);
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(228, 252, 252, 0.94);
+  color: rgba(240, 255, 255, 0.96);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .stats-heading-icon {
-  width: 4px;
-  height: 24px;
+  width: 3px;
+  height: 28px;
   border-radius: 4px;
-  background: linear-gradient(180deg, rgb(var(--v-theme-primary)), rgba(124, 243, 232, 0.35));
+  background: linear-gradient(180deg, rgb(var(--v-theme-primary)), rgba(124, 243, 232, 0.2));
+  box-shadow: 0 0 16px rgba(23, 215, 209, 0.35);
   flex-shrink: 0;
 }
 
-.stats-subheading {
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(168, 210, 210, 0.82);
-}
-
 .stats-section-desc {
-  max-width: 46rem;
-  line-height: 1.55;
-  color: rgba(186, 218, 218, 0.88);
-  font-size: 0.95rem;
+  margin: 0;
+  max-width: 40rem;
+  line-height: 1.6;
+  color: rgba(176, 208, 208, 0.82);
+  font-size: 0.94rem;
   font-weight: 500;
 }
 
-/* --- Mini moyennes continent --- */
-.stats-mini-avg {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(6, 16, 22, 0.88));
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
-  transition: transform 0.26s ease, border-color 0.26s ease, box-shadow 0.26s ease;
-  height: 100%;
+.stats-analysis-row {
+  margin-bottom: var(--stats-section-gap);
+  row-gap: var(--stats-section-gap);
+  position: relative;
 }
 
-.stats-mini-avg:hover {
-  transform: translateY(-4px);
-  border-color: rgba(var(--v-theme-primary), 0.35);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+.stats-analysis-row::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--stats-section-gap) * -0.5);
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(124, 243, 232, 0.12) 20%,
+    rgba(124, 243, 232, 0.12) 80%,
+    transparent
+  );
+  pointer-events: none;
 }
 
-.stats-mini-avg__icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+.stats-analysis-col {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-  color: rgb(var(--v-theme-primary));
-  background: rgba(var(--v-theme-primary), 0.12);
-  border: 1px solid rgba(124, 243, 232, 0.2);
+  flex-direction: column;
 }
 
-.stats-mini-avg__label {
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(170, 210, 210, 0.85);
-  margin-bottom: 6px;
+.stats-section--inset {
+  margin-bottom: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 
-.stats-mini-avg__value {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: rgba(248, 255, 255, 0.98);
-  line-height: 1.2;
+.stats-section--inset::before {
+  display: none;
 }
 
-.stats-mini-avg__hint {
-  font-size: 0.78rem;
-  color: rgba(188, 218, 218, 0.8);
-  margin-bottom: 8px;
+.stats-section--panel {
+  min-height: 0;
 }
 
-.stats-mini-avg__meta {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: rgba(124, 243, 232, 0.75);
+.stats-section--inset .stats-section-header {
+  margin-bottom: var(--stats-block-gap);
+  flex-shrink: 0;
 }
 
-.stats-mini-avg-row {
-  row-gap: 14px;
+.stats-section--inset .stats-panel,
+.stats-section--inset .stats-kpi-shell {
+  flex: 1 1 auto;
 }
 
 /* --- Régions : barres custom animées --- */
 .stats-panel {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: linear-gradient(165deg, rgba(255, 255, 255, 0.04), rgba(6, 16, 22, 0.92));
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--stats-shadow-soft);
 }
 
 .region-panel {
-  overflow: hidden;
+  overflow: visible;
+}
+
+.region-panel__body {
+  padding: var(--stats-card-pad) !important;
 }
 
 .region-list {
   max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.region-list :deep(.v-list-item) {
+  padding-inline: 16px !important;
+  min-height: 0 !important;
 }
 
 .region-item {
-  min-height: 64px !important;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(0, 0, 0, 0.12);
-  transition: border-color 0.22s ease, background-color 0.22s ease;
+  min-height: 84px !important;
+  margin-bottom: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.1);
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease;
 }
 
 .region-item:hover {
-  border-color: rgba(var(--v-theme-primary), 0.25);
-  background: rgba(var(--v-theme-primary), 0.06);
+  border-color: rgba(var(--v-theme-primary), 0.2);
+  background: rgba(var(--v-theme-primary), 0.05);
+  box-shadow: none;
 }
 
 .region-item-inner {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 18px;
   width: 100%;
-  padding: 8px 0;
+  padding: 14px 0;
 }
 
 .region-item-icon {
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1076,32 +1075,41 @@ onMounted(() => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .region-name {
-  font-weight: 700;
-  font-size: 0.98rem;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.region-count {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(176, 208, 208, 0.78);
+  font-variant-numeric: tabular-nums;
 }
 
 .region-progress {
-  flex: 0 0 min(200px, 36%);
+  flex: 0 0 min(220px, 38%);
 }
 
 .region-progress-track {
-  height: 10px;
+  height: 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 .region-progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(23, 215, 209, 0.85), rgba(124, 243, 232, 0.95));
-  box-shadow: 0 0 18px rgba(23, 215, 209, 0.35);
-  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  background: linear-gradient(90deg, rgba(23, 215, 209, 0.75), rgba(124, 243, 232, 0.92));
+  box-shadow: 0 0 20px rgba(23, 215, 209, 0.28);
+  transition: width 0.85s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
 }
 
@@ -1109,9 +1117,9 @@ onMounted(() => {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%);
-  animation: stats-shimmer 2.8s ease-in-out infinite;
-  opacity: 0.5;
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.18) 50%, transparent 100%);
+  animation: stats-shimmer 3.5s ease-in-out infinite;
+  opacity: 0.4;
 }
 
 @keyframes stats-shimmer {
@@ -1123,43 +1131,37 @@ onMounted(() => {
   }
 }
 
-/* --- Fait --- */
-.stats-fact-card {
-  border: 1px solid rgba(124, 243, 232, 0.18);
-  background: linear-gradient(120deg, rgba(23, 215, 209, 0.1), rgba(6, 16, 22, 0.92));
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
-}
-
-.stats-fact-card__icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgb(var(--v-theme-primary));
-  background: rgba(var(--v-theme-primary), 0.12);
-  border: 1px solid rgba(124, 243, 232, 0.22);
-}
-
-.stats-fact-card__kicker {
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(186, 228, 226, 0.88);
-  margin-bottom: 6px;
-}
-
-.stats-fact-card__text {
-  font-size: 1.02rem;
-  line-height: 1.55;
-  color: rgba(220, 244, 244, 0.94);
-  font-weight: 500;
-}
-
 .rankings-row {
-  row-gap: 22px;
+  margin: 0;
+  row-gap: var(--stats-card-gap);
+}
+
+.rankings-row :deep(.v-col) {
+  padding-top: calc(var(--stats-card-gap) / 2);
+  padding-bottom: calc(var(--stats-card-gap) / 2);
+}
+
+.ranking-col {
+  display: flex;
+  align-items: stretch;
+}
+
+.ranking-col > * {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 1279px) {
+  .region-item-inner {
+    flex-wrap: wrap;
+  }
+
+  .region-progress {
+    flex: 1 1 100%;
+    max-width: 100%;
+    margin-top: 4px;
+  }
 }
 
 @media (max-width: 959px) {
@@ -1180,15 +1182,32 @@ onMounted(() => {
 }
 
 @media (max-width: 600px) {
+  .statistics-page {
+    --stats-section-gap: 36px;
+    --stats-card-gap: 16px;
+    --stats-card-pad: 18px;
+  }
+
+  .region-item {
+    min-height: 0 !important;
+  }
+
   .region-item-inner {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 14px;
+    padding: 12px 0;
   }
 
   .region-progress {
     flex: 1 1 auto;
     max-width: 100%;
+    margin-top: 0;
+  }
+
+  .stat-record-tile {
+    min-height: 120px;
+    padding: 18px;
   }
 }
 </style>
