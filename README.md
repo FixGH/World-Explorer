@@ -3,7 +3,7 @@
 ## Accueil
 
 <p align="center">
-  <img src="./screenshots/Accueil.png" width="1000">
+  <img src="./src/screenshots/Accueil.png" width="1000">
 </p>
 
 ---
@@ -11,7 +11,7 @@
 ## Explorateur de pays
 
 <p align="center">
-  <img src="./screenshots/Explorer.png" width="1000">
+  <img src="./src/screenshots/Explorer.png" width="1000">
 </p>
 
 ---
@@ -19,7 +19,7 @@
 ## Comparaison de pays
 
 <p align="center">
-  <img src="./screenshots/Comparateur.png" width="1000">
+  <img src="./src/screenshots/Comparateur.png" width="1000">
 </p>
 
 ---
@@ -27,7 +27,7 @@
 ## Statistiques mondiales
 
 <p align="center">
-  <img src="./screenshots/Statistiques.png" width="1000">
+  <img src="./src/screenshots/Statistiques.png" width="1000">
 </p>
 
 ---
@@ -35,7 +35,7 @@
 ## Favoris
 
 <p align="center">
-  <img src="./screenshots/Favoris.png" width="1000">
+  <img src="./src/screenshots/Favoris.png" width="1000">
 </p>
 
 ---
