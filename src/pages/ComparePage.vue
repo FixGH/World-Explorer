@@ -134,8 +134,8 @@
         <div class="compare-section-label text-overline text-medium-emphasis mb-3 px-1">
           Pays comparés
         </div>
-        <v-row class="compare-country-row ga-4">
-          <v-col cols="12" md="6">
+        <v-row class="compare-country-row">
+          <v-col cols="12" sm="6">
             <v-card class="country-head-card country-head-card--left h-100" rounded="lg" elevation="0">
               <v-card-text class="d-flex align-center justify-space-between py-4 px-4 flex-wrap ga-3">
                 <div class="d-flex align-center ga-3 min-width-0">
@@ -173,7 +173,7 @@
               </v-card-text>
             </v-card>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" sm="6">
             <v-card class="country-head-card country-head-card--right h-100" rounded="lg" elevation="0">
               <v-card-text class="d-flex align-center justify-space-between py-4 px-4 flex-wrap ga-3">
                 <div class="d-flex align-center ga-3 min-width-0">

@@ -29,19 +29,16 @@
           <tr>
             <td class="compare-field-cell"><strong>Drapeau</strong></td>
             <td class="compare-val-cell compare-val-left">
-              <div class="flag-cell">
+              <div class="compare-flag-wrap">
                 <v-img
                   v-if="left"
                   :src="leftFlagSrc"
                   :alt="left.name?.common"
-                  height="56"
-                  width="88"
-                  cover
-                  rounded="lg"
+                  contain
                   class="compare-flag-img"
                 >
                   <template #error>
-                    <v-sheet height="56" width="88" class="d-flex align-center justify-center rounded-lg">
+                    <v-sheet class="fill-height d-flex align-center justify-center">
                       <v-icon icon="mdi-flag-outline" />
                     </v-sheet>
                   </template>
@@ -50,19 +47,16 @@
               </div>
             </td>
             <td class="compare-val-cell compare-val-right">
-              <div class="flag-cell">
+              <div class="compare-flag-wrap">
                 <v-img
                   v-if="right"
                   :src="rightFlagSrc"
                   :alt="right.name?.common"
-                  height="56"
-                  width="88"
-                  cover
-                  rounded="lg"
+                  contain
                   class="compare-flag-img"
                 >
                   <template #error>
-                    <v-sheet height="56" width="88" class="d-flex align-center justify-center rounded-lg">
+                    <v-sheet class="fill-height d-flex align-center justify-center">
                       <v-icon icon="mdi-flag-outline" />
                     </v-sheet>
                   </template>
@@ -423,14 +417,27 @@ function formatCurrencies(currencies) {
   background: rgba(var(--v-theme-secondary), 0.05);
 }
 
-.flag-cell {
+.compare-flag-wrap {
   display: flex;
   align-items: center;
-  min-height: 56px;
+  justify-content: center;
+  width: 88px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.compare-flag-wrap :deep(.v-img) {
+  width: 100%;
+  height: 100%;
 }
 
 .compare-flag-img {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .metric-row td {

@@ -12,8 +12,7 @@
           <p class="stats-hero__eyebrow">World Explorer</p>
           <h1 id="stats-hero-title" class="stats-hero__title">Statistiques mondiales</h1>
           <p class="stats-hero__lead">
-            Panorama analytique de la planète : volumes globaux, records, répartitions régionales et classements —
-            calculés sur votre jeu de données.
+            Panorama analytique de la planète : volumes globaux, records, répartitions régionales et classements.
           </p>
         </div>
         <div class="stats-hero__globe" aria-hidden="true">
