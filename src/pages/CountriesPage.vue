@@ -10,7 +10,7 @@
           </div>
           <h1 class="countries-page__title">Explorateur de pays</h1>
           <p class="countries-page__subtitle">
-            Parcourez le monde comme une collection vivante : filtres doux, cartes immersives, coups de cœur en un geste.
+            Parcourez le monde et découvrez-le d'un nouvel œil
           </p>
         </div>
         <div class="countries-page__header-actions">

@@ -24,7 +24,7 @@
         </template>
       </v-img>
       <div class="country-card__media-scrim" aria-hidden="true" />
-      <div class="country-card__fav">
+      <div v-if="!showRemoveFavorite" class="country-card__fav">
         <v-btn
           :icon="favoriteIcon"
           :aria-label="isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
@@ -39,17 +39,30 @@
     <div class="country-card__body">
       <div class="country-card__title-row">
         <h3 class="country-card__name">{{ country.name?.common }}</h3>
-        <v-btn
-          v-if="canDelete"
-          icon="mdi-delete-outline"
-          variant="text"
-          size="x-small"
-          color="error"
-          density="compact"
-          aria-label="Supprimer ce pays personnalisé"
-          class="country-card__delete"
-          @click.stop="$emit('delete-country', country.cca3)"
-        />
+        <div class="country-card__actions">
+          <v-btn
+            v-if="showRemoveFavorite"
+            icon="mdi-trash-can-outline"
+            variant="text"
+            size="x-small"
+            color="error"
+            density="compact"
+            aria-label="Retirer des favoris"
+            class="country-card__remove-favorite"
+            @click.stop="$emit('remove-favorite', country.cca3)"
+          />
+          <v-btn
+            v-if="canDelete"
+            icon="mdi-delete-outline"
+            variant="text"
+            size="x-small"
+            color="error"
+            density="compact"
+            aria-label="Supprimer ce pays personnalisé"
+            class="country-card__delete"
+            @click.stop="$emit('delete-country', country.cca3)"
+          />
+        </div>
       </div>
 
       <ul class="country-card__stats" aria-label="Informations principales">
@@ -106,9 +119,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showRemoveFavorite: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-defineEmits(['toggle-favorite', 'delete-country'])
+defineEmits(['toggle-favorite', 'delete-country', 'remove-favorite'])
 
 function openCountryDetails() {
   router.push({ name: 'country-details', params: { code: props.country.cca3 } })
@@ -373,10 +390,22 @@ const favoriteIcon = computed(() => (props.isFavorite ? 'mdi-heart' : 'mdi-heart
   color: rgb(var(--v-theme-primary));
 }
 
-.country-card__delete {
+.country-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.country-card__delete,
+.country-card__remove-favorite {
   flex-shrink: 0;
   margin-top: 2px;
   opacity: 0.9;
+}
+
+.country-card__remove-favorite:hover {
+  opacity: 1;
 }
 
 .country-card__stats {

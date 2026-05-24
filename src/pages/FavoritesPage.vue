@@ -10,8 +10,7 @@
           <p class="favorites-page__kicker">Votre collection</p>
           <h1 class="favorites-page__title">Pays favoris</h1>
           <p class="favorites-page__subtitle">
-            Les destinations que vous gardez près de vous — retrouvez-les en un clin d’œil, comme une wishlist de
-            voyage.
+            Les destinations que vous gardez près de vous — retrouvez-les en un clin d’œil
           </p>
         </div>
       </div>
@@ -28,7 +27,7 @@
           Parcourir vos favoris
         </div>
         <v-row class="favorites-toolbar__row" align="end">
-          <v-col cols="12" md="7" lg="8">
+          <v-col cols="12" md="5" lg="5">
             <v-text-field
               v-model="favoritesSearch"
               label="Rechercher dans les favoris"
@@ -42,7 +41,7 @@
               class="favorites-field favorites-field--search"
             />
           </v-col>
-          <v-col cols="12" md="5" lg="4">
+          <v-col cols="12" md="4" lg="4">
             <v-select
               v-model="favoritesSort"
               :items="sortItems"
@@ -52,6 +51,27 @@
               density="comfortable"
               hide-details
               class="favorites-field"
+            />
+          </v-col>
+          <v-col cols="12" md="3" lg="3">
+            <v-autocomplete
+              v-model="countryToAdd"
+              v-model:search="countryToAddSearch"
+              :items="addableCountryItems"
+              :loading="store.loading"
+              item-title="title"
+              item-value="value"
+              label="Ajouter un pays"
+              placeholder="Rechercher…"
+              prepend-inner-icon="mdi-heart-plus-outline"
+              variant="solo-filled"
+              flat
+              density="comfortable"
+              clearable
+              hide-details
+              no-data-text="Tous les pays sont déjà en favoris"
+              class="favorites-field favorites-field--add"
+              @update:model-value="onAddFavorite"
             />
           </v-col>
         </v-row>
@@ -70,8 +90,26 @@
         </div>
         <h2 class="favorites-empty__title">Votre collection attend son premier pays</h2>
         <p class="favorites-empty__text">
-          Ajoutez un cœur depuis l’explorateur ou une fiche pays : tout se rassemblera ici, élégamment.
+          Ajoutez un pays ci-dessous ou explorez le monde pour constituer votre collection.
         </p>
+        <v-autocomplete
+          v-model="countryToAdd"
+          v-model:search="countryToAddSearch"
+          :items="addableCountryItems"
+          :loading="store.loading"
+          item-title="title"
+          item-value="value"
+          label="Ajouter un pays"
+          placeholder="Rechercher un pays…"
+          prepend-inner-icon="mdi-heart-plus-outline"
+          variant="solo-filled"
+          flat
+          density="comfortable"
+          clearable
+          hide-details
+          class="favorites-add-field mx-auto mb-6"
+          @update:model-value="onAddFavorite"
+        />
         <v-btn
           color="primary"
           size="x-large"
@@ -117,8 +155,9 @@
           <CountryCard
             :country="country"
             :is-favorite="true"
+            show-remove-favorite
             :can-delete="authStore.isAuthenticated && Boolean(country.isCustom)"
-            @toggle-favorite="store.toggleFavorite"
+            @remove-favorite="store.removeFavorite"
             @delete-country="store.deleteCustomCountry"
           />
         </v-col>
@@ -139,11 +178,44 @@ const authStore = useAuthStore()
 
 const favoritesSearch = ref('')
 const favoritesSort = ref('name-asc')
+const countryToAdd = ref(null)
+const countryToAddSearch = ref('')
+
+const regionLabels = {
+  Africa: 'Afrique',
+  Americas: 'Amériques',
+  Asia: 'Asie',
+  Europe: 'Europe',
+  Oceania: 'Océanie',
+  Antarctic: 'Antarctique',
+}
 
 const sortItems = [
   { title: 'Nom (A → Z)', value: 'name-asc' },
-  { title: 'Population (décroissante)', value: 'population-desc' },
+  { title: 'Nom (Z → A)', value: 'name-desc' },
+  { title: 'Population ↑', value: 'population-asc' },
+  { title: 'Population ↓', value: 'population-desc' },
+  { title: 'Superficie ↑', value: 'area-asc' },
+  { title: 'Superficie ↓', value: 'area-desc' },
+  { title: 'Région (A → Z)', value: 'region-asc' },
 ]
+
+const addableCountryItems = computed(() => {
+  return store.countries
+    .filter((country) => country?.cca3 && !store.isFavorite(country.cca3))
+    .map((country) => ({
+      title: `${country.name?.common || 'Sans nom'} (${country.cca3})`,
+      value: country.cca3,
+    }))
+    .sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
+})
+
+function onAddFavorite(code) {
+  if (!code) return
+  store.addFavorite(code)
+  countryToAdd.value = null
+  countryToAddSearch.value = ''
+}
 
 const favoriteSummaryItems = computed(() => [
   {
@@ -174,11 +246,26 @@ const visibleFavorites = computed(() => {
   const sorted = [...list]
   sorted.sort((a, b) => {
     switch (favoritesSort.value) {
+      case 'name-desc':
+        return (b?.name?.common || '').localeCompare(a?.name?.common || '', 'fr', { sensitivity: 'base' })
+      case 'population-asc':
+        return (a?.population || 0) - (b?.population || 0)
       case 'population-desc':
         return (b?.population || 0) - (a?.population || 0)
+      case 'area-asc':
+        return (a?.area || 0) - (b?.area || 0)
+      case 'area-desc':
+        return (b?.area || 0) - (a?.area || 0)
+      case 'region-asc': {
+        const regionA = regionLabels[a?.region] || a?.region || ''
+        const regionB = regionLabels[b?.region] || b?.region || ''
+        const byRegion = regionA.localeCompare(regionB, 'fr', { sensitivity: 'base' })
+        if (byRegion !== 0) return byRegion
+        return (a?.name?.common || '').localeCompare(b?.name?.common || '', 'fr', { sensitivity: 'base' })
+      }
       case 'name-asc':
       default:
-        return (a?.name?.common || '').localeCompare(b?.name?.common || '')
+        return (a?.name?.common || '').localeCompare(b?.name?.common || '', 'fr', { sensitivity: 'base' })
     }
   })
 
@@ -388,6 +475,16 @@ onMounted(() => {
 
 .favorites-field--search :deep(.v-field) {
   min-height: 50px;
+}
+
+.favorites-add-field {
+  max-width: 420px;
+}
+
+.favorites-add-field :deep(.v-field) {
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(4, 12, 16, 0.55) !important;
 }
 
 /* --- Grille = Explorateur (même largeur de carte) --- */

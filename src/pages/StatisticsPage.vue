@@ -301,7 +301,7 @@ const averageItems = computed(() => {
       label: 'Superficie moyenne (par pays)',
       headline: formatDecimalFr(aa, 2, 2),
       detail: 'km²',
-      icon: 'mdi-ruler-square-outline',
+      icon: 'mdi-ruler-square',
     },
   ]
 })
