@@ -28,7 +28,7 @@
             </v-form>
           </v-card-text>
           <v-card-actions class="px-4 pb-4 text-medium-emphasis">
-            Demo: <code>admin</code> / <code>admin</code>
+            Démo : <code>admin</code> / <code>admin</code>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -58,8 +58,16 @@ function onSubmit() {
     return
   }
 
-  const redirectTarget = typeof route.query.redirect === 'string' ? route.query.redirect : '/countries'
+  const redirectTarget = getSafeRedirect(route.query.redirect)
+
   router.push(redirectTarget)
+}
+
+function getSafeRedirect(value) {
+  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) {
+    return '/countries'
+  }
+  return value
 }
 </script>
 

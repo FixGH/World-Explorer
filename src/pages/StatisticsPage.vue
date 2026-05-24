@@ -156,7 +156,7 @@
             Classements
           </h2>
           <p class="stats-section-desc">
-            Top 10 par population, superficie, frontières et pays les moins peuplés.
+            10 premiers par population, superficie, frontières et pays les moins peuplés.
           </p>
         </header>
 
@@ -208,17 +208,9 @@ import { useCountriesStore } from '@/stores/countries'
 import StatsSummaryCards from '@/components/StatsSummaryCards.vue'
 import TopCountriesList from '@/components/TopCountriesList.vue'
 import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
+import { regionLabels } from '@/utils/regionLabels'
 
 const store = useCountriesStore()
-
-const regionLabels = {
-  Africa: 'Afrique',
-  Americas: 'Amériques',
-  Asia: 'Asie',
-  Europe: 'Europe',
-  Oceania: 'Océanie',
-  Antarctic: 'Antarctique',
-}
 
 function formatIntFr(n) {
   return Math.round(Number(n)).toLocaleString('fr-FR', { maximumFractionDigits: 0 })

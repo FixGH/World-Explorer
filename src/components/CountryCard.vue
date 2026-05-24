@@ -103,6 +103,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
+import { formatRegionLabel } from '@/utils/regionLabels'
 
 const router = useRouter()
 
@@ -133,15 +134,6 @@ function openCountryDetails() {
 
 const flagSrc = computed(() => getCountryFlagSrc(props.country))
 
-const regionMap = {
-  Africa: 'Afrique',
-  Americas: 'Amériques',
-  Asia: 'Asie',
-  Europe: 'Europe',
-  Oceania: 'Océanie',
-  Antarctic: 'Antarctique',
-}
-
 const formattedPopulation = computed(() => {
   const value = props.country?.population
   if (!value && value !== 0) return '—'
@@ -153,10 +145,7 @@ const capitalLabel = computed(() => {
   return c && String(c).trim() ? String(c).trim() : '—'
 })
 
-const regionLabel = computed(() => {
-  const region = props.country?.region
-  return regionMap[region] || region || '—'
-})
+const regionLabel = computed(() => formatRegionLabel(props.country?.region, '—'))
 
 const quickInsights = computed(() => {
   const population = Number(props.country?.population || 0)

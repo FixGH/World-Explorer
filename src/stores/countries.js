@@ -9,6 +9,8 @@ const RECENTLY_VIEWED_STORAGE_KEY = 'world-explorer-recently-viewed'
 const CUSTOM_COUNTRIES_STORAGE_KEY = 'world-explorer-custom-countries'
 const MAX_RECENTLY_VIEWED = 5
 
+// --- Persistance locale (favoris, récents, pays personnalisés) ---
+
 function normalizeCountryCode(value) {
   return String(value || '').trim().toUpperCase()
 }
@@ -73,6 +75,7 @@ function loadRecentlyViewedCountries() {
 }
 
 function sanitizeCustomCountry(country) {
+  // Normalise un pays ajouté localement pour qu'il suive la même structure que l'API.
   if (!country || typeof country !== 'object') return null
   const code = normalizeCountryCode(country.cca3)
   if (!code) return null
@@ -184,25 +187,6 @@ export const useCountriesStore = defineStore('countries', () => {
     return map
   })
 
-  const countrySearchItems = computed(() => {
-    return countries.value
-      .map((country) => {
-        const code = country?.cca3
-        const name = country?.name?.common || country?.name?.official || code
-        const flagSrc = getCountryFlagSrc(country)
-        const region = country?.region || ''
-
-        if (!code) return null
-        return {
-          code: String(code).trim().toUpperCase(),
-          name: typeof name === 'string' && name ? name : String(code).trim().toUpperCase(),
-          flagSrc,
-          region,
-        }
-      })
-      .filter(Boolean)
-  })
-
   const favoriteCountries = computed(() => {
     return favoriteCodes.value
       .map((code) => countriesByCode.value.get(code))
@@ -226,14 +210,14 @@ export const useCountriesStore = defineStore('countries', () => {
     sorted.sort((left, right) => {
       switch (sortOption.value) {
         case 'name-desc':
-          return (right?.name?.common || '').localeCompare(left?.name?.common || '')
+          return (right?.name?.common || '').localeCompare(left?.name?.common || '', 'fr', { sensitivity: 'base' })
         case 'population-asc':
           return (left?.population || 0) - (right?.population || 0)
         case 'population-desc':
           return (right?.population || 0) - (left?.population || 0)
         case 'name-asc':
         default:
-          return (left?.name?.common || '').localeCompare(right?.name?.common || '')
+          return (left?.name?.common || '').localeCompare(right?.name?.common || '', 'fr', { sensitivity: 'base' })
       }
     })
 
@@ -258,7 +242,7 @@ export const useCountriesStore = defineStore('countries', () => {
   const totalArea = computed(() => {
     return countries.value.reduce((sum, country) => sum + (country?.area || 0), 0)
   })
-  const favoritesCount = computed(() => favoriteCodes.value.length)
+  const favoritesCount = computed(() => favoriteCountries.value.length)
   const favoriteRegionsCount = computed(() => new Set(favoriteCountries.value.map((c) => c?.region).filter(Boolean)).size)
   const favoriteTotalPopulation = computed(() => {
     return favoriteCountries.value.reduce((sum, c) => sum + (c?.population || 0), 0)
@@ -425,6 +409,7 @@ export const useCountriesStore = defineStore('countries', () => {
     error.value = null
     try {
       officialCountries.value = await getAllCountries()
+      compareCountriesCache.value = {}
     } catch (err) {
       error.value = `Impossible de charger les pays : ${err.message}`
     } finally {
@@ -467,6 +452,7 @@ export const useCountriesStore = defineStore('countries', () => {
     }
   }
 
+  /** Charge les détails d'un pays pour la comparaison (cache local pour limiter les appels API). */
   async function ensureCompareCountryData(code) {
     const normalizedCode = String(code || '').trim().toUpperCase()
     if (!normalizedCode || compareCountriesCache.value[normalizedCode]) return
@@ -546,6 +532,11 @@ export const useCountriesStore = defineStore('countries', () => {
     customCountries.value = customCountries.value.filter((country) => country.cca3 !== normalizedCode)
     persistCustomCountries()
 
+    if (isFavorite(normalizedCode)) {
+      favoriteCodes.value = favoriteCodes.value.filter((item) => item !== normalizedCode)
+      persistFavorites()
+    }
+
     if (selectedCountry.value?.cca3 === normalizedCode) {
       selectedCountry.value = null
     }
@@ -598,7 +589,6 @@ export const useCountriesStore = defineStore('countries', () => {
     favoriteCodes,
     favoriteCountries,
     recentlyViewedCountries: recentlyViewed,
-    countrySearchItems,
     isFavorite,
     addFavorite,
     removeFavorite,

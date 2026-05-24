@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 
 const AUTH_STORAGE_KEY = 'world-explorer-auth'
 
+// --- Persistance locale de la session démo (front-end uniquement) ---
+
 function isLocalStorageAvailable() {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 }

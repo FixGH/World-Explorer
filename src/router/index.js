@@ -30,7 +30,6 @@ const router = createRouter({
       path: '/countries/:code',
       name: 'country-details',
       component: CountryDetailsPage,
-      props: true,
     },
     {
       path: '/favorites',
@@ -73,6 +72,7 @@ const router = createRouter({
   ],
 })
 
+// Garde d'authentification : les routes protégées redirigent vers la connexion démo.
 router.beforeEach((to) => {
   const authStore = useAuthStore(pinia)
   if (!to.meta.requiresAuth) return true

@@ -21,13 +21,14 @@ const DETAIL_FIELDS = [
   'latlng',
 ].join(',')
 
+/** Appelle l'API REST Countries et remonte une erreur lisible en français. */
 async function fetchJson(path, params) {
   try {
     const response = await apiClient.get(path, { params })
     return response.data
   } catch (error) {
     if (error?.response?.status) {
-      throw new Error(`HTTP ${error.response.status}`)
+      throw new Error(`Erreur HTTP ${error.response.status}`)
     }
     throw new Error(error?.message || 'Erreur réseau')
   }

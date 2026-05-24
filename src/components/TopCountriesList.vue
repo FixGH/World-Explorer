@@ -2,7 +2,7 @@
   <v-card class="ranking-card" rounded="xl">
     <v-card-title class="ranking-card-title d-flex align-center justify-space-between ga-3">
       <span class="ranking-title">{{ title }}</span>
-      <v-chip size="small" variant="tonal" color="primary" class="ranking-chip flex-shrink-0">Top 10</v-chip>
+      <v-chip size="small" variant="tonal" color="primary" class="ranking-chip flex-shrink-0">10 premiers</v-chip>
     </v-card-title>
     <v-divider class="ranking-divider opacity-25" />
     <v-list v-if="items.length" class="ranking-list" density="comfortable">

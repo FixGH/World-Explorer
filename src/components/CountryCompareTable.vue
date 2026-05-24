@@ -199,6 +199,7 @@
 <script setup>
 import { computed } from 'vue'
 import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
+import { formatRegionLabel } from '@/utils/regionLabels'
 
 const props = defineProps({
   left: {
@@ -217,17 +218,9 @@ const fallback = 'Non disponible'
 
 const leftFlagSrc = computed(() => getCountryFlagSrc(props.left))
 const rightFlagSrc = computed(() => getCountryFlagSrc(props.right))
-const regionMap = {
-  Africa: 'Afrique',
-  Americas: 'Amériques',
-  Asia: 'Asie',
-  Europe: 'Europe',
-  Oceania: 'Océanie',
-  Antarctic: 'Antarctique',
-}
 
-const leftPopulation = computed(() => (props.left?.population ? `${props.left.population.toLocaleString('fr-FR')} habitants` : fallback))
-const rightPopulation = computed(() => (props.right?.population ? `${props.right.population.toLocaleString('fr-FR')} habitants` : fallback))
+const leftPopulation = computed(() => formatPopulation(props.left))
+const rightPopulation = computed(() => formatPopulation(props.right))
 const leftArea = computed(() => (Number.isFinite(props.left?.area) ? `${props.left.area.toLocaleString('fr-FR')} km²` : fallback))
 const rightArea = computed(() => (Number.isFinite(props.right?.area) ? `${props.right.area.toLocaleString('fr-FR')} km²` : fallback))
 const leftBorders = computed(() => {
@@ -238,8 +231,8 @@ const rightBorders = computed(() => {
   if (!Array.isArray(props.right?.borders)) return fallback
   return `${props.right.borders.length.toLocaleString('fr-FR')} frontière(s)`
 })
-const leftRegionLabel = computed(() => regionMap[props.left?.region] || props.left?.region || fallback)
-const rightRegionLabel = computed(() => regionMap[props.right?.region] || props.right?.region || fallback)
+const leftRegionLabel = computed(() => formatRegionLabel(props.left?.region, fallback))
+const rightRegionLabel = computed(() => formatRegionLabel(props.right?.region, fallback))
 const leftDensity = computed(() => formatDensity(props.left))
 const rightDensity = computed(() => formatDensity(props.right))
 const leftContinents = computed(() => joinValues(props.left?.continents))
@@ -254,6 +247,11 @@ const rightLanguages = computed(() => {
 })
 const leftCurrencies = computed(() => formatCurrencies(props.left?.currencies))
 const rightCurrencies = computed(() => formatCurrencies(props.right?.currencies))
+
+function formatPopulation(country) {
+  const value = Number(country?.population)
+  return Number.isFinite(value) ? `${value.toLocaleString('fr-FR')} habitants` : fallback
+}
 
 function getMetricValue(metric, side) {
   const item = side === 'left' ? props.left : props.right

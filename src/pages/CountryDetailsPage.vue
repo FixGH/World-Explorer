@@ -76,7 +76,7 @@
                   prepend-icon="mdi-flag-variant"
                   class="hero-chip"
                 >
-                  {{ independentChipLabel }}
+                  {{ independentLabel }}
                 </v-chip>
               </div>
             </v-card-text>
@@ -332,6 +332,7 @@ import LoadingState from '@/components/LoadingState.vue'
 import ErrorState from '@/components/ErrorState.vue'
 import CountryMap from '@/components/CountryMap.vue'
 import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
+import { formatRegionLabel } from '@/utils/regionLabels'
 
 const route = useRoute()
 const store = useCountriesStore()
@@ -341,14 +342,7 @@ const countryCode = computed(() => String(route.params.code || ''))
 const country = computed(() => store.selectedCountry)
 const flagSrc = computed(() => getCountryFlagSrc(country.value))
 
-const regionMap = {
-  Africa: 'Afrique',
-  Americas: 'Amériques',
-  Asia: 'Asie',
-  Europe: 'Europe',
-  Oceania: 'Océanie',
-  Antarctic: 'Antarctique',
-}
+const regionLabel = computed(() => formatRegionLabel(country.value?.region, fallback))
 
 const officialHeroLine = computed(() => {
   const official = country.value?.name?.official?.trim()
@@ -367,10 +361,6 @@ const formattedArea = computed(() => {
   return Number.isFinite(value) ? `${value.toLocaleString('fr-FR')} km²` : fallback
 })
 const continentsLabel = computed(() => country.value?.continents?.join(', ') || fallback)
-const regionLabel = computed(() => {
-  const region = country.value?.region
-  return regionMap[region] || region || fallback
-})
 const languagesLabel = computed(() => {
   const languages = country.value?.languages
   return languages ? Object.values(languages).join(', ') : fallback
@@ -393,11 +383,6 @@ const independentLabel = computed(() => {
   return 'Statut non précisé'
 })
 const borders = computed(() => country.value?.borders || [])
-const independentChipLabel = computed(() => {
-  if (country.value?.independent === true) return 'État indépendant'
-  if (country.value?.independent === false) return 'Territoire dépendant'
-  return 'Statut non précisé'
-})
 const borderCountLabel = computed(() => {
   if (!borders.value.length) return 'Aucune frontière terrestre'
   return `${borders.value.length.toLocaleString('fr-FR')} voisin(s)`
@@ -420,17 +405,16 @@ function borderCountryLabel(code) {
   return store.getCountryNameByCode(code)
 }
 
-onMounted(loadCountry)
+onMounted(() => {
+  loadCountry()
+  if (!store.countries.length && !store.loading) {
+    store.fetchCountries()
+  }
+})
 watch(countryCode, loadCountry)
 watch(country, (newCountry) => {
   if (newCountry?.cca3) {
     store.markRecentlyViewed(newCountry)
-  }
-})
-
-onMounted(() => {
-  if (!store.countries.length && !store.loading) {
-    store.fetchCountries()
   }
 })
 </script>

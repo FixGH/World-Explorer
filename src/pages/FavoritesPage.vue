@@ -55,6 +55,7 @@
           </v-col>
           <v-col cols="12" md="3" lg="3">
             <v-autocomplete
+              :key="countryAddFieldKey"
               v-model="countryToAdd"
               v-model:search="countryToAddSearch"
               :items="addableCountryItems"
@@ -93,6 +94,7 @@
           Ajoutez un pays ci-dessous ou explorez le monde pour constituer votre collection.
         </p>
         <v-autocomplete
+          :key="countryAddFieldKey"
           v-model="countryToAdd"
           v-model:search="countryToAddSearch"
           :items="addableCountryItems"
@@ -167,11 +169,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useCountriesStore } from '@/stores/countries'
 import { useAuthStore } from '@/stores/auth'
 import CountryCard from '@/components/CountryCard.vue'
 import StatsSummaryCards from '@/components/StatsSummaryCards.vue'
+import { regionLabels } from '@/utils/regionLabels'
 
 const store = useCountriesStore()
 const authStore = useAuthStore()
@@ -180,15 +183,7 @@ const favoritesSearch = ref('')
 const favoritesSort = ref('name-asc')
 const countryToAdd = ref(null)
 const countryToAddSearch = ref('')
-
-const regionLabels = {
-  Africa: 'Afrique',
-  Americas: 'Amériques',
-  Asia: 'Asie',
-  Europe: 'Europe',
-  Oceania: 'Océanie',
-  Antarctic: 'Antarctique',
-}
+const countryAddFieldKey = ref(0)
 
 const sortItems = [
   { title: 'Nom (A → Z)', value: 'name-asc' },
@@ -210,11 +205,13 @@ const addableCountryItems = computed(() => {
     .sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
 })
 
-function onAddFavorite(code) {
+async function onAddFavorite(code) {
   if (!code) return
   store.addFavorite(code)
   countryToAdd.value = null
   countryToAddSearch.value = ''
+  await nextTick()
+  countryAddFieldKey.value += 1
 }
 
 const favoriteSummaryItems = computed(() => [
@@ -278,7 +275,7 @@ function resetFavoritesControls() {
 }
 
 onMounted(() => {
-  if (!store.countries.length) {
+  if (!store.countries.length && !store.loading) {
     store.fetchCountries()
   }
 })

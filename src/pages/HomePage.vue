@@ -105,7 +105,7 @@
                       </v-avatar>
                     </template>
                     <v-list-item-title class="font-weight-bold">{{ country.name?.common }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ country.region || 'Région' }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{ formatRegionLabel(country.region, 'Région') }}</v-list-item-subtitle>
                   </v-list-item>
                 </v-list>
                 <v-btn variant="text" color="primary" class="mt-2 font-weight-bold" :to="{ name: 'favorites' }">
@@ -155,6 +155,7 @@ import RecentlyViewedCountries from '@/components/RecentlyViewedCountries.vue'
 import LoadingState from '@/components/LoadingState.vue'
 import ErrorState from '@/components/ErrorState.vue'
 import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
+import { formatRegionLabel } from '@/utils/regionLabels'
 
 const store = useCountriesStore()
 const router = useRouter()

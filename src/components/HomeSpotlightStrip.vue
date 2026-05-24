@@ -50,6 +50,7 @@
 
 <script setup>
 import { getCountryFlagSrc } from '@/utils/countryFlagSrc'
+import { formatRegionLabel } from '@/utils/regionLabels'
 
 defineProps({
   countries: {
@@ -64,22 +65,12 @@ defineProps({
 
 defineEmits(['random-trip'])
 
-const regionFr = {
-  Africa: 'Afrique',
-  Americas: 'Amériques',
-  Asia: 'Asie',
-  Europe: 'Europe',
-  Oceania: 'Océanie',
-  Antarctic: 'Antarctique',
-}
-
 function flagSrc(country) {
   return getCountryFlagSrc(country)
 }
 
 function regionLabel(country) {
-  const r = country?.region
-  return regionFr[r] || r || 'Monde'
+  return formatRegionLabel(country?.region, 'Monde')
 }
 </script>
 
