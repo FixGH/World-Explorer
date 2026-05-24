@@ -283,26 +283,6 @@ const insightItems = computed(() => {
     })
   }
 
-  const lp = store.leastPopulatedCountry
-  if (lp) {
-    items.push({
-      label: 'Pays le moins peuplé',
-      headline: lp.name?.common || 'Non disponible',
-      detail: populationFormatter(populationValue(lp)),
-      icon: 'mdi-account-arrow-down-outline',
-    })
-  }
-
-  const dense = store.mostDenseCountry
-  if (dense) {
-    items.push({
-      label: 'Plus forte densité démographique',
-      headline: dense.name?.common || 'Non disponible',
-      detail: densityFormatter(dense),
-      icon: 'mdi-speedometer',
-    })
-  }
-
   return items
 })
 
@@ -375,16 +355,6 @@ const worldRecords = computed(() => {
     name: br?.name?.common || '—',
     metric: br ? bordersFormatter(bordersValue(br)) : '—',
     to: to(br),
-  })
-
-  const lp = store.leastPopulatedCountry
-  list.push({
-    key: 'least',
-    kicker: 'Moins peuplé',
-    country: lp,
-    name: lp?.name?.common || '—',
-    metric: lp ? populationFormatter(populationValue(lp)) : '—',
-    to: to(lp),
   })
 
   const dn = store.mostDenseCountry
